@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SAGUI",
+  "name": "Sistema de Administração de Guias Odontológicas",
   "icons": [
     {
       "src": "favicon.ico",
