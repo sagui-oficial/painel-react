@@ -1,15 +1,16 @@
 import React from 'react';
-import logo from '../../assets/images/logo.svg';
-
-import './index.scss';
+import { Switch, Route } from 'react-router-dom';
+import Home from '../Home';
+import Login from '../Login';
+import NotFoundPage from '../NotFoundPage';
 
 const App = () => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>Acesse o painel clicando no link abaixo.</p>
-      <a className="App-link" href="painel">Entrar</a>
-    </header>
+  <div>
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/login" component={Login} />
+      <Route component={NotFoundPage} />
+    </Switch>
   </div>
 );
 
