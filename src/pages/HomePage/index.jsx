@@ -3,7 +3,7 @@ import logo from '../../assets/images/logo.svg';
 
 import './index.scss';
 
-const Home = () => (
+const HomePage = () => (
   <div className="App">
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
@@ -13,4 +13,4 @@ const Home = () => (
   </div>
 );
 
-export default Home;
+export default HomePage;
