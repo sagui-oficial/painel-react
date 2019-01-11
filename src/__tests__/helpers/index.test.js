@@ -1,1 +1,3 @@
-/* TEST HELPERS */
+it('Helpers', () => {
+  console.log('Log');
+});
