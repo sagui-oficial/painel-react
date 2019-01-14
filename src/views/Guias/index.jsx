@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+// Material Imports
 import { withStyles } from '@material-ui/core/styles';
 // import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -8,7 +10,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -43,7 +47,7 @@ function Guias(props) {
   const { classes } = props;
 
   return (
-    <div>
+    <Grid item xs={12}>
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
@@ -82,7 +86,7 @@ function Guias(props) {
           </TableBody>
         </Table>
       </Paper>
-    </div>
+    </Grid>
   );
 }
 

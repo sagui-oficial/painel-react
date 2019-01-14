@@ -37,6 +37,8 @@ const styles = theme => ({
   },
   appBar: {
     width: '100%',
+    boxShadow: 'none',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
   },
   activeListItem: {
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
@@ -54,6 +56,10 @@ const styles = theme => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  menuTitle: {
+    padding: '0 15px',
+    textAlign: 'center',
+  },
   toolbar: theme.mixins.toolbar,
   toolbarLogo: {
     display: 'flex',
@@ -68,6 +74,8 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     position: 'relative',
+    overflow: 'hidden',
+    height: '100vh',
   },
   mainContainer: {
     marginTop: '70px',
@@ -112,6 +120,8 @@ class NavBar extends Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
+
+        {/* MOBILE SIDEBAR */}
         <Hidden mdUp implementation="css">
           <Drawer
             className={classes.drawer}
@@ -154,9 +164,28 @@ class NavBar extends Component {
                 ))}
               </List>
               <Divider />
+              <List>
+                <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
+                  Configurações
+                </Typography>
+                <ListItem button>
+                  <ListItemIcon>
+                    <MenuIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Usuários" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <MenuIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dentistas" />
+                </ListItem>
+              </List>
             </div>
           </Drawer>
         </Hidden>
+
+        {/* DESKTOP SIDEBAR */}
         <Hidden smDown implementation="css">
           <Drawer
             className={classes.drawer}
@@ -192,10 +221,27 @@ class NavBar extends Component {
               ))}
             </List>
             <Divider />
+            <List>
+              <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
+                Configurações
+              </Typography>
+              <ListItem button>
+                <ListItemIcon>
+                  <MenuIcon />
+                </ListItemIcon>
+                <ListItemText primary="Usuários" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <MenuIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dentistas" />
+              </ListItem>
+            </List>
           </Drawer>
         </Hidden>
         <main className={classes.content}>
-          <AppBar position="absolute" color="primary" className={classes.appBar}>
+          <AppBar position="absolute" color="inherit" className={classes.appBar}>
             <Toolbar className={classes.toolbarContainer}>
               <Typography variant="title" color="inherit">
                 {dashboardRoutes.map(itemList => (
