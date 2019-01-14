@@ -1,4 +1,5 @@
-import React from 'react';
+/* global window */
+import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -6,6 +7,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // Material
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -19,6 +21,7 @@ import ListItem from '@material-ui/core/ListItem';
 // Material Icons
 import MenuIcon from '@material-ui/icons/Menu';
 
+// Local imports
 import logo from '../assets/images/logo.svg';
 import dashboardRoutes from '../routes/dashbordRoutes';
 
@@ -33,11 +36,16 @@ const styles = theme => ({
     display: 'flex',
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    width: '100%',
   },
   activeListItem: {
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
+  },
+  toolbarContainer: {
+    background: 'none',
+    boxShadow: 'none',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -47,66 +55,172 @@ const styles = theme => ({
     width: drawerWidth,
   },
   toolbar: theme.mixins.toolbar,
+  toolbarLogo: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& a': {
+      display: 'inline-block',
+    },
+  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+    position: 'relative',
+  },
+  mainContainer: {
+    marginTop: '70px',
   },
 });
 
-const NavBar = (props) => {
-  const { classes, children } = props;
+class NavBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mobileOpen: false,
+    };
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" color="default" className={classes.appBar}>
-        <Toolbar>
-          <IconButton color="default" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="title" color="inherit">
-            <Link to="/">
-              <img src={logo} className={classes.logo} alt="logo" />
-            </Link>
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        anchor="left"
-      >
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          {dashboardRoutes.map(itemList => (
-            <ListItem
-              button
-              key={itemList.id}
-              to={itemList.path}
-              activeClassName={classes.activeListItem}
-              component={NavLink}
+    this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+    this.resizeFunction = this.resizeFunction.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resizeFunction);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeFunction);
+  }
+
+  handleDrawerToggle() {
+    const { mobileOpen } = this.state;
+    this.setState({ mobileOpen: !mobileOpen });
+  }
+
+  resizeFunction() {
+    if (window.innerWidth >= 960) {
+      this.setState({ mobileOpen: false });
+    }
+  }
+
+  render() {
+    const { mobileOpen } = this.state;
+    const { classes, children } = this.props;
+    const { location } = window;
+
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <Hidden mdUp implementation="css">
+          <Drawer
+            className={classes.drawer}
+            variant="temporary"
+            anchor="right"
+            open={mobileOpen}
+            onClose={this.handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div
+              tabIndex={0}
+              role="button"
+              onClick={this.handleDrawerToggle}
+              onKeyDown={this.handleDrawerToggle}
             >
-              <ListItemIcon>
-                <itemList.icon />
-              </ListItemIcon>
-              <ListItemText primary={itemList.text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {children}
-      </main>
-    </div>
-  );
-};
+              <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
+                <Typography variant="title" color="inherit">
+                  <Link to="/">
+                    <img src={logo} className={classes.logo} alt="logo" />
+                  </Link>
+                </Typography>
+              </div>
+              <Divider />
+              <List>
+                {dashboardRoutes.map(itemList => (
+                  <ListItem
+                    button
+                    key={itemList.id}
+                    to={itemList.path}
+                    activeClassName={classes.activeListItem}
+                    component={NavLink}
+                  >
+                    <ListItemIcon>
+                      <itemList.icon />
+                    </ListItemIcon>
+                    <ListItemText primary={itemList.menuText} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+            </div>
+          </Drawer>
+        </Hidden>
+        <Hidden smDown implementation="css">
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            anchor="left"
+            open
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
+              <Typography variant="title" color="inherit">
+                <Link to="/">
+                  <img src={logo} className={classes.logo} alt="logo" />
+                </Link>
+              </Typography>
+            </div>
+            <Divider />
+            <List>
+              {dashboardRoutes.map(itemList => (
+                <ListItem
+                  button
+                  key={itemList.id}
+                  to={itemList.path}
+                  activeClassName={classes.activeListItem}
+                  component={NavLink}
+                >
+                  <ListItemIcon>
+                    <itemList.icon />
+                  </ListItemIcon>
+                  <ListItemText primary={itemList.menuText} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </Drawer>
+        </Hidden>
+        <main className={classes.content}>
+          <AppBar position="absolute" color="primary" className={classes.appBar}>
+            <Toolbar className={classes.toolbarContainer}>
+              <Typography variant="title" color="inherit">
+                {dashboardRoutes.map(itemList => (
+                  itemList.path === location.pathname ? itemList.pageTitle : ''
+                ))}
+              </Typography>
+              <Hidden mdUp implementation="css">
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={this.handleDrawerToggle}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Hidden>
+            </Toolbar>
+          </AppBar>
+          <div className={classes.mainContainer}>
+            {children}
+          </div>
+        </main>
+      </div>
+    );
+  }
+}
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
