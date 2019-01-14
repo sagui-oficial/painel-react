@@ -33,6 +33,8 @@ const styles = theme => ({
   },
 });
 
+
+/* MOCK */
 let id = 0;
 function createData(numGuia, paciente, vencimento, status, valor) {
   id += 1;
@@ -41,9 +43,14 @@ function createData(numGuia, paciente, vencimento, status, valor) {
   };
 }
 
-const rows = [
+const createRowsMock = [
+  createData(92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 125,00'),
   createData(92093, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(92093, 'Fabio', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(92093, 'Jomal', '20/02/2019', 'Enviada', 'R$ 125,00'),
 ];
+/* MOCK */
+
 
 class Guias extends Component {
   constructor(props) {
@@ -51,9 +58,11 @@ class Guias extends Component {
 
     this.state = {
       open: false,
+      rows: [...createRowsMock],
     };
 
     this.handleToggleModal = this.handleToggleModal.bind(this);
+    this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
   }
 
   handleToggleModal() {
@@ -61,9 +70,19 @@ class Guias extends Component {
     this.setState({ open: !open });
   }
 
+  handleDeletarGuia(i) {
+    const { rows } = this.state;
+
+    rows.splice(i, 1);
+
+    this.setState({
+      rows: [...rows],
+    });
+  }
+
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
+    const { open, rows } = this.state;
 
     return (
       <Grid item xs={12}>
@@ -98,7 +117,7 @@ class Guias extends Component {
                     </IconButton>
                   </TableCell>
                   <TableCell className={classes.buttonTd} align="center">
-                    <IconButton aria-label="Deletar">
+                    <IconButton onClick={() => this.handleDeletarGuia(row.id)} aria-label="Deletar">
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

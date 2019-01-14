@@ -141,7 +141,7 @@ class NavBar extends Component {
             >
               <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
                 <Typography variant="title" color="inherit">
-                  <Link to="/">
+                  <Link to="/dashboard">
                     <img src={logo} className={classes.logo} alt="logo" />
                   </Link>
                 </Typography>
@@ -149,18 +149,20 @@ class NavBar extends Component {
               <Divider />
               <List>
                 {dashboardRoutes.map(itemList => (
-                  <ListItem
-                    button
-                    key={itemList.id}
-                    to={itemList.path}
-                    activeClassName={classes.activeListItem}
-                    component={NavLink}
-                  >
-                    <ListItemIcon>
-                      <itemList.icon />
-                    </ListItemIcon>
-                    <ListItemText primary={itemList.menuText} />
-                  </ListItem>
+                  itemList.active && (
+                    <ListItem
+                      button
+                      key={itemList.id}
+                      to={itemList.path}
+                      activeClassName={classes.activeListItem}
+                      component={NavLink}
+                    >
+                      <ListItemIcon>
+                        <itemList.icon />
+                      </ListItemIcon>
+                      <ListItemText primary={itemList.menuText} />
+                    </ListItem>
+                  )
                 ))}
               </List>
               <Divider />
@@ -198,7 +200,7 @@ class NavBar extends Component {
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
               <Typography variant="title" color="inherit">
-                <Link to="/">
+                <Link to="/dashboard">
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Typography>
@@ -206,18 +208,20 @@ class NavBar extends Component {
             <Divider />
             <List>
               {dashboardRoutes.map(itemList => (
-                <ListItem
-                  button
-                  key={itemList.id}
-                  to={itemList.path}
-                  activeClassName={classes.activeListItem}
-                  component={NavLink}
-                >
-                  <ListItemIcon>
-                    <itemList.icon />
-                  </ListItemIcon>
-                  <ListItemText primary={itemList.menuText} />
-                </ListItem>
+                itemList.active && (
+                  <ListItem
+                    button
+                    key={itemList.id}
+                    to={itemList.path}
+                    activeClassName={classes.activeListItem}
+                    component={NavLink}
+                  >
+                    <ListItemIcon>
+                      <itemList.icon />
+                    </ListItemIcon>
+                    <ListItemText primary={itemList.menuText} />
+                  </ListItem>
+                )
               ))}
             </List>
             <Divider />
@@ -244,7 +248,7 @@ class NavBar extends Component {
           <AppBar position="absolute" color="inherit" className={classes.appBar}>
             <Toolbar className={classes.toolbarContainer}>
               {/* <Typography variant="title" color="inherit">
-                <Link to="/">
+                <Link to="/dashboard">
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Typography> */}
@@ -274,8 +278,8 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired,
+  classes: PropTypes.instanceOf(Object).isRequired,
+  children: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default withStyles(styles)(NavBar);

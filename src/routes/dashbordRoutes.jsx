@@ -7,6 +7,10 @@ import LayersIcon from '@material-ui/icons/Layers';
 
 // Pages
 import DashboardPage from '../views/Dashboard';
+import Guias from '../views/Guias';
+import Pacientes from '../views/Pacientes';
+import Procedimentos from '../views/Procedimentos';
+import Planos from '../views/Planos';
 
 const dashboardRoutes = [
   {
@@ -15,6 +19,7 @@ const dashboardRoutes = [
     menuText: 'Dashboard',
     pageTitle: 'Dashboard',
     icon: DashboardIcon,
+    active: true,
     component: DashboardPage,
   },
   {
@@ -23,7 +28,8 @@ const dashboardRoutes = [
     menuText: 'Guias',
     pageTitle: 'Guias Odontológicas',
     icon: LibraryBooksIcon,
-    component: DashboardPage,
+    active: true,
+    component: Guias,
   },
   {
     id: 3,
@@ -31,7 +37,8 @@ const dashboardRoutes = [
     menuText: 'Pacientes',
     pageTitle: 'Pacientes Cadastrados',
     icon: PersonIcon,
-    component: DashboardPage,
+    active: true,
+    component: Pacientes,
   },
   {
     id: 4,
@@ -39,7 +46,8 @@ const dashboardRoutes = [
     menuText: 'Procedimentos',
     pageTitle: 'Lista de Procedimentos',
     icon: ListAltIcon,
-    component: DashboardPage,
+    active: true,
+    component: Procedimentos,
   },
   {
     id: 5,
@@ -47,7 +55,8 @@ const dashboardRoutes = [
     menuText: 'Planos',
     pageTitle: 'Planos / Convênios',
     icon: LayersIcon,
-    component: DashboardPage,
+    active: true,
+    component: Planos,
   },
 ];
 

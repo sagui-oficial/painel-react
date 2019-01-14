@@ -1,18 +1,24 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-// Views/Pages
-import HomePage from '../views/HomePage';
-import Dashboard from '../views/Dashboard';
-import Guias from '../views/Guias';
-import NotFoundPage from '../views/NotFoundPage';
+import dashboardRoutes from './dashbordRoutes';
+import Login from '../views/Login';
 
 const MainRouters = () => (
   <Switch>
-    <Route exact path="/" component={HomePage} />
-    <Route path="/dashboard" component={Dashboard} />
-    <Route path="/guias" component={Guias} />
-    <Route component={NotFoundPage} />
+    {dashboardRoutes.map(itemList => (
+      itemList.active && (
+        <Route
+          exact
+          path={itemList.path}
+          component={itemList.component}
+          key={itemList.id}
+        />
+      )
+    ))}
+    <Route exact path="/login" component={Login} />
+    <Route path="/" render={() => (<Redirect to="/dashboard" />)} />
+    {/* <Route component={NotFoundPage} /> */}
   </Switch>
 );
 
