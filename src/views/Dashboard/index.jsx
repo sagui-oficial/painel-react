@@ -1,13 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import logo from '../../assets/images/logo.svg';
+import Typography from '@material-ui/core/Typography';
 
 const Dashboard = () => (
-  <header>
-    <img src={logo} alt="logo" />
-    <p>Dashboard</p>
-    <NavLink to="/">Voltar</NavLink>
-  </header>
+  <Typography variant="title" color="inherit">
+    Dashboard
+  </Typography>
 );
 
 export default Dashboard;

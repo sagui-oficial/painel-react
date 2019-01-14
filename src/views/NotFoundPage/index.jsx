@@ -1,9 +1,10 @@
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
 
 const NotFoundPage = () => (
-  <div>
+  <Typography variant="title" color="inherit">
     Página não encontrada.
-  </div>
+  </Typography>
 );
 
 export default NotFoundPage;

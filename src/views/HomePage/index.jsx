@@ -1,20 +1,9 @@
-import React, { Fragment, Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
-// import logo from '../../assets/images/logo.svg';
+import React, { Component } from 'react';
+// import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/core/styles/withStyles';
+import Typography from '@material-ui/core/Typography';
 
 import ResponsiveDialog from '../../components/ResponsiveDialog';
-
-const style = {
-  grid: {
-    margin: '0 !important',
-    width: 'unset',
-  },
-};
 
 class HomePage extends Component {
   constructor(props) {
@@ -38,28 +27,18 @@ class HomePage extends Component {
 
   render() {
     const { open } = this.state;
-    const { classes } = this.props;
 
     return (
-      <Fragment>
-        <Grid container spacing={16} className={classes.grid}>
-          <Grid item sm={6}>
-            <Button variant="contained" color="secondary" to="/dashboard" component={Link}>
-              Entrar
-            </Button>
-          </Grid>
-          <Grid item sm={6}>
-            <Button onClick={this.handleOpen}>Open Modal</Button>
-          </Grid>
-        </Grid>
+      <div>
+        <Typography variant="title" color="inherit">
+          Home
+        </Typography>
+        {/* <Button variant="contained" color="secondary" to="/dashboard" component={Link}>Entrar</Button> */}
+        <Button onClick={this.handleOpen}>Open Modal</Button>
         <ResponsiveDialog fullScreen={false} open={open} onClose={this.handleClose} />
-      </Fragment>
+      </div>
     );
   }
 }
 
-HomePage.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(style)(HomePage);
+export default HomePage;
