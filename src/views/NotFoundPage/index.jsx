@@ -44,7 +44,7 @@ const NotFoundPage = (props) => {
 };
 
 NotFoundPage.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default withStyles(styles)(NotFoundPage);

@@ -243,6 +243,11 @@ class NavBar extends Component {
         <main className={classes.content}>
           <AppBar position="absolute" color="inherit" className={classes.appBar}>
             <Toolbar className={classes.toolbarContainer}>
+              {/* <Typography variant="title" color="inherit">
+                <Link to="/">
+                  <img src={logo} className={classes.logo} alt="logo" />
+                </Link>
+              </Typography> */}
               <Typography variant="title" color="inherit">
                 {dashboardRoutes.map(itemList => (
                   itemList.path === location.pathname ? itemList.pageTitle : ''

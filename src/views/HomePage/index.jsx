@@ -13,16 +13,12 @@ class HomePage extends Component {
       open: false,
     };
 
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.handleToggleModal = this.handleToggleModal.bind(this);
   }
 
-  handleOpen() {
-    this.setState({ open: true });
-  }
-
-  handleClose() {
-    this.setState({ open: false });
+  handleToggleModal() {
+    const { open } = this.state;
+    this.setState({ open: !open });
   }
 
   render() {
@@ -30,9 +26,8 @@ class HomePage extends Component {
 
     return (
       <div>
-        {/* <Button variant="contained" color="secondary" to="/dashboard" component={Link}>Entrar</Button> */}
-        <Button onClick={this.handleOpen}>Open Modal</Button>
-        <ResponsiveDialog fullScreen={false} open={open} onClose={this.handleClose} />
+        <Button onClick={this.handleToggleModal}>Open Modal</Button>
+        <ResponsiveDialog fullScreen={false} open={open} onClose={this.handleToggleModal} />
       </div>
     );
   }
