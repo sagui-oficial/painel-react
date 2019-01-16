@@ -33,24 +33,23 @@ const styles = theme => ({
   },
 });
 
-
 /* MOCK */
-let id = 0;
-function createData(numGuia, paciente, vencimento, status, valor) {
-  id += 1;
-  return {
-    id, numGuia, paciente, vencimento, status, valor,
-  };
-}
+const createData = (...items) => ({
+  id: items[0],
+  numGuia: items[1],
+  paciente: items[2],
+  vencimento: items[3],
+  status: items[4],
+  valor: items[5],
+});
 
 const createRowsMock = [
-  createData(92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(92093, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(92093, 'Fabio', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(92093, 'Jomal', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(12, 92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(22, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(32, 92095, 'Fabio', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(42, 92096, 'Jomal', '20/02/2019', 'Enviada', 'R$ 125,00'),
 ];
 /* MOCK */
-
 
 class Guias extends Component {
   constructor(props) {
@@ -58,11 +57,15 @@ class Guias extends Component {
 
     this.state = {
       open: false,
-      rows: [...createRowsMock],
+      rows: [],
     };
 
     this.handleToggleModal = this.handleToggleModal.bind(this);
     this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({ rows: [...createRowsMock] });
   }
 
   handleToggleModal() {
@@ -70,13 +73,11 @@ class Guias extends Component {
     this.setState({ open: !open });
   }
 
-  handleDeletarGuia(i) {
-    const { rows } = this.state;
+  handleDeletarGuia(id) {
+    this.setState((state) => {
+      const rows = state.rows.filter(item => item.id !== id);
 
-    rows.splice(i, 1);
-
-    this.setState({
-      rows: [...rows],
+      return { rows };
     });
   }
 
