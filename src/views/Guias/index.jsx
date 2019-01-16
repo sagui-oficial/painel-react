@@ -26,10 +26,14 @@ const styles = theme => ({
   },
   table: {
     minWidth: 700,
+    '& th': {
+      width: '260px',
+    },
   },
   buttonTd: {
     paddingLeft: '2px',
-    paddingRight: '2px',
+    paddingRight: '2px !important',
+    width: '100px',
   },
 });
 
@@ -98,8 +102,7 @@ class Guias extends Component {
                 <TableCell align="left">Vencimento</TableCell>
                 <TableCell align="left">Status</TableCell>
                 <TableCell align="left">Valor</TableCell>
-                <TableCell className={classes.buttonTd} align="center">Editar</TableCell>
-                <TableCell className={classes.buttonTd} align="center">Excluir</TableCell>
+                <TableCell className={classes.buttonTd} align="center">Editar | Excluir</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -116,8 +119,6 @@ class Guias extends Component {
                     <IconButton aria-label="Editar">
                       <EditIcon />
                     </IconButton>
-                  </TableCell>
-                  <TableCell className={classes.buttonTd} align="center">
                     <IconButton onClick={() => this.handleDeletarGuia(row.id)} aria-label="Deletar">
                       <DeleteIcon />
                     </IconButton>
