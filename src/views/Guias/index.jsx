@@ -26,14 +26,36 @@ const styles = theme => ({
   },
   table: {
     minWidth: 700,
-    '& th': {
-      width: '260px',
+    '& th:first-child': {
+      width: '120px',
+      padding: '0 20px',
+    },
+    '& th:not(:first-child)': {
+      paddingRight: '20px',
+    },
+    '& th:nth-child(2)': {
+      width: '30%',
+    },
+    '& td': {
+      paddingRight: '20px',
     },
   },
   buttonTd: {
-    paddingLeft: '2px',
-    paddingRight: '2px !important',
-    width: '100px',
+    paddingLeft: '20px',
+    paddingRight: '20px !important',
+    width: '120px',
+    '& button': {
+      padding: '5px',
+      '& svg': {
+        fontSize: '18px',
+      },
+      '&:first-child svg': {
+        fill: '#320369',
+      },
+      '&:last-child svg': {
+        fill: '#a7a7a7',
+      },
+    },
   },
 });
 
@@ -48,10 +70,14 @@ const createData = (...items) => ({
 });
 
 const createRowsMock = [
-  createData(12, 92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(22, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(32, 92095, 'Fabio', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(42, 92096, 'Jomal', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(12, 92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 25,00'),
+  createData(22, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 1.250,00'),
+  createData(202, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
+  createData(32, 92095, 'Fabio José da Silva Santos Batista Jr.', '20/02/2019', 'Pago', 'R$ 5,90'),
+  createData(452, 92095, 'Bla Bla Bla Bla', '20/02/2019', 'Pago', 'R$ 9.525,00'),
+  createData(302, 92095, 'Fabio', '20/02/2019', 'Glosada', 'R$ 3.125,00'),
+  createData(142, 92096, 'Lorem Ipsum Lorem', '20/02/2019', 'Atualizada', 'R$ 125,00'),
+  createData(422, 92096, 'Lorem Ipsum Lorem', '20/02/2019', 'Excluida', 'R$ 1.245,00'),
 ];
 /* MOCK */
 
