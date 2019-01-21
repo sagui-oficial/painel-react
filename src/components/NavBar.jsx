@@ -75,7 +75,7 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
     position: 'relative',
     overflow: 'hidden',
-    height: '100vh',
+    // height: '100vh',
   },
   mainContainer: {
     marginTop: '70px',

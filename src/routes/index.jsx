@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
+import FormGuia from '../views/Guias/FormGuia';
 
 const MainRouters = () => (
   <Switch>
@@ -16,6 +17,7 @@ const MainRouters = () => (
         />
       )
     ))}
+    <Route exact path="/guias/:id" component={FormGuia} />
     <Route exact path="/login" component={Login} />
     <Route path="/" render={() => (<Redirect to="/dashboard" />)} />
     {/* <Route component={NotFoundPage} /> */}

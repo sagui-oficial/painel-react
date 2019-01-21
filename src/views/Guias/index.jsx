@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {/*  Link, */ NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Material Imports
@@ -17,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CadastroGuias from '../../components/FormCadastro/CadastroGuias';
+// import FormGuia from './FormGuia';
 
 const styles = theme => ({
   root: {
@@ -117,7 +119,14 @@ class Guias extends Component {
 
     return (
       <Grid item xs={12}>
-        <Button variant="contained" color="primary" onClick={this.handleToggleModal}>Novo</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleToggleModal}
+        >
+          Abrir modal exemplo
+        </Button>
+
         <CadastroGuias fullScreen={false} open={open} onClose={this.handleToggleModal} />
         <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -142,7 +151,15 @@ class Guias extends Component {
                   <TableCell align="left">{row.status}</TableCell>
                   <TableCell align="left">{row.valor}</TableCell>
                   <TableCell className={classes.buttonTd} align="center">
-                    <IconButton aria-label="Editar">
+                    <IconButton
+                      // to={`/guias/${row.id}`}
+                      to={{
+                        pathname: `/guias/${row.id}`,
+                        guia: { ...row },
+                      }}
+                      component={NavLink}
+                      aria-label="Editar"
+                    >
                       <EditIcon />
                     </IconButton>
                     <IconButton onClick={() => this.handleDeletarGuia(row.id)} aria-label="Deletar">
