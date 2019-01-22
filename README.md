@@ -2,6 +2,12 @@
 
 Projeto desenvolvido com [Create React App](https://github.com/facebook/create-react-app) usando o style guide [Material-UI](https://material-ui.com/)
 
+## Clonar o repositório
+
+```prompt
+git clone https://gitlab.com/sagui/painel-react
+```
+
 
 ## Pré-requisitos para rodar localmente
 
@@ -16,11 +22,12 @@ npm i -g create-react-app yarn
 ```
 
 
-## Clonar o repositório
+### VSCode dicas
 
-```prompt
-git clone https://gitlab.com/sagui/painel-react
-```
+Instale extensões para auxilar no desenvolvimento:
+
+- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
 
 ## Como começar?
