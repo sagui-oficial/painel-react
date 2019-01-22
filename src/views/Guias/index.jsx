@@ -155,7 +155,7 @@ class Guias extends Component {
                       // to={`/guias/${row.id}`}
                       to={{
                         pathname: `/guias/${row.id}`,
-                        guia: { ...row },
+                        state: { ...row },
                       }}
                       component={NavLink}
                       aria-label="Editar"

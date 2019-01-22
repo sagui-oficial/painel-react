@@ -65,9 +65,9 @@ class FormGuias extends Component {
 
   componentDidMount() {
     const { location } = this.props;
-    const { guia } = location;
+    const { state } = location;
 
-    this.setState({ guia });
+    this.setState({ guia: state });
   }
 
   render() {
