@@ -29,6 +29,12 @@ Instale extensões para auxilar no desenvolvimento:
 - [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
+Adicione a config abaixo no `settings.json` do VSCode
+
+```json
+"eslint.autoFixOnSave": true,
+```
+
 
 ## Como começar?
 
