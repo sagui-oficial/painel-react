@@ -33,7 +33,7 @@ const styles = theme => ({
   },
 });
 
-class CadastroGuias extends Component {
+class FormCadastro extends Component {
   constructor(props) {
     super(props);
 
@@ -107,11 +107,11 @@ class CadastroGuias extends Component {
   }
 }
 
-CadastroGuias.propTypes = {
+FormCadastro.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
 };
 
-export default withMobileDialog()(withStyles(styles)(CadastroGuias));
+export default withMobileDialog()(withStyles(styles)(FormCadastro));
