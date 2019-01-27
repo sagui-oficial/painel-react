@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import {/*  Link, */ NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import uuidv1 from 'uuid/v1';
 
 // Material Imports
 import { withStyles } from '@material-ui/core/styles';
@@ -17,8 +19,13 @@ import IconButton from '@material-ui/core/IconButton';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+
+import {
+  getUNIXDate, formatCurrency, randomPrice, randomStatusGuias,
+} from '../../helpers';
+
+import { loadGuias, addGuia } from '../../actions/guias';
 import FormCadastro from '../../components/FormCadastro';
-// import FormGuia from './FormGuia';
 
 const styles = theme => ({
   root: {
@@ -46,42 +53,25 @@ const styles = theme => ({
     paddingLeft: '20px',
     paddingRight: '20px !important',
     width: '120px',
-    '& button': {
+    '& button, & a': {
       padding: '5px',
       '& svg': {
         fontSize: '18px',
       },
       '&:first-child svg': {
-        fill: '#320369',
+        fill: '#000',
       },
       '&:last-child svg': {
         fill: '#a7a7a7',
       },
     },
   },
+  dangerLabel: {
+    backgroundColor: '#d60202',
+    color: 'white',
+    padding: '2px 5px',
+  },
 });
-
-/* MOCK */
-const createData = (...items) => ({
-  id: items[0],
-  numGuia: items[1],
-  paciente: items[2],
-  vencimento: items[3],
-  status: items[4],
-  valor: items[5],
-});
-
-const createRowsMock = [
-  createData(12, 92093, 'Pedrão', '20/02/2019', 'Enviada', 'R$ 25,00'),
-  createData(22, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 1.250,00'),
-  createData(202, 92094, 'Maria Joaquina', '20/02/2019', 'Enviada', 'R$ 125,00'),
-  createData(32, 92095, 'Fabio José da Silva Santos Batista Jr.', '20/02/2019', 'Pago', 'R$ 5,90'),
-  createData(452, 92095, 'Bla Bla Bla Bla', '20/02/2019', 'Pago', 'R$ 9.525,00'),
-  createData(302, 92095, 'Fabio', '20/02/2019', 'Glosada', 'R$ 3.125,00'),
-  createData(142, 92096, 'Lorem Ipsum Lorem', '20/02/2019', 'Atualizada', 'R$ 125,00'),
-  createData(422, 92096, 'Lorem Ipsum Lorem', '20/02/2019', 'Excluida', 'R$ 1.245,00'),
-];
-/* MOCK */
 
 class Guias extends Component {
   constructor(props) {
@@ -89,15 +79,16 @@ class Guias extends Component {
 
     this.state = {
       open: false,
-      rows: [],
     };
 
     this.handleToggleModal = this.handleToggleModal.bind(this);
     this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
+    this.handleAddGuia = this.handleAddGuia.bind(this);
   }
 
   componentDidMount() {
-    this.setState({ rows: [...createRowsMock] });
+    const { loadGuias: propLoadGuias } = this.props;
+    propLoadGuias();
   }
 
   handleToggleModal() {
@@ -113,9 +104,24 @@ class Guias extends Component {
     });
   }
 
+  handleAddGuia() {
+    const { addGuia: propAddGuia } = this.props;
+
+    propAddGuia(
+      {
+        id: uuidv1(),
+        numGuia: uuidv1().split('-')[0].toUpperCase(),
+        paciente: 'Maria Joaquina dos Santos',
+        vencimento: getUNIXDate(),
+        status: randomStatusGuias(),
+        valor: randomPrice(50, 1500),
+      },
+    );
+  }
+
   render() {
-    const { classes } = this.props;
-    const { open, rows } = this.state;
+    const { classes, guias } = this.props;
+    const { open } = this.state;
 
     return (
       <Grid item xs={12}>
@@ -125,6 +131,14 @@ class Guias extends Component {
           onClick={this.handleToggleModal}
         >
           Abrir modal exemplo
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleAddGuia}
+        >
+          Adicionar Guia Mock
         </Button>
 
         <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
@@ -141,18 +155,19 @@ class Guias extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(row => (
+              {guias.map(row => (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
                     {row.numGuia}
                   </TableCell>
                   <TableCell align="left">{row.paciente}</TableCell>
                   <TableCell align="left">{row.vencimento}</TableCell>
-                  <TableCell align="left">{row.status}</TableCell>
-                  <TableCell align="left">{row.valor}</TableCell>
+                  <TableCell align="left">
+                    <span className={row.status === 'Glosada' ? classes.dangerLabel : null}>{row.status}</span>
+                  </TableCell>
+                  <TableCell align="left">{formatCurrency(row.valor)}</TableCell>
                   <TableCell className={classes.buttonTd} align="center">
                     <IconButton
-                      // to={`/guias/${row.id}`}
                       to={{
                         pathname: `/guias/${row.id}`,
                         state: { ...row },
@@ -178,6 +193,13 @@ class Guias extends Component {
 
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
+  loadGuias: PropTypes.func.isRequired,
+  addGuia: PropTypes.func.isRequired,
+  guias: PropTypes.instanceOf(Array).isRequired,
 };
 
-export default withStyles(styles)(Guias);
+const mapStateToProps = state => ({
+  guias: state.guiasReducer.guias,
+});
+
+export default connect(mapStateToProps, { loadGuias, addGuia })(withStyles(styles)(Guias));
