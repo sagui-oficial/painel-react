@@ -6,6 +6,10 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+/**
+ * Call to API from url
+ * @param {method and headers} config
+ */
 export const APIResquest = (config) => {
   const requestConfig = () => {
     const settings = {

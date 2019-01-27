@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// Material Imports
+// MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
-// import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
-// import Button from '@material-ui/core/Button';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-// import CadastroGuias from '../../components/FormCadastro/CadastroGuias';
+import Button from '@material-ui/core/Button';
+
+// LOCAL IMPORTS
+import FormCadastro from '../../components/FormCadastro';
+import { formatCurrency } from '../../helpers';
 
 const styles = theme => ({
   root: {
@@ -60,7 +62,10 @@ class FormGuias extends Component {
 
     this.state = {
       guia: {},
+      open: false,
     };
+
+    this.handleToggleModal = this.handleToggleModal.bind(this);
   }
 
   componentDidMount() {
@@ -70,30 +75,46 @@ class FormGuias extends Component {
     this.setState({ guia: state });
   }
 
+  handleToggleModal() {
+    const { open } = this.state;
+    this.setState({ open: !open });
+  }
+
   render() {
     const { classes } = this.props;
-    const { guia } = this.state;
+    const { guia, open } = this.state;
 
     return (
-      <Grid item xs={12}>
-        {/* <Button variant="contained"
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleToggleModal}
+        >
+          Abrir modal exemplo
+        </Button>
+
+        <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
+        <Grid item xs={12}>
+          {/* <Button variant="contained"
           color="primary" onClick={this.handleToggleModal}>Novo</Button> */}
-        {/* <CadastroGuias fullScreen={false}
+          {/* <CadastroGuias fullScreen={false}
           open={open} onClose={this.handleToggleModal} /> */}
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>{guia.id}</TableCell>
-                <TableCell align="left">{guia.paciente}</TableCell>
-                <TableCell align="left">{guia.vencimento}</TableCell>
-                <TableCell align="left">{guia.status}</TableCell>
-                <TableCell align="left">{guia.valor}</TableCell>
-              </TableRow>
-            </TableHead>
-          </Table>
-        </Paper>
-      </Grid>
+          <Paper className={classes.root}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{guia.numGuia}</TableCell>
+                  <TableCell align="left">{guia.paciente}</TableCell>
+                  <TableCell align="left">{guia.vencimento}</TableCell>
+                  <TableCell align="left">{guia.status}</TableCell>
+                  <TableCell align="left">{formatCurrency(guia.valor)}</TableCell>
+                </TableRow>
+              </TableHead>
+            </Table>
+          </Paper>
+        </Grid>
+      </div>
     );
   }
 }

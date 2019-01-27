@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-// Material
+// MATERIAL IMPORTS
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -18,10 +18,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 
-// Material Icons
+// MATERIAL ICONS
 import MenuIcon from '@material-ui/icons/Menu';
 
-// Local imports
+// LOCAL IMPORTS
 import logo from '../assets/images/logo.svg';
 import dashboardRoutes from '../routes/dashbordRoutes';
 

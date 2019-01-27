@@ -1,5 +1,9 @@
-export function getUNIXDate() {
-  const getDate = new Date();
+/**
+ * Convert timestampo to string date
+ * @param {convertTimestampToDate} _timestamp
+ */
+export function convertTimestampToDate(_timestamp) {
+  const getDate = new Date(_timestamp);
   const day = `0${getDate.getDate()}`;
   const month = `0${getDate.getMonth() + 1}`;
   const year = getDate.getFullYear();
@@ -7,20 +11,35 @@ export function getUNIXDate() {
   return `${day.substr(-2)}/${month.substr(-2)}/${year}`;
 }
 
+/**
+ * Format price from currency code
+ * @param {price} _number
+ * @param {countryCode} _locale
+ * @param {currencyFormat} _format
+ */
 export const formatCurrency = (_number, _locale = 'pt-BR', _format = 'BRL') => new Intl.NumberFormat(_locale, {
   style: 'currency',
   currency: _format,
   minimumFractionDigits: 2,
 }).format(_number);
 
+/**
+ * Generate random price to mock DB
+ * @param {minimumPrice} min
+ * @param {maximumPrice} max
+ */
 export function randomPrice(min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
+/**
+ * Generate random status from array
+ * 'Vencida', 'Paga', 'Enviada', 'Cancelada', 'Glosada'
+ */
 export function randomStatusGuias() {
   const statusItems = ['Vencida', 'Paga', 'Enviada', 'Cancelada', 'Glosada'];
   const randomItem = Math.floor(Math.random() * statusItems.length);
   return statusItems[randomItem];
 }
 
-export default { getUNIXDate, formatCurrency };
+export default { convertTimestampToDate, formatCurrency };

@@ -9,4 +9,5 @@ const DashboardLayout = () => (
     </NavBar>
   </Fragment>
 );
+
 export default DashboardLayout;

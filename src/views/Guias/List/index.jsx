@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import uuidv1 from 'uuid/v1';
 
-// Material Imports
+// MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
-// import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import Button from '@material-ui/core/Button';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,16 +15,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import {
-  getUNIXDate, formatCurrency, randomPrice, randomStatusGuias,
-} from '../../helpers';
-
-import { loadGuias, addGuia } from '../../actions/guias';
-import FormCadastro from '../../components/FormCadastro';
+// LOCAL IMPORTS
+import { formatCurrency, randomPrice, randomStatusGuias } from '../../../helpers';
+import { loadGuias, addGuia, deleteGuias } from '../../../actions/guias';
 
 const styles = theme => ({
   root: {
@@ -77,11 +72,8 @@ class Guias extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      open: false,
-    };
+    this.state = {};
 
-    this.handleToggleModal = this.handleToggleModal.bind(this);
     this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
     this.handleAddGuia = this.handleAddGuia.bind(this);
   }
@@ -91,17 +83,14 @@ class Guias extends Component {
     propLoadGuias();
   }
 
-  handleToggleModal() {
-    const { open } = this.state;
-    this.setState({ open: !open });
+  componentDidUpdate() {
+    const { loadGuias: propLoadGuias } = this.props;
+    propLoadGuias();
   }
 
-  handleDeletarGuia(id) {
-    this.setState((state) => {
-      const rows = state.rows.filter(item => item.id !== id);
-
-      return { rows };
-    });
+  handleDeletarGuia(postID) {
+    const { deleteGuias: propDeleteGuias } = this.props;
+    propDeleteGuias(postID);
   }
 
   handleAddGuia() {
@@ -112,7 +101,7 @@ class Guias extends Component {
         id: uuidv1(),
         numGuia: uuidv1().split('-')[0].toUpperCase(),
         paciente: 'Maria Joaquina dos Santos',
-        vencimento: getUNIXDate(),
+        vencimento: new Date().toLocaleDateString('pt-br'),
         status: randomStatusGuias(),
         valor: randomPrice(50, 1500),
       },
@@ -121,18 +110,9 @@ class Guias extends Component {
 
   render() {
     const { classes, guias } = this.props;
-    const { open } = this.state;
 
     return (
       <Grid item xs={12}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.handleToggleModal}
-        >
-          Abrir modal exemplo
-        </Button>
-
         <Button
           variant="contained"
           color="primary"
@@ -141,7 +121,6 @@ class Guias extends Component {
           Adicionar Guia Mock
         </Button>
 
-        <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
@@ -169,7 +148,7 @@ class Guias extends Component {
                   <TableCell className={classes.buttonTd} align="center">
                     <IconButton
                       to={{
-                        pathname: `/guias/${row.id}`,
+                        pathname: `/guias/${row.numGuia}`,
                         state: { ...row },
                       }}
                       component={NavLink}
@@ -177,7 +156,10 @@ class Guias extends Component {
                     >
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => this.handleDeletarGuia(row.id)} aria-label="Deletar">
+                    <IconButton
+                      onClick={() => this.handleDeletarGuia(row.id)}
+                      aria-label="Deletar"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -193,8 +175,10 @@ class Guias extends Component {
 
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
   addGuia: PropTypes.func.isRequired,
+  deleteGuias: PropTypes.func.isRequired,
   guias: PropTypes.instanceOf(Array).isRequired,
 };
 
@@ -202,4 +186,6 @@ const mapStateToProps = state => ({
   guias: state.guiasReducer.guias,
 });
 
-export default connect(mapStateToProps, { loadGuias, addGuia })(withStyles(styles)(Guias));
+export default connect(mapStateToProps, {
+  loadGuias, addGuia, deleteGuias,
+})(withStyles(styles)(Guias));

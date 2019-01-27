@@ -1,13 +1,13 @@
-// Icons
+// MATERIAL IMPORTS
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PersonIcon from '@material-ui/icons/Person';
 import LayersIcon from '@material-ui/icons/Layers';
 
-// Pages
+// PAGES
 import DashboardPage from '../views/Dashboard';
-import Guias from '../views/Guias';
+import Guias from '../views/Guias/List';
 import Pacientes from '../views/Pacientes';
 import Procedimentos from '../views/Procedimentos';
 import Planos from '../views/Planos';
