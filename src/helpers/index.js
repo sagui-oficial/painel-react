@@ -42,4 +42,24 @@ export function randomStatusGuias() {
   return statusItems[randomItem];
 }
 
-export default { convertTimestampToDate, formatCurrency };
+/**
+ * Generate random names from array
+ */
+export function randomNames() {
+  const namesItems = [
+    'Maria Joaquina dos Santos',
+    'Luis do Rosario Fonseca',
+    'André Oliveiro Souza',
+    'Luiza Batista dos Santos',
+    'Antonieta das Neves Stevens',
+    'Alfred Smith',
+    'Silvio Wirtz Cazz',
+    'Carmen Johnson Alves',
+    'Danielle Kannenberg Silverstone',
+    'Kannenberg Cazz Fonseca',
+    'Olália Drummond Lombardi',
+    'Alzira Müller Vargas',
+  ];
+  const randomItem = Math.floor(Math.random() * namesItems.length);
+  return namesItems[randomItem];
+}

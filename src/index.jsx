@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 /* LOG REDUX STORE ON CONSOLE */
-// import logger from 'redux-logger';
+import logger from 'redux-logger';
 
 import reducers from './reducers';
 import './assets/styles/default.sass';
@@ -28,7 +28,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,
   composeEnhancers(
-    applyMiddleware(thunk),
+    applyMiddleware(thunk, logger),
   ),
 );
 

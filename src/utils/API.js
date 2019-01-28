@@ -30,7 +30,7 @@ export const APIResquest = (config) => {
         return response.json();
       }
 
-      return true;
+      return false;
     })
     .then(data => data)
     .catch((error) => { console.warn('Request failed', error); });

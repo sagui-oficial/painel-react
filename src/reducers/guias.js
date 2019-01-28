@@ -1,11 +1,10 @@
 import { GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS } from '../actions/guias';
 
-const initialState = {
+const INITIAL_STATE = {
   guias: [],
-  guia: {},
 };
 
-export default function (state = initialState, action = {}) {
+export default function (state = INITIAL_STATE, action = {}) {
   switch (action.type) {
     case GET_GUIAS:
       return {

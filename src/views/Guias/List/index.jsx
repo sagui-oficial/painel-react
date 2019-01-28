@@ -19,7 +19,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
 // LOCAL IMPORTS
-import { formatCurrency, randomPrice, randomStatusGuias } from '../../../helpers';
+import {
+  formatCurrency, randomPrice, randomStatusGuias, randomNames,
+} from '../../../helpers';
 import { loadGuias, addGuia, deleteGuias } from '../../../actions/guias';
 
 const styles = theme => ({
@@ -71,19 +73,11 @@ const styles = theme => ({
 class Guias extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {};
-
     this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
     this.handleAddGuia = this.handleAddGuia.bind(this);
   }
 
   componentDidMount() {
-    const { loadGuias: propLoadGuias } = this.props;
-    propLoadGuias();
-  }
-
-  componentDidUpdate() {
     const { loadGuias: propLoadGuias } = this.props;
     propLoadGuias();
   }
@@ -100,7 +94,7 @@ class Guias extends Component {
       {
         id: uuidv1(),
         numGuia: uuidv1().split('-')[0].toUpperCase(),
-        paciente: 'Maria Joaquina dos Santos',
+        paciente: randomNames(),
         vencimento: new Date().toLocaleDateString('pt-br'),
         status: randomStatusGuias(),
         valor: randomPrice(50, 1500),
@@ -118,7 +112,7 @@ class Guias extends Component {
           color="primary"
           onClick={this.handleAddGuia}
         >
-          Adicionar Guia Mock
+        Adicionar Guia Mock
         </Button>
 
         <Paper className={classes.root}>
@@ -175,17 +169,14 @@ class Guias extends Component {
 
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  history: PropTypes.instanceOf(Object).isRequired,
+  guias: PropTypes.instanceOf(Array).isRequired,
   loadGuias: PropTypes.func.isRequired,
   addGuia: PropTypes.func.isRequired,
   deleteGuias: PropTypes.func.isRequired,
-  guias: PropTypes.instanceOf(Array).isRequired,
 };
 
-const mapStateToProps = state => ({
-  guias: state.guiasReducer.guias,
-});
+const mapStateToProps = state => ({ guias: state.guiasReducer.guias });
 
 export default connect(mapStateToProps, {
-  loadGuias, addGuia, deleteGuias,
+  deleteGuias, loadGuias, addGuia,
 })(withStyles(styles)(Guias));
