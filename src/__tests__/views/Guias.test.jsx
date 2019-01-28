@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import Guias from '../../views/Guias';
+import Guias from '../../views/Guias/List';
 
 describe('View Guias', () => {
   it('Should render component', () => {
