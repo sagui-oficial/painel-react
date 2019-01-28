@@ -28,8 +28,6 @@
     "recharts": "^1.4.2",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
-    "redux-multi": "^0.1.12",
-    "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.2"
   },
@@ -43,6 +41,11 @@
     "extends": "airbnb",
     "env": {
       "jest": true
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "sh ./hooks/precommit.sh"
     }
   },
   "browserslist": [
