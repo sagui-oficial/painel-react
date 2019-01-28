@@ -43,11 +43,6 @@
       "jest": true
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "sh ./hooks/precommit.sh"
-    }
-  },
   "browserslist": [
     ">0.2%",
     "not dead",
