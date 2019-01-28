@@ -80,8 +80,8 @@ typings/
 .dynamodb/
 
 # Create React App
-.DS_Store
 .pnp.js
+.DS_Store
 /.pnp
 /build
 package-lock.json
