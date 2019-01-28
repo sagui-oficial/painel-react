@@ -73,7 +73,7 @@ const styles = theme => ({
 class Guias extends Component {
   constructor(props) {
     super(props);
-    this.handleDeletarGuia = this.handleDeletarGuia.bind(this);
+    this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleAddGuia = this.handleAddGuia.bind(this);
   }
 
@@ -82,18 +82,19 @@ class Guias extends Component {
     propLoadGuias();
   }
 
-  handleDeletarGuia(postID) {
+  handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
     propDeleteGuias(postID);
   }
 
   handleAddGuia() {
     const { addGuia: propAddGuia } = this.props;
+    const createID = uuidv1();
 
     propAddGuia(
       {
-        id: uuidv1(),
-        numGuia: uuidv1().split('-')[0].toUpperCase(),
+        id: createID,
+        numGuia: createID.split('-')[0].toUpperCase(),
         paciente: randomNames(),
         vencimento: new Date().toLocaleDateString('pt-br'),
         status: randomStatusGuias(),
@@ -151,7 +152,7 @@ class Guias extends Component {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => this.handleDeletarGuia(row.id)}
+                      onClick={() => this.handleDeleteGuia(row.id)}
                       aria-label="Deletar"
                     >
                       <DeleteIcon />

@@ -19,7 +19,7 @@ export default function (state = INITIAL_STATE, action = {}) {
     case DELETE_GUIAS:
       return {
         ...state,
-        guias: state.guias.filter(guia => guia.id !== action.payload.id),
+        guias: state.guias.filter(guia => guia.id !== action.payload),
       };
     default:
       return state;

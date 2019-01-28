@@ -33,8 +33,8 @@ export function deleteGuias(id) {
       uri: `guias/${id}`,
       method: 'DELETE',
       data: id,
-    }).then((res) => {
-      dispatch({ type: DELETE_GUIAS, payload: res });
+    }).then(() => {
+      dispatch({ type: DELETE_GUIAS, payload: id });
     });
   };
 }
