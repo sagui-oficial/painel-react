@@ -88,39 +88,38 @@ class Guias extends Component {
             <BoxSearch />
             {
               guias.map(row => (
-                <Paper className={classes.root} key={row.id}>
-                  { row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
-                    && (
-                      <Card>
-                        <CardHeader
-                          avatar={(<Avatar>A</Avatar>)}
-                          action={(
-                            <IconButton
-                              onClick={() => this.handleDeleteGuia(row.id)}
-                              aria-label="Deletar"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          )}
-                          title={row.paciente}
-                          subheader={formatCurrency(row.valor)}
-                        />
-                        <CardActions>
-                          <Button
-                            to={{
-                              pathname: `/guias/${row.numGuia}`,
-                              state: { ...row },
-                            }}
-                            component={NavLink}
-                            aria-label="Editar"
+                row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                && (
+                  <Paper className={classes.root} key={row.id}>
+                    <Card>
+                      <CardHeader
+                        avatar={(<Avatar>A</Avatar>)}
+                        action={(
+                          <IconButton
+                            onClick={() => this.handleDeleteGuia(row.id)}
+                            aria-label="Deletar"
                           >
-                            Editar
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    )
-                  }
-                </Paper>
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                        title={row.paciente}
+                        subheader={formatCurrency(row.valor)}
+                      />
+                      <CardActions>
+                        <Button
+                          to={{
+                            pathname: `/guias/${row.numGuia}`,
+                            state: { ...row },
+                          }}
+                          component={NavLink}
+                          aria-label="Editar"
+                        >
+                          Editar
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Paper>
+                )
               ))
             }
           </Fragment>
