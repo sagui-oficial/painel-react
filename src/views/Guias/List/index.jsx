@@ -85,7 +85,7 @@ class Guias extends Component {
 
         {guias.length > 0 && (
           <Fragment>
-            <BoxSearch />
+            <BoxSearch placeholder="paciente ou número de guia..." />
             {
               guias.map(row => (
                 row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0

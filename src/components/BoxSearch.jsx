@@ -25,7 +25,9 @@ const styles = theme => ({
 });
 
 const BoxSearch = (props) => {
-  const { value, classes, searchChange: propSearchChange } = props;
+  const {
+    value, classes, searchChange: propSearchChange, placeholder,
+  } = props;
   return (
     <Paper className={classes.root} elevation={1}>
       <InputBase
@@ -33,7 +35,7 @@ const BoxSearch = (props) => {
         type="search"
         value={value}
         onChange={propSearchChange}
-        placeholder="Buscar guia: nome do paciente ou número da guia..."
+        placeholder={placeholder}
       />
       <IconButton className={classes.iconButton} aria-label="Search">
         <SearchIcon />
@@ -43,9 +45,14 @@ const BoxSearch = (props) => {
 };
 
 BoxSearch.propTypes = {
-  value: PropTypes.string.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
+  value: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   searchChange: PropTypes.func.isRequired,
+};
+
+BoxSearch.defaultProps = {
+  placeholder: 'buscar...',
 };
 
 const mapStateToProps = state => ({ value: state.searchReducer.value });
