@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -6,67 +6,33 @@ import uuidv1 from 'uuid/v1';
 
 // MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
 import Button from '@material-ui/core/Button';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+
+import {
+  Card, CardActions, CardHeader, Avatar,
+} from '@material-ui/core';
 
 // LOCAL IMPORTS
 import {
   formatCurrency, randomPrice, randomStatusGuias, randomNames,
 } from '../../../helpers';
+
+// ACTIONS
 import { loadGuias, addGuia, deleteGuias } from '../../../actions/guias';
+import { searchChange } from '../../../actions/search';
+
+// COMPONENTS
+import BoxSearch from '../../../components/BoxSearch';
 
 const styles = theme => ({
   root: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-    '& th:first-child': {
-      width: '120px',
-      padding: '0 20px',
-    },
-    '& th:not(:first-child)': {
-      paddingRight: '20px',
-    },
-    '& th:nth-child(2)': {
-      width: '30%',
-    },
-    '& td': {
-      paddingRight: '20px',
-    },
-  },
-  buttonTd: {
-    paddingLeft: '20px',
-    paddingRight: '20px !important',
-    width: '120px',
-    '& button, & a': {
-      padding: '5px',
-      '& svg': {
-        fontSize: '18px',
-      },
-      '&:first-child svg': {
-        fill: '#000',
-      },
-      '&:last-child svg': {
-        fill: '#a7a7a7',
-      },
-    },
-  },
-  dangerLabel: {
-    backgroundColor: '#d60202',
-    color: 'white',
-    padding: '2px 5px',
   },
 });
 
@@ -104,7 +70,7 @@ class Guias extends Component {
   }
 
   render() {
-    const { classes, guias } = this.props;
+    const { classes, guias, value } = this.props;
 
     return (
       <Grid item xs={12}>
@@ -113,56 +79,52 @@ class Guias extends Component {
           color="primary"
           onClick={this.handleAddGuia}
         >
-        Adicionar Guia Mock
+          Adicionar Guia
         </Button>
 
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>N˚ da Guia</TableCell>
-                <TableCell align="left">Paciente</TableCell>
-                <TableCell align="left">Vencimento</TableCell>
-                <TableCell align="left">Status</TableCell>
-                <TableCell align="left">Valor</TableCell>
-                <TableCell className={classes.buttonTd} align="center">Editar | Excluir</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {guias.map(row => (
-                <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.numGuia}
-                  </TableCell>
-                  <TableCell align="left">{row.paciente}</TableCell>
-                  <TableCell align="left">{row.vencimento}</TableCell>
-                  <TableCell align="left">
-                    <span className={row.status === 'Glosada' ? classes.dangerLabel : null}>{row.status}</span>
-                  </TableCell>
-                  <TableCell align="left">{formatCurrency(row.valor)}</TableCell>
-                  <TableCell className={classes.buttonTd} align="center">
-                    <IconButton
-                      to={{
-                        pathname: `/guias/${row.numGuia}`,
-                        state: { ...row },
-                      }}
-                      component={NavLink}
-                      aria-label="Editar"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => this.handleDeleteGuia(row.id)}
-                      aria-label="Deletar"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+
+        {guias.length > 0 && (
+          <Fragment>
+            <BoxSearch />
+            {
+              guias.map(row => (
+                <Paper className={classes.root} key={row.id}>
+                  { row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                    && (
+                      <Card>
+                        <CardHeader
+                          avatar={(<Avatar>A</Avatar>)}
+                          action={(
+                            <IconButton
+                              onClick={() => this.handleDeleteGuia(row.id)}
+                              aria-label="Deletar"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                          title={row.paciente}
+                          subheader={formatCurrency(row.valor)}
+                        />
+                        <CardActions>
+                          <Button
+                            to={{
+                              pathname: `/guias/${row.numGuia}`,
+                              state: { ...row },
+                            }}
+                            component={NavLink}
+                            aria-label="Editar"
+                          >
+                            Editar
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    )
+                  }
+                </Paper>
+              ))
+            }
+          </Fragment>
+        )}
       </Grid>
     );
   }
@@ -172,12 +134,16 @@ Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   guias: PropTypes.instanceOf(Array).isRequired,
   loadGuias: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
   addGuia: PropTypes.func.isRequired,
   deleteGuias: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ guias: state.guiasReducer.guias });
+const mapStateToProps = state => ({
+  guias: state.guiasReducer.guias,
+  value: state.searchReducer.value,
+});
 
 export default connect(mapStateToProps, {
-  deleteGuias, loadGuias, addGuia,
+  deleteGuias, loadGuias, addGuia, searchChange,
 })(withStyles(styles)(Guias));
