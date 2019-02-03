@@ -1,4 +1,5 @@
-/* global fetch */
+import axios from 'axios';
+
 export const API = 'http://localhost:8080';
 
 const headers = {
@@ -18,22 +19,22 @@ export const APIResquest = (config) => {
     };
 
     if (config.method === 'POST' || config.method === 'PUT') {
-      settings.body = JSON.stringify({ ...config.data });
+      settings.data = JSON.stringify({ ...config.data });
     }
 
     return settings;
   };
 
-  return fetch(`${API}/${config.uri}`, requestConfig())
-    .then((response) => {
-      if (response.status !== 500) {
-        return response.json();
-      }
+  async function f() {
+    try {
+      const { data } = await axios(`${API}/${config.uri}`, requestConfig());
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-      return false;
-    })
-    .then(data => data)
-    .catch((error) => { console.warn('Request failed', error); });
+  return f();
 };
 
 export default { API, APIResquest };
