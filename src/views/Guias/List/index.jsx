@@ -12,6 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+
 import {
   Card, CardActions, CardHeader, Avatar,
 } from '@material-ui/core';
@@ -34,13 +37,22 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
   },
+  close: {
+    padding: theme.spacing.unit / 2,
+  },
 });
 
 class Guias extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      boxMessage: {
+        open: false,
+      },
+    };
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleAddGuia = this.handleAddGuia.bind(this);
+    this.handleCloseMsg = this.handleCloseMsg.bind(this);
   }
 
   componentDidMount() {
@@ -75,14 +87,46 @@ class Guias extends Component {
     );
   }
 
+  handleCloseMsg() {
+    const { boxMessage } = this.state;
+    this.setState({
+      boxMessage: { open: !boxMessage.open },
+    });
+  }
+
   render() {
     const {
       classes, guias, value, guiasError,
     } = this.props;
 
+    const { boxMessage } = this.state;
+
     return (
       <Fragment>
-        {guiasError && (<p>{guiasError}</p>)}
+        {guiasError && (
+          <Snackbar
+            // key={messageInfo.key}
+            open={!boxMessage.open}
+            message={<span id="message-id">{guiasError}</span>}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            autoHideDuration={6000}
+            // onClose={this.handleClose}
+            // onExited={this.handleExited}
+            ContentProps={{ 'aria-describedby': 'message-id' }}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                className={classes.close}
+                onClick={this.handleCloseMsg}
+              >
+                <CloseIcon />
+              </IconButton>,
+            ]}
+          />
+        )}
+
         {guias && (
           <Grid item xs={12}>
             <Button

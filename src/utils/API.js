@@ -2,11 +2,6 @@ import axios from 'axios';
 
 export const API = 'http://localhost:8080';
 
-const headers = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-};
-
 /**
  * Call to API from url
  * @param {method and headers} config
@@ -15,7 +10,10 @@ export const APIResquest = (config) => {
   const requestConfig = () => {
     const settings = {
       method: config.method,
-      headers,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     };
 
     if (config.method === 'POST' || config.method === 'PUT') {
@@ -25,16 +23,17 @@ export const APIResquest = (config) => {
     return settings;
   };
 
-  async function f() {
+  const promiseResquestAPI = async () => {
     try {
       const { data } = await axios(`${API}/${config.uri}`, requestConfig());
       return data;
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      const messsage = 'Estamos sem conexão.';
+      throw messsage;
     }
-  }
+  };
 
-  return f();
+  return promiseResquestAPI();
 };
 
 export default { API, APIResquest };

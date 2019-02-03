@@ -16,7 +16,6 @@ export default function (state = INITIAL_STATE, action = {}) {
         fetchError: null,
       };
     case SAVE_GUIAS:
-      console.warn(action.payload);
       return {
         ...state,
         guias: state.guias.concat([action.payload]),
