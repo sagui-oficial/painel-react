@@ -48,6 +48,12 @@ class Guias extends Component {
     propLoadGuias();
   }
 
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.guiasError !== this.props.guiasError) {
+  //     debugger;
+  //   }
+  // }
+
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
     propDeleteGuias(postID);
@@ -70,10 +76,13 @@ class Guias extends Component {
   }
 
   render() {
-    const { classes, guias, value } = this.props;
+    const {
+      classes, guias, value, guiasError,
+    } = this.props;
 
     return (
       <Fragment>
+        {guiasError && (<p>{guiasError}</p>)}
         {guias && (
           <Grid item xs={12}>
             <Button
@@ -83,7 +92,6 @@ class Guias extends Component {
             >
               Adicionar Guia
             </Button>
-
 
             {guias.length > 0 && (
               <Fragment>
@@ -138,12 +146,18 @@ Guias.propTypes = {
   guias: PropTypes.instanceOf(Array).isRequired,
   loadGuias: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  guiasError: PropTypes.string,
   addGuia: PropTypes.func.isRequired,
   deleteGuias: PropTypes.func.isRequired,
 };
 
+Guias.defaultProps = {
+  guiasError: '',
+};
+
 const mapStateToProps = state => ({
   guias: state.guiasReducer.guias,
+  guiasError: state.guiasReducer.fetchError,
   value: state.searchReducer.value,
 });
 
