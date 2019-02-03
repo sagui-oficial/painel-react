@@ -52,7 +52,8 @@ class Guias extends Component {
     };
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleAddGuia = this.handleAddGuia.bind(this);
-    this.handleCloseMsg = this.handleCloseMsg.bind(this);
+    this.handleOnClose = this.handleOnClose.bind(this);
+    this.handleOnExited = this.handleOnExited.bind(this);
   }
 
   componentDidMount() {
@@ -87,10 +88,16 @@ class Guias extends Component {
     );
   }
 
-  handleCloseMsg() {
+  handleOnClose() {
     const { boxMessage } = this.state;
     this.setState({
       boxMessage: { open: !boxMessage.open },
+    });
+  }
+
+  handleOnExited() {
+    this.setState({
+      boxMessage: { open: true },
     });
   }
 
@@ -110,8 +117,8 @@ class Guias extends Component {
             message={<span id="message-id">{guiasError}</span>}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             autoHideDuration={6000}
-            // onClose={this.handleClose}
-            // onExited={this.handleExited}
+            onClose={this.handleOnClose}
+            onExited={this.handleOnExited}
             ContentProps={{ 'aria-describedby': 'message-id' }}
             action={[
               <IconButton
@@ -119,7 +126,7 @@ class Guias extends Component {
                 aria-label="Close"
                 color="inherit"
                 className={classes.close}
-                onClick={this.handleCloseMsg}
+                onClick={this.handleOnClose}
               >
                 <CloseIcon />
               </IconButton>,
@@ -129,16 +136,15 @@ class Guias extends Component {
 
         {guias && (
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.handleAddGuia}
-            >
-              Adicionar Guia
-            </Button>
-
             {guias.length > 0 && (
               <Fragment>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleAddGuia}
+                >
+                  Adicionar Guia
+                </Button>
                 <BoxSearch placeholder="paciente ou número de guia..." />
                 {
                   guias.map(row => (
@@ -190,13 +196,9 @@ Guias.propTypes = {
   guias: PropTypes.instanceOf(Array).isRequired,
   loadGuias: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-  guiasError: PropTypes.string,
+  guiasError: PropTypes.string.isRequired,
   addGuia: PropTypes.func.isRequired,
   deleteGuias: PropTypes.func.isRequired,
-};
-
-Guias.defaultProps = {
-  guiasError: '',
 };
 
 const mapStateToProps = state => ({
