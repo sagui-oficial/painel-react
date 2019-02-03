@@ -6,7 +6,6 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 // MATERIAL IMPORTS
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,6 +16,7 @@ import List from '@material-ui/core/List';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 // MATERIAL ICONS
 import MenuIcon from '@material-ui/icons/Menu';
@@ -34,11 +34,16 @@ const styles = theme => ({
   },
   root: {
     display: 'flex',
+    touchAction: 'none',
   },
   appBar: {
     width: '100%',
     boxShadow: 'none',
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    left: drawerWidth,
+    [theme.breakpoints.down('sm')]: {
+      left: '0',
+    },
   },
   activeListItem: {
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
@@ -46,8 +51,8 @@ const styles = theme => ({
   toolbarContainer: {
     background: 'none',
     boxShadow: 'none',
-    display: 'flex',
-    justifyContent: 'space-between',
+    // display: 'flex',
+    // justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -86,7 +91,10 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileOpen: false,
+      menu: {
+        type: 'permanent',
+        open: false,
+      },
     };
 
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
@@ -102,105 +110,57 @@ class NavBar extends Component {
   }
 
   handleDrawerToggle() {
-    const { mobileOpen } = this.state;
-    this.setState({ mobileOpen: !mobileOpen });
+    const { menu } = this.state;
+    this.setState({
+      menu: {
+        open: !menu.open,
+      },
+    });
   }
 
   resizeFunction() {
     if (window.innerWidth >= 960) {
-      this.setState({ mobileOpen: false });
+      this.setState({
+        menu: {
+          type: 'permanent',
+          open: true,
+        },
+      });
+    } else {
+      this.setState({
+        menu: {
+          type: 'temporary',
+          open: false,
+        },
+      });
     }
   }
 
   render() {
-    const { mobileOpen } = this.state;
+    const { menu } = this.state;
     const { classes, children } = this.props;
-    const { location } = window;
+    // const { location } = window;
 
     return (
       <div className={classes.root}>
         <CssBaseline />
 
-        {/* MOBILE SIDEBAR */}
-        <Hidden mdUp implementation="css">
-          <Drawer
-            className={classes.drawer}
-            variant="temporary"
-            anchor="right"
-            open={mobileOpen}
-            onClose={this.handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <div
-              tabIndex={0}
-              role="button"
-              onClick={this.handleDrawerToggle}
-              onKeyDown={this.handleDrawerToggle}
-            >
-              <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
-                <Typography variant="title" color="inherit">
-                  <Link to="/dashboard">
-                    <img src={logo} className={classes.logo} alt="logo" />
-                  </Link>
-                </Typography>
-              </div>
-              <Divider />
-              <List>
-                {dashboardRoutes.map(itemList => (
-                  itemList.active && (
-                    <ListItem
-                      button
-                      key={itemList.id}
-                      to={itemList.path}
-                      activeClassName={classes.activeListItem}
-                      component={NavLink}
-                    >
-                      <ListItemIcon>
-                        <itemList.icon />
-                      </ListItemIcon>
-                      <ListItemText primary={itemList.menuText} />
-                    </ListItem>
-                  )
-                ))}
-              </List>
-              <Divider />
-              <List>
-                <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
-                  Configurações
-                </Typography>
-                <ListItem button>
-                  <ListItemIcon>
-                    <MenuIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Usuários" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <MenuIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Dentistas" />
-                </ListItem>
-              </List>
-            </div>
-          </Drawer>
-        </Hidden>
-
         {/* DESKTOP SIDEBAR */}
         <Hidden smDown implementation="css">
-          <Drawer
+          <SwipeableDrawer
             className={classes.drawer}
-            variant="permanent"
+            variant={menu.type}
             anchor="left"
-            open
+            open={menu.open}
+            onClose={this.handleDrawerToggle}
+            onOpen={this.handleDrawerToggle}
             classes={{
               paper: classes.drawerPaper,
             }}
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
               <Typography variant="title" color="inherit">
-                <Link to="/dashboard">
+                <Link to="/guias">
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Typography>
@@ -213,6 +173,7 @@ class NavBar extends Component {
                     button
                     key={itemList.id}
                     to={itemList.path}
+                    onClick={this.resizeFunction}
                     activeClassName={classes.activeListItem}
                     component={NavLink}
                   >
@@ -242,21 +203,11 @@ class NavBar extends Component {
                 <ListItemText primary="Dentistas" />
               </ListItem>
             </List>
-          </Drawer>
+          </SwipeableDrawer>
         </Hidden>
         <main className={classes.content}>
-          <AppBar position="absolute" color="inherit" className={classes.appBar}>
+          <AppBar position="fixed" color="inherit" className={classes.appBar}>
             <Toolbar className={classes.toolbarContainer}>
-              {/* <Typography variant="title" color="inherit">
-                <Link to="/dashboard">
-                  <img src={logo} className={classes.logo} alt="logo" />
-                </Link>
-              </Typography> */}
-              <Typography variant="title" color="inherit">
-                {dashboardRoutes.map(itemList => (
-                  itemList.path === location.pathname ? itemList.pageTitle : ''
-                ))}
-              </Typography>
               <Hidden mdUp implementation="css">
                 <IconButton
                   color="inherit"
@@ -266,6 +217,18 @@ class NavBar extends Component {
                   <MenuIcon />
                 </IconButton>
               </Hidden>
+              <Hidden mdUp implementation="css">
+                <Typography variant="title" color="inherit">
+                  <Link to="/dashboard">
+                    <img src={logo} className={classes.logo} alt="logo" />
+                  </Link>
+                </Typography>
+              </Hidden>
+              {/* <Typography variant="title" color="inherit">
+                {dashboardRoutes.map(itemList => (
+                  itemList.path === location.pathname ? itemList.pageTitle : ''
+                ))}
+              </Typography> */}
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>

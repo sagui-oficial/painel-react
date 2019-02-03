@@ -73,58 +73,62 @@ class Guias extends Component {
     const { classes, guias, value } = this.props;
 
     return (
-      <Grid item xs={12}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.handleAddGuia}
-        >
-          Adicionar Guia
-        </Button>
+      <Fragment>
+        {guias && (
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleAddGuia}
+            >
+              Adicionar Guia
+            </Button>
 
 
-        {guias.length > 0 && (
-          <Fragment>
-            <BoxSearch placeholder="paciente ou número de guia..." />
-            {
-              guias.map(row => (
-                row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
-                && (
-                  <Paper className={classes.root} key={row.id}>
-                    <Card>
-                      <CardHeader
-                        avatar={(<Avatar>A</Avatar>)}
-                        action={(
-                          <IconButton
-                            onClick={() => this.handleDeleteGuia(row.id)}
-                            aria-label="Deletar"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        )}
-                        title={row.paciente}
-                        subheader={formatCurrency(row.valor)}
-                      />
-                      <CardActions>
-                        <Button
-                          to={{
-                            pathname: `/guias/${row.numGuia}`,
-                            state: { ...row },
-                          }}
-                          component={NavLink}
-                          aria-label="Editar"
-                        >
-                          Editar
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Paper>
-                )
-              ))
-            }
-          </Fragment>
+            {guias.length > 0 && (
+              <Fragment>
+                <BoxSearch placeholder="paciente ou número de guia..." />
+                {
+                  guias.map(row => (
+                    row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                    && (
+                      <Paper className={classes.root} key={row.id}>
+                        <Card>
+                          <CardHeader
+                            avatar={(<Avatar>A</Avatar>)}
+                            action={(
+                              <IconButton
+                                onClick={() => this.handleDeleteGuia(row.id)}
+                                aria-label="Deletar"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )}
+                            title={row.paciente}
+                            subheader={formatCurrency(row.valor)}
+                          />
+                          <CardActions>
+                            <Button
+                              to={{
+                                pathname: `/guias/${row.numGuia}`,
+                                state: { ...row },
+                              }}
+                              component={NavLink}
+                              aria-label="Editar"
+                            >
+                              Editar
+                            </Button>
+                          </CardActions>
+                        </Card>
+                      </Paper>
+                    )
+                  ))
+                }
+              </Fragment>
+            )}
+          </Grid>
         )}
-      </Grid>
+      </Fragment>
     );
   }
 }
