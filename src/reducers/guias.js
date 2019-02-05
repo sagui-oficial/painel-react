@@ -4,7 +4,7 @@ import {
 
 const INITIAL_STATE = {
   guias: [],
-  fetchError: null,
+  fetchError: '',
 };
 
 export default function (state = INITIAL_STATE, action = {}) {
@@ -13,19 +13,19 @@ export default function (state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         guias: action.payload,
-        fetchError: null,
+        fetchError: '',
       };
     case SAVE_GUIAS:
       return {
         ...state,
         guias: state.guias.concat([action.payload]),
-        fetchError: null,
+        fetchError: '',
       };
     case DELETE_GUIAS:
       return {
         ...state,
         guias: state.guias.filter(guia => guia.id !== action.payload),
-        fetchError: null,
+        fetchError: '',
       };
     case FETCH_ERROR:
       return {
