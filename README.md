@@ -1,13 +1,18 @@
+<p align="center">
+  <img width="400" src="src/assets/images/logo.png" alt="Sagui">
+</p>
+
 # SAGUI PAINEL (DASHBOARD)
 
 Projeto desenvolvido com [Create React App](https://github.com/facebook/create-react-app) usando o style guide [Material-UI](https://material-ui.com/)
+
+Para entender melhor sobre a arquitetura do front-end [clique aqui](docs/ARCHITECTURE.md)
 
 ## Clonar o repositório
 
 ```prompt
 git clone https://gitlab.com/sagui/painel-react
 ```
-
 
 ## Pré-requisitos para rodar localmente
 
@@ -21,7 +26,6 @@ git clone https://gitlab.com/sagui/painel-react
 npm i -g create-react-app yarn
 ```
 
-
 ### VSCode dicas
 
 Instale extensões para auxilar no desenvolvimento:
@@ -34,7 +38,6 @@ Adicione a config abaixo no `settings.json` do VSCode
 ```json
 "eslint.autoFixOnSave": true,
 ```
-
 
 ## Como começar?
 
@@ -58,13 +61,11 @@ Abra [http://localhost:3000](http://localhost:3000) para visualizar no browser.
 A página será recarregada quando modificações no código forem salvas.<br>
 Também é possível ver logs de erros no console.
 
-
 ## Testes unitários
 
 ```prompt
 yarn test
 ```
-
 
 ## Build do projeto
 
