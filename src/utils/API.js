@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+/**
+ * API BACKEND
+ * 'https://localhost:5001/backoffice'
+ */
 export const API = 'http://localhost:8080';
 
 /**
@@ -28,7 +32,8 @@ export const APIResquest = (config) => {
       const { data } = await axios(`${API}/${config.uri}`, requestConfig());
       return data;
     } catch (err) {
-      const messsage = 'Estamos sem conexão.';
+      // console.log(JSON.stringify({ err }));
+      const messsage = 'Error: Tente novamente.';
       throw messsage;
     }
   };

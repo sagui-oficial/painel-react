@@ -61,11 +61,11 @@ class Guias extends Component {
     propLoadGuias();
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.guiasError !== this.props.guiasError) {
-  //     debugger;
-  //   }
-  // }
+  /* componentDidUpdate(prevProps) {
+    if (prevProps.guiasError !== this.props.guiasError) {
+      debugger;
+    }
+  } */
 
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
@@ -75,6 +75,10 @@ class Guias extends Component {
   handleAddGuia() {
     const { addGuia: propAddGuia } = this.props;
     const createID = uuidv1();
+
+    this.setState({
+      boxMessage: { open: false },
+    });
 
     propAddGuia(
       {
@@ -86,6 +90,53 @@ class Guias extends Component {
         valor: randomPrice(50, 1500),
       },
     );
+
+    /* propAddGuia({
+      Id: randomPrice(1, 1500),
+      Numero: createID.split('-')[0].toUpperCase(),
+      PlanoOperadora: {
+        Id: randomPrice(1, 1500),
+        NomeFantasia: 'Operadora 1',
+        RazaoSocial: null,
+        CNPJ: null,
+        DataEnvioLote: '0001-01-01T00:00:00',
+        DataRecebimentoLote: '0001-01-01T00:00:00',
+        ListaProcedimentos: null,
+        ListaArquivos: null,
+      },
+      Paciente: {
+        ListaPlanoOperadoraPaciente: null,
+        Id: randomPrice(1, 1500),
+        Funcao: null,
+        Nome: randomNames(),
+        Anotacoes: null,
+        CPF: null,
+        Email: null,
+        Telefone: null,
+      },
+      Arquivos: [
+        {
+          Id: randomPrice(1, 1500),
+          Nome: 'ArquivoTeste',
+          Stream: null,
+          DataCriacao: '2019-01-14T20:43:07.4768306-02:00',
+          PathArquivo: '\'C:\'',
+        },
+      ],
+      Solicitacao: '2019-01-14T20:43:07.4698345-02:00',
+      Vencimento: '2019-02-14T20:43:07.4748316-02:00',
+      Procedimentos: [
+        {
+          IdProcedimento: randomPrice(1, 1500),
+          Codigo: randomPrice(1, 1500),
+          NomeProcedimento: 'Procedimento de Teste090',
+          ValorProcedimento: randomPrice(50, 1500),
+          Exigencias: 'Lorem lorem',
+          Anotacoes: 'Bla Bla bla',
+        },
+      ],
+      Status: randomPrice(1, 1500),
+    }); */
   }
 
   handleOnClose() {
@@ -133,19 +184,18 @@ class Guias extends Component {
             ]}
           />
         )}
-
         {guias && (
           <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleAddGuia}
+            >
+              Adicionar Guia
+            </Button>
             {guias.length > 0 && (
               <Fragment>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleAddGuia}
-                >
-                  Adicionar Guia
-                </Button>
-                <BoxSearch placeholder="paciente ou número de guia..." />
+                <BoxSearch placeholder="Buscar" />
                 {
                   guias.map(row => (
                     row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
