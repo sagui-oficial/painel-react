@@ -86,34 +86,31 @@ class FormGuias extends Component {
 
     return (
       <div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.handleToggleModal}
-        >
-          Abrir modal exemplo
-        </Button>
-
-        <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
-        <Grid item xs={12}>
-          {/* <Button variant="contained"
-          color="primary" onClick={this.handleToggleModal}>Novo</Button> */}
-          {/* <CadastroGuias fullScreen={false}
-          open={open} onClose={this.handleToggleModal} /> */}
-          <Paper className={classes.root}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>{guia.numGuia}</TableCell>
-                  <TableCell align="left">{guia.paciente}</TableCell>
-                  <TableCell align="left">{guia.vencimento}</TableCell>
-                  <TableCell align="left">{guia.status}</TableCell>
-                  <TableCell align="left">{formatCurrency(guia.valor)}</TableCell>
-                </TableRow>
-              </TableHead>
-            </Table>
-          </Paper>
-        </Grid>
+        {guia && (
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleToggleModal}
+            >
+              Abrir modal exemplo
+            </Button>
+            <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
+            <Paper className={classes.root}>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    {guia.numero && (<TableCell>{guia.numero}</TableCell>)}
+                    {guia.paciente && (<TableCell align="left">{guia.paciente.nome}</TableCell>)}
+                    {guia.vencimento && (<TableCell align="left">{guia.vencimento}</TableCell>)}
+                    {guia.status && (<TableCell align="left">{guia.status}</TableCell>)}
+                    {guia.procedimentos && <TableCell align="left">{formatCurrency(guia.procedimentos[0].valorprocedimento)}</TableCell>}
+                  </TableRow>
+                </TableHead>
+              </Table>
+            </Paper>
+          </Grid>
+        )}
       </div>
     );
   }

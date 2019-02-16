@@ -21,7 +21,7 @@ import {
 
 // LOCAL IMPORTS
 import {
-  formatCurrency, randomPrice, randomStatusGuias, randomNames,
+  formatCurrency, randomPrice, /* randomStatusGuias, */ randomNames,
 } from '../../../helpers';
 
 // ACTIONS
@@ -80,7 +80,7 @@ class Guias extends Component {
       boxMessage: { open: false },
     });
 
-    propAddGuia(
+    /* propAddGuia(
       {
         id: createID,
         numGuia: createID.split('-')[0].toUpperCase(),
@@ -89,54 +89,54 @@ class Guias extends Component {
         status: randomStatusGuias(),
         valor: randomPrice(50, 1500),
       },
-    );
+    ); */
 
-    /* propAddGuia({
-      Id: randomPrice(1, 1500),
-      Numero: createID.split('-')[0].toUpperCase(),
-      PlanoOperadora: {
-        Id: randomPrice(1, 1500),
-        NomeFantasia: 'Operadora 1',
-        RazaoSocial: null,
-        CNPJ: null,
-        DataEnvioLote: '0001-01-01T00:00:00',
-        DataRecebimentoLote: '0001-01-01T00:00:00',
-        ListaProcedimentos: null,
-        ListaArquivos: null,
+    propAddGuia({
+      id: randomPrice(1, 1500),
+      numero: createID.split('-')[0].toUpperCase(),
+      planooperadora: {
+        id: randomPrice(1, 1500),
+        nomefantasia: 'Operadora 1',
+        razaosocial: null,
+        cnpj: null,
+        dataenviolote: '0001-01-01T00:00:00',
+        datarecebimentolote: '0001-01-01T00:00:00',
+        listaprocedimentos: null,
+        listaarquivos: null,
       },
-      Paciente: {
-        ListaPlanoOperadoraPaciente: null,
-        Id: randomPrice(1, 1500),
-        Funcao: null,
-        Nome: randomNames(),
-        Anotacoes: null,
-        CPF: null,
-        Email: null,
-        Telefone: null,
+      paciente: {
+        listaplanooperadorapaciente: null,
+        id: randomPrice(1, 1500),
+        funcao: null,
+        nome: randomNames(),
+        anotacoes: null,
+        cpf: null,
+        email: null,
+        telefone: null,
       },
-      Arquivos: [
+      arquivos: [
         {
-          Id: randomPrice(1, 1500),
-          Nome: 'ArquivoTeste',
-          Stream: null,
-          DataCriacao: '2019-01-14T20:43:07.4768306-02:00',
-          PathArquivo: '\'C:\'',
+          id: randomPrice(1, 1500),
+          nome: 'ArquivoTeste',
+          stream: null,
+          datacriacao: '2019-01-14T20:43:07.4768306-02:00',
+          patharquivo: 'C:\\',
         },
       ],
-      Solicitacao: '2019-01-14T20:43:07.4698345-02:00',
-      Vencimento: '2019-02-14T20:43:07.4748316-02:00',
-      Procedimentos: [
+      solicitacao: '2019-01-14T20:43:07.4698345-02:00',
+      vencimento: '2019-02-14T20:43:07.4748316-02:00',
+      procedimentos: [
         {
-          IdProcedimento: randomPrice(1, 1500),
-          Codigo: randomPrice(1, 1500),
-          NomeProcedimento: 'Procedimento de Teste090',
-          ValorProcedimento: randomPrice(50, 1500),
-          Exigencias: 'Lorem lorem',
-          Anotacoes: 'Bla Bla bla',
+          id: randomPrice(1, 1500),
+          codigo: randomPrice(1, 1500),
+          nomeprocedimento: 'Procedimento de Teste090',
+          valorprocedimento: randomPrice(50, 1500),
+          exigencias: 'Lorem lorem',
+          anotacoes: 'Bla Bla bla',
         },
       ],
-      Status: randomPrice(1, 1500),
-    }); */
+      status: randomPrice(1, 1500),
+    });
   }
 
   handleOnClose() {
@@ -198,7 +198,7 @@ class Guias extends Component {
                 <BoxSearch placeholder="Buscar" />
                 {
                   guias.map(row => (
-                    row.paciente.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                    row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
                     && (
                       <Paper className={classes.root} key={row.id}>
                         <Card>
@@ -212,13 +212,13 @@ class Guias extends Component {
                                 <DeleteIcon />
                               </IconButton>
                             )}
-                            title={row.paciente}
-                            subheader={formatCurrency(row.valor)}
+                            title={row.paciente.nome}
+                            subheader={formatCurrency(row.procedimentos[0].valorprocedimento)}
                           />
                           <CardActions>
                             <Button
                               to={{
-                                pathname: `/guias/${row.numGuia}`,
+                                pathname: `/guias/${row.numero}`,
                                 state: { ...row },
                               }}
                               component={NavLink}
