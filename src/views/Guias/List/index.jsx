@@ -21,7 +21,7 @@ import {
 
 // LOCAL IMPORTS
 import {
-  formatCurrency, randomPrice, /* randomStatusGuias, */ randomNames,
+  formatCurrency, randomPrice, randomNames,
 } from '../../../helpers';
 
 // ACTIONS
@@ -79,17 +79,6 @@ class Guias extends Component {
     this.setState({
       boxMessage: { open: false },
     });
-
-    /* propAddGuia(
-      {
-        id: createID,
-        numGuia: createID.split('-')[0].toUpperCase(),
-        paciente: randomNames(),
-        vencimento: new Date().toLocaleDateString('pt-br'),
-        status: randomStatusGuias(),
-        valor: randomPrice(50, 1500),
-      },
-    ); */
 
     propAddGuia({
       id: randomPrice(1, 1500),
