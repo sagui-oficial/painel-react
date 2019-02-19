@@ -9,10 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 
 // LOCAL IMPORTS
-import FormCadastro from '../../components/FormCadastro';
 import { formatCurrency } from '../../helpers';
 
 const styles = theme => ({
@@ -82,20 +80,12 @@ class FormGuias extends Component {
 
   render() {
     const { classes } = this.props;
-    const { guia, open } = this.state;
+    const { guia } = this.state;
 
     return (
       <div>
         {guia && (
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.handleToggleModal}
-            >
-              Abrir modal exemplo
-            </Button>
-            <FormCadastro fullScreen={false} open={open} onClose={this.handleToggleModal} />
             <Paper className={classes.root}>
               <Table className={classes.table}>
                 <TableHead>
