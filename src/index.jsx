@@ -13,7 +13,7 @@ import logger from 'redux-logger';
 import reducers from './reducers';
 import './assets/styles/default.sass';
 import * as serviceWorker from './serviceWorker';
-import DashboardLayout from './layouts/Dashboard.layout';
+import DashboardLayout from './layouts/Dashboard';
 
 const hist = createBrowserHistory();
 
