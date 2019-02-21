@@ -1,5 +1,5 @@
 import {
-  /* GET_GUIAS, */ SAVE_GUIAS, DELETE_GUIAS, FETCH_ERROR, SOCKET_IO,
+  GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS, FETCH_ERROR, /* SOCKET_IO, */
 } from '../actions/guias';
 
 const INITIAL_STATE = {
@@ -10,12 +10,12 @@ const INITIAL_STATE = {
 
 export default function (state = INITIAL_STATE, action = {}) {
   switch (action.type) {
-    /* case GET_GUIAS:
+    case GET_GUIAS:
       return {
         ...state,
         guias: action.payload,
         fetchError: '',
-      }; */
+      };
     case SAVE_GUIAS:
       return {
         ...state,
@@ -33,11 +33,11 @@ export default function (state = INITIAL_STATE, action = {}) {
         ...state,
         fetchError: action.payload,
       };
-    case SOCKET_IO:
+    /* case SOCKET_IO:
       return {
         ...state,
         socket: action.payload,
-      };
+      }; */
     default:
       return state;
   }

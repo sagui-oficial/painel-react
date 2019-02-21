@@ -26,7 +26,7 @@ import {
 
 // ACTIONS
 import {
-  /* loadGuias, */ addGuia, deleteGuias, connectIO,
+  loadGuias, addGuia, deleteGuias, /* connectIO, */
 } from '../../../actions/guias';
 import { searchChange } from '../../../actions/search';
 
@@ -60,11 +60,11 @@ class Guias extends Component {
 
   componentDidMount() {
     const {
-      // loadGuias: propLoadGuias,
-      connectIO: loadConnectIO,
+      loadGuias: propLoadGuias,
+      // connectIO: loadConnectIO,
     } = this.props;
-    // propLoadGuias();
-    loadConnectIO();
+    propLoadGuias();
+    // loadConnectIO();
   }
 
   /* componentDidUpdate(prevProps) {
@@ -239,8 +239,8 @@ class Guias extends Component {
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   guias: PropTypes.instanceOf(Array).isRequired,
-  // loadGuias: PropTypes.func.isRequired,
-  connectIO: PropTypes.func.isRequired,
+  loadGuias: PropTypes.func.isRequired,
+  // connectIO: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   guiasError: PropTypes.string.isRequired,
   addGuia: PropTypes.func.isRequired,
@@ -254,5 +254,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  deleteGuias, /* loadGuias, */ addGuia, searchChange, connectIO,
+  deleteGuias, loadGuias, addGuia, searchChange, /* connectIO, */
 })(withStyles(styles)(Guias));
