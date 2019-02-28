@@ -25,6 +25,7 @@ export default function (state = INITIAL_STATE, action = {}) {
     case DELETE_GUIAS:
       return {
         ...state,
+        // guias: action.payload,
         guias: state.guias.filter(guia => guia.id !== action.payload),
         fetchError: '',
       };

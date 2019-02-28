@@ -2,9 +2,9 @@ import axios from 'axios';
 
 /**
  * API BACKEND
- * 'https://localhost:5001/backoffice'
  */
 export const API = 'http://localhost:8080';
+// export const API = 'https://localhost:5001/backoffice/gto';
 
 /**
  * Call to API from url

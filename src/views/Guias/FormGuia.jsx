@@ -90,11 +90,11 @@ class FormGuias extends Component {
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    {guia.numero && (<TableCell>{guia.numero}</TableCell>)}
+                    {guia.publicID && (<TableCell>{guia.publicID}</TableCell>)}
                     {guia.paciente && (<TableCell align="left">{guia.paciente.nome}</TableCell>)}
                     {guia.vencimento && (<TableCell align="left">{guia.vencimento}</TableCell>)}
-                    {guia.status && (<TableCell align="left">{guia.status}</TableCell>)}
-                    {guia.procedimentos && <TableCell align="left">{formatCurrency(guia.procedimentos[0].valorprocedimento)}</TableCell>}
+                    {guia.status && (<TableCell align="left">{guia.Status}</TableCell>)}
+                    {guia.procedimentos > 0 && <TableCell align="left">{formatCurrency(guia.procedimentos[0].valorprocedimento)}</TableCell>}
                   </TableRow>
                 </TableHead>
               </Table>

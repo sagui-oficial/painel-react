@@ -76,6 +76,11 @@ class Guias extends Component {
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
     propDeleteGuias(postID);
+
+    /* propDeleteGuias({
+      numero: 'ACBMDBDS',
+      publicID: postID,
+    }); */
   }
 
   handleAddGuia() {
@@ -87,10 +92,13 @@ class Guias extends Component {
     });
 
     propAddGuia({
-      id: randomPrice(1, 1500),
+      id: createID,
+      status: 0,
+      publicID: createID,
       numero: createID.split('-')[0].toUpperCase(),
       planooperadora: {
-        id: randomPrice(1, 1500),
+        id: 1,
+        publicID: createID,
         nomefantasia: 'Operadora 1',
         razaosocial: null,
         cnpj: null,
@@ -100,8 +108,9 @@ class Guias extends Component {
         listaarquivos: null,
       },
       paciente: {
+        id: 1,
+        publicID: createID,
         listaplanooperadorapaciente: null,
-        id: randomPrice(1, 1500),
         funcao: null,
         nome: randomNames(),
         anotacoes: null,
@@ -111,7 +120,6 @@ class Guias extends Component {
       },
       arquivos: [
         {
-          id: randomPrice(1, 1500),
           nome: 'ArquivoTeste',
           stream: null,
           datacriacao: '2019-01-14T20:43:07.4768306-02:00',
@@ -122,15 +130,15 @@ class Guias extends Component {
       vencimento: '2019-02-14T20:43:07.4748316-02:00',
       procedimentos: [
         {
-          id: randomPrice(1, 1500),
-          codigo: randomPrice(1, 1500),
+          id: 1,
+          publicID: createID,
+          codigo: 1,
           nomeprocedimento: 'Procedimento de Teste090',
           valorprocedimento: randomPrice(50, 1500),
           exigencias: 'Lorem lorem',
           anotacoes: 'Bla Bla bla',
         },
       ],
-      status: randomPrice(1, 1500),
     });
   }
 
@@ -194,7 +202,7 @@ class Guias extends Component {
                 {
                   guias.map(row => (
                     row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
-                    && (
+                    && row.status !== 99 && (
                       <Paper className={classes.root} key={row.id}>
                         <Card>
                           <CardHeader
@@ -208,12 +216,16 @@ class Guias extends Component {
                               </IconButton>
                             )}
                             title={row.paciente.nome}
-                            subheader={formatCurrency(row.procedimentos[0].valorprocedimento)}
+                            subheader={
+                              row.procedimentos.length > 0 && (
+                                formatCurrency(row.procedimentos[0].valorprocedimento)
+                              )
+                            }
                           />
                           <CardActions>
                             <Button
                               to={{
-                                pathname: `/guias/${row.numero}`,
+                                pathname: `/guias/${row.publicID}`,
                                 state: { ...row },
                               }}
                               component={NavLink}
