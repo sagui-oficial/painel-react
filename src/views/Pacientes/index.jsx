@@ -3,21 +3,26 @@ import PropTypes from 'prop-types';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
+import { Divider } from '@material-ui/core';
 
-const styles = {
+const styles = theme => ({
   mainContainer: {
     textAlign: 'left',
   },
-};
+  divider: {
+    ...theme.divider,
+  },
+});
 
 const Pacientes = (props) => {
   const { classes } = props;
 
   return (
     <div className={classes.mainContainer}>
-      <Typography variant="title" color="inherit">
+      <Typography variant="h6" color="inherit">
         Pacientes
       </Typography>
+      <Divider className={classes.divider} />
     </div>
   );
 };
