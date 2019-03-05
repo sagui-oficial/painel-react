@@ -19,18 +19,18 @@ before_script:
 on:
   branch: master
 
-deploy:
-  provider: codedeploy
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  bucket: "S3 Bucket"
-  application: "SaguiFE"
-  deployment_group: SaguiPainelReact
-  region: sa-east-1
+# deploy:
+#   provider: codedeploy
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_KEY
+#   bucket: "S3 Bucket"
+#   application: "SaguiFE"
+#   deployment_group: SaguiPainelReact
+#   region: sa-east-1
 
-notifications:
-  email:
-    on_success: change # only if status change from fail to success
-    on_failure: always # if there is a fail
-    recipients:
-      - contato@brunomacedo.com.br
+# notifications:
+#   email:
+#     on_success: change # only if status change from fail to success
+#     on_failure: always # if there is a fail
+#     recipients:
+#       - contato@brunomacedo.com.br
