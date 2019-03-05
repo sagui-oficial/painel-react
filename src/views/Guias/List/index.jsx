@@ -48,6 +48,11 @@ const styles = theme => ({
   addBtn: {
     ...theme.roundedBtn,
     marginLeft: '1.5rem',
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: '0',
+      marginTop: '0.5rem',
+      width: '100%',
+    },
   },
 });
 
@@ -86,11 +91,6 @@ class Guias extends Component {
     propDeleteGuias({
       status: 99,
     }, postID);
-
-    /* propDeleteGuias({
-      numero: 'ACBMDBDS',
-      publicID: postID,
-    }); */
   }
 
   handleAddGuia() {
@@ -176,7 +176,6 @@ class Guias extends Component {
       <Fragment>
         {guiasError && (
           <Snackbar
-            // key={messageInfo.key}
             open={!boxMessage.open}
             message={<span id="message-id">{guiasError}</span>}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -199,45 +198,35 @@ class Guias extends Component {
         )}
         {guias && (
           <Fragment>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item md={6}>
-                <Grid container alignItems="center">
-                  <Typography variant="h6" color="inherit" noWrap>
-                    Gerenciamento de guias
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="medium"
-                    className={classes.addBtn}
-                    onClick={this.handleAddGuia}
-                  >
-                    + Novo
-                  </Button>
-                </Grid>
-              </Grid>
-              {/* <Grid item md={6}></Grid> */}
+            <Grid container alignItems="center">
+              <Typography variant="h6" color="inherit" noWrap>
+                Gerenciamento de guias
+              </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="medium"
+                className={classes.addBtn}
+                onClick={this.handleAddGuia}
+              >
+                +Novo
+              </Button>
             </Grid>
             <Divider className={classes.divider} />
             <BoxSearch placeholder="Buscar guias" />
-            {guias.length > 0 && (
+            {guias && guias.length > 0 && (
               <Fragment>
                 {
                   guias.map(row => (
                     row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
                     && row.status !== 99 && (
-                      <Paper className={classes.root} key={row.id}>
+                      <Paper className={classes.root} key={row.publicID}>
                         <Card>
                           <CardHeader
                             avatar={(<Avatar>A</Avatar>)}
                             action={(
                               <IconButton
-                                onClick={() => this.handleDeleteGuia(row.id)}
+                                onClick={() => this.handleDeleteGuia(row.publicID)}
                                 aria-label="Deletar"
                               >
                                 <DeleteIcon />
@@ -252,10 +241,7 @@ class Guias extends Component {
                           />
                           <CardActions>
                             <Button
-                              to={{
-                                pathname: `/guias/${row.publicID}`,
-                                state: { ...row },
-                              }}
+                              to={`/guias/${row.publicID}`}
                               component={NavLink}
                               aria-label="Editar"
                             >
@@ -278,7 +264,7 @@ class Guias extends Component {
 
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  guias: PropTypes.instanceOf(Array).isRequired,
+  guias: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
   // connectIO: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
