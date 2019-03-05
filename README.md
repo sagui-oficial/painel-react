@@ -4,6 +4,8 @@
 
 # SAGUI PAINEL (DASHBOARD)
 
+[![Build Status](https://travis-ci.org/sagui-oficial/painel-react.svg?branch=master)](https://travis-ci.org/sagui-oficial/painel-react)
+
 Projeto desenvolvido com [Create React App](https://github.com/facebook/create-react-app) usando o style guide [Material-UI](https://material-ui.com/)
 
 Para entender melhor sobre a arquitetura do front-end [clique aqui](docs/ARCHITECTURE.md)

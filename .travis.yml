@@ -9,7 +9,6 @@ cache:
 
 before_install:
   - npm install
-  - npm run test
 
 before_script:
   - npm run build
