@@ -224,11 +224,6 @@ class NavBar extends Component {
                   </Link>
                 </Typography>
               </Hidden>
-              {/* <Typography variant="h6" color="inherit">
-                {dashboardRoutes.map(itemList => (
-                  itemList.path === location.pathname ? itemList.pageTitle : ''
-                ))}
-              </Typography> */}
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>
