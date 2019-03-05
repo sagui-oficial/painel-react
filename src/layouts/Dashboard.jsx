@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import NavBar from '../components/NavBar';
 import MainRouters from '../routes';
 
+import withRoot from '../withRoot';
+
 const DashboardLayout = () => (
   <Fragment>
     <NavBar>
@@ -10,4 +12,4 @@ const DashboardLayout = () => (
   </Fragment>
 );
 
-export default DashboardLayout;
+export default withRoot(DashboardLayout);
