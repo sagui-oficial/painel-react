@@ -36,6 +36,10 @@ const styles = theme => ({
     display: 'flex',
     touchAction: 'none',
   },
+  linkLogo: {
+    display: 'block',
+    fontSize: '0',
+  },
   appBar: {
     width: '100%',
     boxShadow: 'none',
@@ -83,7 +87,10 @@ const styles = theme => ({
     // height: '100vh',
   },
   mainContainer: {
-    marginTop: '70px',
+    marginTop: theme.spacing.unit * 8,
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.spacing.unit * 6,
+    },
   },
 });
 
@@ -160,7 +167,7 @@ class NavBar extends Component {
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
               <Typography variant="h6" color="inherit">
-                <Link to="/guias">
+                <Link to="/guias" className={classes.linkLogo}>
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Typography>
@@ -219,7 +226,7 @@ class NavBar extends Component {
               </Hidden>
               <Hidden mdUp implementation="css">
                 <Typography variant="h6" color="inherit">
-                  <Link to="/dashboard">
+                  <Link to="/dashboard" className={classes.linkLogo}>
                     <img src={logo} className={classes.logo} alt="logo" />
                   </Link>
                 </Typography>
