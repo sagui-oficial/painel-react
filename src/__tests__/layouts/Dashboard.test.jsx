@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
-import DashboardLayout from '../../layouts/Dashboard.layout';
+import DashboardLayout from '../../layouts/Dashboard';
 
 const hist = createBrowserHistory();
 
