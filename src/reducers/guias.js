@@ -1,5 +1,6 @@
 import {
-  GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS, FETCH_ERROR, /* SOCKET_IO, */
+  GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS, FETCH_ERROR,
+  GET_GUIAS_DETAILS, /* SOCKET_IO, */
 } from '../actions/guias';
 
 const INITIAL_STATE = {
@@ -16,6 +17,12 @@ export default function (state = INITIAL_STATE, action = {}) {
         guias: action.payload,
         fetchError: '',
       };
+    case GET_GUIAS_DETAILS:
+      return {
+        ...state,
+        guias: action.payload,
+        fetchError: '',
+      };
     case SAVE_GUIAS:
       return {
         ...state,
@@ -25,7 +32,6 @@ export default function (state = INITIAL_STATE, action = {}) {
     case DELETE_GUIAS:
       return {
         ...state,
-        // guias: action.payload,
         guias: state.guias.filter(guia => guia.id !== action.payload),
         fetchError: '',
       };
