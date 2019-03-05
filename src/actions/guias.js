@@ -49,7 +49,19 @@ export function addGuia(data) {
   };
 } */
 
-export function deleteGuias(id) {
+export function deleteGuias(data, id) {
+  return async (dispatch) => {
+    await APIResquest({
+      uri: `guias/${id}`,
+      method: 'PATCH',
+      data,
+    })
+      .then(() => dispatch({ type: DELETE_GUIAS, payload: id }))
+      .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
+  };
+}
+
+/* export function deleteGuias(id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `guias/${id}`,
@@ -59,7 +71,7 @@ export function deleteGuias(id) {
       .then(() => dispatch({ type: DELETE_GUIAS, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
-}
+} */
 
 /* export function connectIO() {
   return (dispatch) => {
