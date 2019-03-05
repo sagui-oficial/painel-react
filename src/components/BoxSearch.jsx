@@ -7,13 +7,17 @@ import { Paper, InputBase, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchChange } from '../actions/search';
 
-const styles = theme => ({
+const styles = (/* theme */) => ({
   root: {
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    marginTop: theme.spacing.unit * 3,
     width: '100%',
+    // marginTop: theme.spacing.unit * 3,
+    // [theme.breakpoints.down('xs')]: {
+    // width: '100%',
+    // backgroundColor: theme.palette.secondary.main,
+    // },
   },
   input: {
     marginLeft: 8,
