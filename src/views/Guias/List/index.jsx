@@ -16,7 +16,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 
 import {
-  Card, CardActions, CardHeader, Avatar,
+  Card, CardActions, CardHeader, Avatar, Typography, Divider,
 } from '@material-ui/core';
 
 // LOCAL IMPORTS
@@ -39,8 +39,15 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
   },
+  divider: {
+    ...theme.divider,
+  },
   close: {
     padding: theme.spacing.unit / 2,
+  },
+  addBtn: {
+    ...theme.roundedBtn,
+    marginLeft: '1.5rem',
   },
 });
 
@@ -191,16 +198,33 @@ class Guias extends Component {
           />
         )}
         {guias && (
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={this.handleAddGuia}
+          <Fragment>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
             >
-              Adicionar Guia
-            </Button>
-            <BoxSearch placeholder="Buscar" />
+              <Grid item md={6}>
+                <Grid container alignItems="center">
+                  <Typography variant="h6" color="inherit" noWrap>
+                    Gerenciamento de guias
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="medium"
+                    className={classes.addBtn}
+                    onClick={this.handleAddGuia}
+                  >
+                    + Novo
+                  </Button>
+                </Grid>
+              </Grid>
+              {/* <Grid item md={6}></Grid> */}
+            </Grid>
+            <Divider className={classes.divider} />
+            <BoxSearch placeholder="Buscar guias" />
             {guias.length > 0 && (
               <Fragment>
                 {
@@ -245,7 +269,7 @@ class Guias extends Component {
                 }
               </Fragment>
             )}
-          </Grid>
+          </Fragment>
         )}
       </Fragment>
     );
