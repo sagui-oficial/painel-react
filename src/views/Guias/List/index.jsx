@@ -75,7 +75,10 @@ class Guias extends Component {
 
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
-    propDeleteGuias(postID);
+
+    propDeleteGuias({
+      status: 99,
+    }, postID);
 
     /* propDeleteGuias({
       numero: 'ACBMDBDS',
@@ -190,15 +193,16 @@ class Guias extends Component {
         {guias && (
           <Grid item xs={12}>
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
+              size="large"
               onClick={this.handleAddGuia}
             >
               Adicionar Guia
             </Button>
+            <BoxSearch placeholder="Buscar" />
             {guias.length > 0 && (
               <Fragment>
-                <BoxSearch placeholder="Buscar" />
                 {
                   guias.map(row => (
                     row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
