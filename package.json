@@ -2,13 +2,13 @@
   "name": "sagui-react",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://gitlab.com/sagui/painel-react#readme",
+  "homepage": "https://github.com/sagui-oficial/painel-react#readme",
   "bugs": {
-    "url": "https://gitlab.com/sagui/painel-react/issues"
+    "url": "https://github.com/sagui-oficial/painel-react/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/sagui/painel-react.git"
+    "url": "git+https://github.com/sagui-oficial/painel-react.git"
   },
   "author": "Bruno Macedo <contato@brunomacedo.com.br> (https://brunomacedo.com.br/)",
   "dependencies": {
