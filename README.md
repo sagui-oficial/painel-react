@@ -11,7 +11,7 @@ Para entender melhor sobre a arquitetura do front-end [clique aqui](docs/ARCHITE
 ## Clonar o repositório
 
 ```prompt
-git clone https://gitlab.com/sagui/painel-react
+git clone https://github.com/sagui-oficial/painel-react.git
 ```
 
 ## Pré-requisitos para rodar localmente
