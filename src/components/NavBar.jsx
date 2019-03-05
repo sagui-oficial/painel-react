@@ -159,7 +159,7 @@ class NavBar extends Component {
             }}
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
-              <Typography variant="title" color="inherit">
+              <Typography variant="h6" color="inherit">
                 <Link to="/guias">
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
@@ -218,13 +218,13 @@ class NavBar extends Component {
                 </IconButton>
               </Hidden>
               <Hidden mdUp implementation="css">
-                <Typography variant="title" color="inherit">
+                <Typography variant="h6" color="inherit">
                   <Link to="/dashboard">
                     <img src={logo} className={classes.logo} alt="logo" />
                   </Link>
                 </Typography>
               </Hidden>
-              {/* <Typography variant="title" color="inherit">
+              {/* <Typography variant="h6" color="inherit">
                 {dashboardRoutes.map(itemList => (
                   itemList.path === location.pathname ? itemList.pageTitle : ''
                 ))}
