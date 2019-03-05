@@ -20,7 +20,6 @@ const MainRouters = () => (
     <Route exact path="/guias/:id" component={FormGuia} />
     <Route exact path="/login" component={Login} />
     <Route path="/" render={() => (<Redirect to="/guias" />)} />
-    {/* <Route component={NotFoundPage} /> */}
   </Switch>
 );
 
