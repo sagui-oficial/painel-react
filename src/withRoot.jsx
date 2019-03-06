@@ -13,7 +13,7 @@ const theme = createMuiTheme({
   },
   divider: {
     position: 'relative',
-    margin: '1rem auto',
+    margin: '20px auto 30px',
     overflow: 'inherit',
     '&:before': {
       content: "''",
