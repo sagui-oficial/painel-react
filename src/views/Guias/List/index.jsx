@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import uuidv1 from 'uuid/v1';
 
 // MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
@@ -10,28 +9,19 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import {
   Card, CardActions, CardHeader, Avatar, Typography, Divider,
 } from '@material-ui/core';
 
 // LOCAL IMPORTS
-import {
-  formatCurrency, randomPrice, randomNames,
-} from '../../../helpers';
-
-// ACTIONS
-import {
-  loadGuias, addGuia, deleteGuias, /* connectIO, */
-} from '../../../actions/guias';
-import { searchChange } from '../../../actions/search';
-
-// COMPONENTS
 import BoxSearch from '../../../components/Search';
+import { formatCurrency } from '../../../helpers';
+import { searchChange } from '../../../actions/search';
+import { loadGuias, deleteGuias /* connectIO, */ } from '../../../actions/guias';
 
 const styles = theme => ({
   root: {
@@ -59,13 +49,15 @@ const styles = theme => ({
 class Guias extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       boxMessage: {
         open: false,
       },
     };
+
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
-    this.handleAddGuia = this.handleAddGuia.bind(this);
+    this.handleNewGuia = this.handleNewGuia.bind(this);
     this.handleOnClose = this.handleOnClose.bind(this);
     this.handleOnExited = this.handleOnExited.bind(this);
   }
@@ -79,12 +71,6 @@ class Guias extends Component {
     // loadConnectIO();
   }
 
-  /* componentDidUpdate(prevProps) {
-    if (prevProps.guiasError !== this.props.guiasError) {
-      debugger;
-    }
-  } */
-
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
 
@@ -93,63 +79,15 @@ class Guias extends Component {
     }, postID);
   }
 
-  handleAddGuia() {
-    const { addGuia: propAddGuia } = this.props;
-    const createID = uuidv1();
+  handleNewGuia() {
+    const { guiasError, history } = this.props;
 
-    this.setState({
-      boxMessage: { open: false },
-    });
+    if (guiasError.indexOf('Error') > -1) {
+      this.setState({ boxMessage: false });
+      return;
+    }
 
-    propAddGuia({
-      id: createID,
-      status: 0,
-      publicID: createID,
-      numero: createID.split('-')[0].toUpperCase(),
-      planooperadora: {
-        id: 1,
-        publicID: createID,
-        nomefantasia: 'Operadora 1',
-        razaosocial: null,
-        cnpj: null,
-        dataenviolote: '0001-01-01T00:00:00',
-        datarecebimentolote: '0001-01-01T00:00:00',
-        listaprocedimentos: null,
-        listaarquivos: null,
-      },
-      paciente: {
-        id: 1,
-        publicID: createID,
-        listaplanooperadorapaciente: null,
-        funcao: null,
-        nome: randomNames(),
-        anotacoes: null,
-        cpf: null,
-        email: null,
-        telefone: null,
-      },
-      arquivos: [
-        {
-          nome: 'ArquivoTeste',
-          stream: null,
-          datacriacao: '2019-01-14T20:43:07.4768306-02:00',
-          patharquivo: 'C:\\',
-        },
-      ],
-      solicitacao: '2019-01-14T20:43:07.4698345-02:00',
-      vencimento: '2019-02-14T20:43:07.4748316-02:00',
-      procedimentos: [
-        {
-          id: 1,
-          publicID: createID,
-          codigo: 1,
-          nomeprocedimento: 'Procedimento de Teste090',
-          valorprocedimento: randomPrice(50, 1500),
-          exigencias: 'Lorem lorem',
-          anotacoes: 'Bla Bla bla',
-        },
-      ],
-    });
+    history.push('/guias/criar');
   }
 
   handleOnClose() {
@@ -207,7 +145,7 @@ class Guias extends Component {
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
-                onClick={this.handleAddGuia}
+                onClick={this.handleNewGuia}
               >
                 +Novo
               </Button>
@@ -268,12 +206,12 @@ class Guias extends Component {
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   guias: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
-  // connectIO: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   guiasError: PropTypes.string.isRequired,
-  addGuia: PropTypes.func.isRequired,
   deleteGuias: PropTypes.func.isRequired,
+  // connectIO: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -283,5 +221,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  deleteGuias, loadGuias, addGuia, searchChange, /* connectIO, */
-})(withStyles(styles)(Guias));
+  deleteGuias, loadGuias, searchChange, /* connectIO, */
+})(withStyles(styles)(withRouter(Guias)));
