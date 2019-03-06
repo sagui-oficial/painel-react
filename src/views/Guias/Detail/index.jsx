@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 
-import { loadGuiaDetail } from '../../../actions/guias';
-
 // LOCAL IMPORTS
+import { loadGuiaDetail } from '../../../actions/guias';
 import { formatCurrency } from '../../../helpers';
 
 const styles = (/* theme */) => ({
@@ -18,17 +17,41 @@ const styles = (/* theme */) => ({
 });
 
 class GuiaDetail extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loadGuiaLocal: {},
+    };
+  }
+
   componentDidMount() {
     const {
       match,
       loadGuiaDetail: propLoadGuia,
+      location,
     } = this.props;
+
+    if (Object.keys(location).length > 0) {
+      if (typeof location.state !== 'undefined') {
+        this.setState({ loadGuiaLocal: { ...location.state } });
+        return;
+      }
+    }
 
     propLoadGuia(match.params.id);
   }
 
   render() {
-    const { classes, guia } = this.props;
+    const { classes, loadGuiaRequest } = this.props;
+    const { loadGuiaLocal } = this.state;
+
+    let guia = {};
+    if (Object.keys(loadGuiaLocal).length > 0) {
+      guia = loadGuiaLocal;
+    } else {
+      guia = loadGuiaRequest;
+    }
 
     return (
       <div>
@@ -74,13 +97,18 @@ class GuiaDetail extends Component {
 
 GuiaDetail.propTypes = {
   match: PropTypes.instanceOf(Object).isRequired,
-  guia: PropTypes.instanceOf(Object).isRequired,
+  loadGuiaRequest: PropTypes.instanceOf(Object).isRequired,
+  location: PropTypes.instanceOf(Object),
   loadGuiaDetail: PropTypes.func.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
 };
 
+GuiaDetail.defaultProps = {
+  location: { state: {} },
+};
+
 const mapStateToProps = state => ({
-  guia: state.guiasReducer.guias,
+  loadGuiaRequest: state.guiasReducer.guias,
   guiasError: state.guiasReducer.fetchError,
 });
 
