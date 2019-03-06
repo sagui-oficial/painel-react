@@ -22,8 +22,8 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import MenuIcon from '@material-ui/icons/Menu';
 
 // LOCAL IMPORTS
-import logo from '../assets/images/logo.svg';
-import dashboardRoutes from '../routes/dashbordRoutes';
+import logo from '../../assets/images/logo.svg';
+import dashboardRoutes from '../../routes/dashbordRoutes';
 
 const drawerWidth = 240;
 
@@ -146,7 +146,6 @@ class NavBar extends Component {
   render() {
     const { menu } = this.state;
     const { classes, children } = this.props;
-    // const { location } = window;
 
     return (
       <div className={classes.root}>
