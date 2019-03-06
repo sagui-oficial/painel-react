@@ -31,19 +31,11 @@ class GuiaCreate extends Component {
     this.handleAddGuia = this.handleAddGuia.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
-    const { guia, history } = this.props;
-
-    if (prevProps.guia !== guia) {
-      history.push(`/guias/${guia.id}`);
-    }
-  }
-
-  handleAddGuia() {
-    const { addGuia: propAddGuia } = this.props;
+  async handleAddGuia() {
+    const { addGuia: propAddGuia, history } = this.props;
     const createID = uuidv1();
 
-    propAddGuia({
+    await propAddGuia({
       id: createID,
       status: 0,
       publicID: createID,
@@ -92,6 +84,8 @@ class GuiaCreate extends Component {
         },
       ],
     });
+
+    history.push(`/guias/${createID}`);
   }
 
   render() {
@@ -118,11 +112,6 @@ GuiaCreate.propTypes = {
   addGuia: PropTypes.func.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  guia: PropTypes.instanceOf(Object),
-};
-
-GuiaCreate.defaultProps = {
-  guia: {},
 };
 
 const mapStateToProps = state => ({

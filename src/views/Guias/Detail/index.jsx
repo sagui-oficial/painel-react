@@ -23,56 +23,60 @@ class GuiaDetail extends Component {
     this.state = {
       loadGuiaLocal: {},
     };
+
+    this.loadGuia = this.loadGuia.bind(this);
+    this.updateGuia = this.updateGuia.bind(this);
   }
 
   componentDidMount() {
-    const {
-      match,
-      loadGuiaDetail: propLoadGuia,
-      location,
-    } = this.props;
+    this.loadGuia();
+  }
 
-    if (Object.keys(location).length > 0) {
-      if (typeof location.state !== 'undefined') {
-        this.setState({ loadGuiaLocal: { ...location.state } });
-        return;
-      }
+  componentDidUpdate(prevProps) {
+    this.updateGuia(prevProps);
+  }
+
+  updateGuia(prevProps) {
+    const { loadGuiaData } = this.props;
+    if (prevProps.loadGuiaData !== loadGuiaData) {
+      this.setState({ loadGuiaLocal: loadGuiaData });
     }
+  }
 
-    propLoadGuia(match.params.id);
+  async loadGuia() {
+    const { loadGuiaData, loadGuiaDetail: loadGuiaFunc, match } = this.props;
+
+    if (loadGuiaData.length === 0) {
+      await loadGuiaFunc(match.params.id);
+    } else {
+      this.setState({ loadGuiaLocal: loadGuiaData.find(item => item.id === match.params.id) });
+    }
   }
 
   render() {
-    const { classes, loadGuiaRequest } = this.props;
+    const { classes } = this.props;
     const { loadGuiaLocal } = this.state;
-
-    let guia = {};
-    if (Object.keys(loadGuiaLocal).length > 0) {
-      guia = loadGuiaLocal;
-    } else {
-      guia = loadGuiaRequest;
-    }
 
     return (
       <div>
-        {guia && (
+        {loadGuiaLocal && (
           <div className={classes.box}>
-            {guia.publicID && (<p>{guia.publicID}</p>)}
-            {guia.paciente && (
+            {loadGuiaLocal.publicID && (<p>{loadGuiaLocal.publicID}</p>)}
+            {loadGuiaLocal.paciente && (
               <Fragment>
-                <p>{guia.paciente.nome && guia.paciente.nome}</p>
-                <p>{guia.paciente.cpf && guia.paciente.cpf}</p>
-                <p>{guia.paciente.email && guia.paciente.email}</p>
-                <p>{guia.paciente.telefone && guia.paciente.telefone}</p>
+                <p>{loadGuiaLocal.paciente.nome && loadGuiaLocal.paciente.nome}</p>
+                <p>{loadGuiaLocal.paciente.cpf && loadGuiaLocal.paciente.cpf}</p>
+                <p>{loadGuiaLocal.paciente.email && loadGuiaLocal.paciente.email}</p>
+                <p>{loadGuiaLocal.paciente.telefone && loadGuiaLocal.paciente.telefone}</p>
               </Fragment>
             )}
 
-            {guia.vencimento && (<p>{guia.vencimento}</p>)}
+            {loadGuiaLocal.vencimento && (<p>{loadGuiaLocal.vencimento}</p>)}
 
             {
-              typeof guia.status !== 'undefined' && (
+              typeof loadGuiaLocal.status !== 'undefined' && (
                 <p>
-                  {guia.status === 0 ? (
+                  {loadGuiaLocal.status === 0 ? (
                     <span>Ativo</span>
                   ) : (
                     <span>Removido</span>
@@ -82,9 +86,9 @@ class GuiaDetail extends Component {
             }
 
             {
-              guia.procedimentos
-              && guia.procedimentos.length > 0
-              && guia.procedimentos.map(item => (
+              loadGuiaLocal.procedimentos
+              && loadGuiaLocal.procedimentos.length > 0
+              && loadGuiaLocal.procedimentos.map(item => (
                 <p key={item.publicID}>{formatCurrency(item.valorprocedimento)}</p>
               ))
             }
@@ -96,19 +100,14 @@ class GuiaDetail extends Component {
 }
 
 GuiaDetail.propTypes = {
-  match: PropTypes.instanceOf(Object).isRequired,
-  loadGuiaRequest: PropTypes.instanceOf(Object).isRequired,
-  location: PropTypes.instanceOf(Object),
-  loadGuiaDetail: PropTypes.func.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
-};
-
-GuiaDetail.defaultProps = {
-  location: { state: {} },
+  match: PropTypes.instanceOf(Object).isRequired,
+  loadGuiaData: PropTypes.instanceOf(Object).isRequired,
+  loadGuiaDetail: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  loadGuiaRequest: state.guiasReducer.guias,
+  loadGuiaData: state.guiasReducer.guias,
   guiasError: state.guiasReducer.fetchError,
 });
 

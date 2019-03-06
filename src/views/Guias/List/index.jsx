@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -183,7 +183,7 @@ class Guias extends Component {
                                 pathname: `/guias/${row.publicID}`,
                                 state: { ...row },
                               }}
-                              component={NavLink}
+                              component={Link}
                               aria-label="Editar"
                             >
                               Editar
