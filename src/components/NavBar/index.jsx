@@ -165,11 +165,9 @@ class NavBar extends Component {
             }}
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
-              <Typography variant="h6" color="inherit">
-                <Link to="/guias" className={classes.linkLogo}>
-                  <img src={logo} className={classes.logo} alt="logo" />
-                </Link>
-              </Typography>
+              <Link to="/guias" className={classes.linkLogo}>
+                <img src={logo} className={classes.logo} alt="logo" />
+              </Link>
             </div>
             <Divider />
             <List>
@@ -224,11 +222,9 @@ class NavBar extends Component {
                 </IconButton>
               </Hidden>
               <Hidden mdUp implementation="css">
-                <Typography variant="h6" color="inherit">
-                  <Link to="/dashboard" className={classes.linkLogo}>
-                    <img src={logo} className={classes.logo} alt="logo" />
-                  </Link>
-                </Typography>
+                <Link to="/guias" className={classes.linkLogo}>
+                  <img src={logo} className={classes.logo} alt="logo" />
+                </Link>
               </Hidden>
             </Toolbar>
           </AppBar>
