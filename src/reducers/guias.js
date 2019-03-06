@@ -26,7 +26,8 @@ export default function (state = INITIAL_STATE, action = {}) {
     case SAVE_GUIAS:
       return {
         ...state,
-        guias: state.guias.concat([action.payload]),
+        guias: action.payload,
+        // guias: state.guias.concat([action.payload]),
         fetchError: '',
       };
     case DELETE_GUIAS:
