@@ -31,7 +31,7 @@ import {
 import { searchChange } from '../../../actions/search';
 
 // COMPONENTS
-import BoxSearch from '../../../components/BoxSearch';
+import BoxSearch from '../../../components/Search';
 
 const styles = theme => ({
   root: {
@@ -241,7 +241,10 @@ class Guias extends Component {
                           />
                           <CardActions>
                             <Button
-                              to={`/guias/${row.publicID}`}
+                              to={{
+                                pathname: `/guias/${row.publicID}`,
+                                state: { ...row },
+                              }}
                               component={NavLink}
                               aria-label="Editar"
                             >
