@@ -1,11 +1,10 @@
 import {
-  GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS, FETCH_ERROR,
-  GET_GUIAS_DETAILS, /* SOCKET_IO, */
+  GET_GUIAS, SAVE_GUIAS, DELETE_GUIAS,
+  GET_GUIAS_DETAILS, FETCH_ERROR,
 } from '../actions/guias';
 
 const INITIAL_STATE = {
   guias: [],
-  // socket: {},
   fetchError: '',
 };
 
@@ -40,11 +39,6 @@ export default function (state = INITIAL_STATE, action = {}) {
         ...state,
         fetchError: action.payload,
       };
-    /* case SOCKET_IO:
-      return {
-        ...state,
-        socket: action.payload,
-      }; */
     default:
       return state;
   }
