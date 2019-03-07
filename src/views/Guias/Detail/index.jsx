@@ -38,6 +38,7 @@ class GuiaDetail extends Component {
 
   updateGuia(prevProps) {
     const { loadGuiaData } = this.props;
+
     if (prevProps.loadGuiaData !== loadGuiaData) {
       this.setState({ loadGuiaLocal: loadGuiaData });
     }
@@ -76,7 +77,7 @@ class GuiaDetail extends Component {
             {
               typeof loadGuiaLocal.status !== 'undefined' && (
                 <p>
-                  {loadGuiaLocal.status === 0 ? (
+                  {loadGuiaLocal.status === 1 ? (
                     <span>Ativo</span>
                   ) : (
                     <span>Removido</span>
