@@ -31,7 +31,6 @@ export const APIResquest = (config) => {
       const { data } = await axios(`${API}/${config.uri}`, requestConfig());
       return data;
     } catch (err) {
-      // console.log(JSON.stringify({ err }));
       const messsage = 'Error: Tente novamente.';
       throw messsage;
     }
