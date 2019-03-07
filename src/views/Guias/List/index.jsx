@@ -5,23 +5,29 @@ import { connect } from 'react-redux';
 
 // MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
+// ICONS
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-import {
-  Card, CardActions, CardHeader, Avatar, Typography, Divider,
-} from '@material-ui/core';
 
 // LOCAL IMPORTS
 import BoxSearch from '../../../components/Search';
 import { formatCurrency } from '../../../helpers';
 import { searchChange } from '../../../actions/search';
-import { loadGuias, deleteGuias /* connectIO, */ } from '../../../actions/guias';
+import { loadGuias, deleteGuias } from '../../../actions/guias';
 
 const styles = theme => ({
   root: {
@@ -53,87 +59,97 @@ class Guias extends Component {
     this.state = {
       boxMessage: {
         open: false,
+        text: '',
       },
     };
 
+    this.handleOnClose = this.handleOnClose.bind(this);
+    this.handleMessageError = this.handleMessageError.bind(this);
+
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleNewGuia = this.handleNewGuia.bind(this);
-    this.handleOnClose = this.handleOnClose.bind(this);
-    this.handleOnExited = this.handleOnExited.bind(this);
+    this.handleStatusGuia = this.handleStatusGuia.bind(this);
   }
 
   componentDidMount() {
-    const {
-      loadGuias: propLoadGuias,
-      // connectIO: loadConnectIO,
-    } = this.props;
-    propLoadGuias();
-    // loadConnectIO();
+    const { loadGuias: propLoadGuias } = this.props;
+
+    this.handleMessageError(propLoadGuias);
+  }
+
+  handleMessageError(applyHandle, text) {
+    const { guiasError } = this.props;
+
+    if (guiasError.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: guiasError } });
+      return;
+    }
+
+    if (typeof text !== 'undefined') {
+      this.setState({ boxMessage: { open: true, text } });
+    }
+
+    applyHandle();
+  }
+
+  handleOnClose() {
+    const { boxMessage } = this.state;
+    const { text } = boxMessage;
+
+    this.setState({
+      boxMessage: { open: false, text },
+    });
+  }
+
+  handleStatusGuia(e, openID) {
+    e.preventDefault();
+
+    this.setState({
+      boxMessage: { open: true, text: openID },
+    });
   }
 
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
 
-    propDeleteGuias({
-      status: 99,
-    }, postID);
+    this.handleMessageError(() => propDeleteGuias(
+      { status: 99 },
+      postID,
+    ), 'Item excluido.');
   }
 
   handleNewGuia() {
-    const { guiasError, history } = this.props;
+    const { history } = this.props;
 
-    if (guiasError.indexOf('Error') > -1) {
-      this.setState({ boxMessage: false });
-      return;
-    }
-
-    history.push('/guias/criar');
-  }
-
-  handleOnClose() {
-    const { boxMessage } = this.state;
-    this.setState({
-      boxMessage: { open: !boxMessage.open },
-    });
-  }
-
-  handleOnExited() {
-    this.setState({
-      boxMessage: { open: true },
-    });
+    this.handleMessageError(() => history.push('/guias/criar'));
   }
 
   render() {
-    const {
-      classes, guias, value, guiasError,
-    } = this.props;
-
+    const { classes, guias, value } = this.props;
     const { boxMessage } = this.state;
 
     return (
       <Fragment>
-        {guiasError && (
-          <Snackbar
-            open={!boxMessage.open}
-            message={<span id="message-id">{guiasError}</span>}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            autoHideDuration={6000}
-            onClose={this.handleOnClose}
-            onExited={this.handleOnExited}
-            ContentProps={{ 'aria-describedby': 'message-id' }}
-            action={[
-              <IconButton
-                key="close"
-                aria-label="Close"
-                color="inherit"
-                className={classes.close}
-                onClick={this.handleOnClose}
-              >
-                <CloseIcon />
-              </IconButton>,
-            ]}
-          />
-        )}
+        <Snackbar
+          open={boxMessage.open}
+          message={<span id="message-id">{boxMessage.text}</span>}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          autoHideDuration={6000}
+          onClose={this.handleOnClose}
+          onExited={this.handleOnClose}
+          ContentProps={{ 'aria-describedby': 'message-id' }}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.close}
+              onClick={this.handleOnClose}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
+        />
         {guias && (
           <Fragment>
             <Grid container alignItems="center">
@@ -153,48 +169,94 @@ class Guias extends Component {
             <Divider className={classes.divider} />
             <BoxSearch placeholder="Buscar guias" />
             {guias && guias.length > 0 && (
-              <Fragment>
+              <List dense className={classes.root}>
                 {
                   guias.map(row => (
                     row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
                     && row.status !== 99 && (
-                      <Paper className={classes.root} key={row.publicID}>
-                        <Card>
-                          <CardHeader
-                            avatar={(<Avatar>A</Avatar>)}
-                            action={(
-                              <IconButton
-                                onClick={() => this.handleDeleteGuia(row.publicID)}
-                                aria-label="Deletar"
+                      <ListItem
+                        key={row.publicID}
+                        to={{
+                          pathname: `/guias/${row.publicID}`,
+                          state: { ...row },
+                        }}
+                        component={Link}
+                        button
+                      >
+                        <ListItemAvatar>
+                          <Avatar aria-label={row.paciente.nome} className={classes.avatar}>
+                            {row.paciente.nome.substring(0, 1).toUpperCase()}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={row.paciente.nome}
+                          secondary={(
+                            <Fragment>
+                              <Button
+                                size="small"
+                                onClick={e => this.handleStatusGuia(e, row.publicID)}
                               >
-                                <DeleteIcon />
-                              </IconButton>
-                            )}
-                            title={row.paciente.nome}
-                            subheader={
-                              row.procedimentos.length > 0 && (
-                                formatCurrency(row.procedimentos[0].valorprocedimento)
-                              )
-                            }
-                          />
-                          <CardActions>
-                            <Button
-                              to={{
-                                pathname: `/guias/${row.publicID}`,
-                                state: { ...row },
-                              }}
-                              component={Link}
-                              aria-label="Editar"
-                            >
-                              Editar
-                            </Button>
-                          </CardActions>
-                        </Card>
-                      </Paper>
+                                {row.status === 1 ? ('Ativo') : ('Removido')}
+                              </Button>
+                              <span>
+                                {
+                                  row.procedimentos.length > 0 && (
+                                    formatCurrency(row.procedimentos[0].valorprocedimento)
+                                  )
+                                }
+                              </span>
+                            </Fragment>
+                          )}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            onClick={() => this.handleDeleteGuia(row.publicID)}
+                            aria-label="Deletar"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      /* <div>
+                        <Button
+                          to={{
+                            pathname: `/guias/${row.publicID}`,
+                            state: { ...row },
+                          }}
+                          component={Link}
+                          aria-label="Editar"
+                        >
+                          Editar
+                        </Button>
+                        <Avatar aria-label={row.paciente.nome} className={classes.avatar}>
+                          {row.paciente.nome.substring(0, 1).toUpperCase()}
+                        </Avatar>
+                        <p>{row.paciente.nome}</p>
+                        <p>
+                          {row.status === 1 ? (
+                            <span>Ativo</span>
+                          ) : (
+                            <span>Removido</span>
+                          )}
+                        </p>
+                        <p>
+                          {
+                            row.procedimentos.length > 0 && (
+                              formatCurrency(row.procedimentos[0].valorprocedimento)
+                            )
+                          }
+                        </p>
+                        <IconButton
+                          onClick={() => this.handleDeleteGuia(row.publicID)}
+                          aria-label="Deletar"
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </div> */
                     )
                   ))
                 }
-              </Fragment>
+              </List>
             )}
           </Fragment>
         )}
@@ -211,7 +273,6 @@ Guias.propTypes = {
   value: PropTypes.string.isRequired,
   guiasError: PropTypes.string.isRequired,
   deleteGuias: PropTypes.func.isRequired,
-  // connectIO: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -221,5 +282,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  deleteGuias, loadGuias, searchChange, /* connectIO, */
+  deleteGuias, loadGuias, searchChange,
 })(withStyles(styles)(withRouter(Guias)));
