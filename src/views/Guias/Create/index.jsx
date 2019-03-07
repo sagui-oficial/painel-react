@@ -37,7 +37,7 @@ class GuiaCreate extends Component {
 
     await propAddGuia({
       id: createID,
-      status: 0,
+      status: 1,
       publicID: createID,
       numero: createID.split('-')[0].toUpperCase(),
       planooperadora: {
