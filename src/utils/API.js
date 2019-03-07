@@ -3,8 +3,7 @@ import axios from 'axios';
 /**
  * API BACKEND
  */
-export const API = 'http://localhost:8080';
-// export const API = 'https://localhost:5001/backoffice/gto';
+export const API = process.env.REACT_APP_PUBLIC_URL || 'http://localhost:5001/backoffice';
 
 /**
  * Call to API from url

@@ -1,4 +1,3 @@
-// import io from 'socket.io-client';
 import { APIResquest } from '../utils/API';
 
 export const GET_GUIAS = 'GET_GUIAS';
@@ -6,15 +5,14 @@ export const GET_GUIAS_DETAILS = 'GET_GUIAS_DETAILS';
 export const SAVE_GUIAS = 'SAVE_GUIAS';
 export const DELETE_GUIAS = 'DELETE_GUIAS';
 export const FETCH_ERROR = 'FETCH_ERROR';
-// export const SOCKET_IO = 'SOCKET_IO';
 
 export function loadGuias() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'guias',
+      uri: 'gto/listargto',
       method: 'GET',
     })
-      .then(data => dispatch({ type: GET_GUIAS, payload: data }))
+      .then(res => dispatch({ type: GET_GUIAS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -22,7 +20,7 @@ export function loadGuias() {
 export function addGuia(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'guias',
+      uri: 'gto/criargto',
       method: 'POST',
       data,
     })
@@ -34,10 +32,10 @@ export function addGuia(data) {
 export function loadGuiaDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `guias/${id}`,
+      uri: `gto/${id}/obtergto`,
       method: 'GET',
     })
-      .then(data => dispatch({ type: GET_GUIAS_DETAILS, payload: data }))
+      .then(res => dispatch({ type: GET_GUIAS_DETAILS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -45,7 +43,7 @@ export function loadGuiaDetail(id) {
 export function deleteGuias(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `guias/${id}`,
+      uri: `gto/${id}/deletargto`,
       method: 'PATCH',
       data,
     })
@@ -53,18 +51,3 @@ export function deleteGuias(data, id) {
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
-
-/* export function connectIO() {
-  return (dispatch) => {
-    const socket = io('http://localhost:4001/');
-
-    socket.emit('guias');
-    socket.on('success', (data) => {
-      dispatch({ type: SOCKET_IO, payload: data });
-    });
-
-    socket.on('error', (data) => {
-      dispatch({ type: SOCKET_IO, payload: data });
-    });
-  };
-} */
