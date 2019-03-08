@@ -25,7 +25,7 @@ class GuiaDetail extends Component {
     };
 
     this.loadGuia = this.loadGuia.bind(this);
-    this.updateGuia = this.updateGuia.bind(this);
+    this.handleUpdateStateGuia = this.handleUpdateStateGuia.bind(this);
   }
 
   componentDidMount() {
@@ -33,10 +33,10 @@ class GuiaDetail extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.updateGuia(prevProps);
+    this.handleUpdateStateGuia(prevProps);
   }
 
-  updateGuia(prevProps) {
+  handleUpdateStateGuia(prevProps) {
     const { loadGuiaData } = this.props;
 
     if (prevProps.loadGuiaData !== loadGuiaData) {
@@ -77,11 +77,9 @@ class GuiaDetail extends Component {
             {
               typeof loadGuiaLocal.status !== 'undefined' && (
                 <p>
-                  {loadGuiaLocal.status === 1 ? (
-                    <span>Ativo</span>
-                  ) : (
-                    <span>Removido</span>
-                  )}
+                  {loadGuiaLocal.status === 1 && ('Criada')}
+                  {loadGuiaLocal.status === 2 && ('Concluida')}
+                  {loadGuiaLocal.status === 99 && ('Deletada')}
                 </p>
               )
             }
