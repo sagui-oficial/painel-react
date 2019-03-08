@@ -1,4 +1,4 @@
-import { APIResquest } from '../utils/API';
+import { APIResquest } from '../utils/api';
 
 export const GET_GUIAS = 'GET_GUIAS';
 export const GET_GUIA_DETAILS = 'GET_GUIA_DETAILS';
