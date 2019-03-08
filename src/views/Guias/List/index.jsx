@@ -5,23 +5,26 @@ import { connect } from 'react-redux';
 
 // MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
-
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import {
+  Button,
+  Grid,
+  IconButton,
+  Snackbar,
+  Avatar,
+  Typography,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  ListItemSecondaryAction,
+} from '@material-ui/core';
 
 // ICONS
-import CloseIcon from '@material-ui/icons/Close';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {
+  Close as CloseIcon,
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
 
 // LOCAL IMPORTS
 import BoxSearch from '../../../components/Search';
@@ -64,8 +67,7 @@ class Guias extends Component {
     };
 
     this.handleOnClose = this.handleOnClose.bind(this);
-    this.handleMessageError = this.handleMessageError.bind(this);
-
+    this.handleMessage = this.handleMessage.bind(this);
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleNewGuia = this.handleNewGuia.bind(this);
     this.handleStatusGuia = this.handleStatusGuia.bind(this);
@@ -73,11 +75,19 @@ class Guias extends Component {
 
   componentDidMount() {
     const { loadGuias: propLoadGuias } = this.props;
-
-    this.handleMessageError(propLoadGuias);
+    propLoadGuias();
+    this.handleMessage();
   }
 
-  handleMessageError(applyHandle, text) {
+  componentDidUpdate(prevProps) {
+    const { guiasError } = this.props;
+
+    if (prevProps.guiasError !== guiasError) {
+      this.handleMessage('Conectado.');
+    }
+  }
+
+  handleMessage(text) {
     const { guiasError } = this.props;
 
     if (guiasError.indexOf('Error') > -1) {
@@ -88,8 +98,6 @@ class Guias extends Component {
     if (typeof text !== 'undefined') {
       this.setState({ boxMessage: { open: true, text } });
     }
-
-    applyHandle();
   }
 
   handleOnClose() {
@@ -111,21 +119,20 @@ class Guias extends Component {
 
   handleDeleteGuia(postID) {
     const { deleteGuias: propDeleteGuias } = this.props;
-
-    this.handleMessageError(() => propDeleteGuias(
-      { status: 99 },
-      postID,
-    ), 'Item excluido.');
+    this.handleMessage('Item excluido.');
+    propDeleteGuias({ status: 99 }, postID);
   }
 
   handleNewGuia() {
     const { history } = this.props;
-
-    this.handleMessageError(() => history.push('/guias/criar'));
+    this.handleMessage();
+    history.push('/guias/criar');
   }
 
   render() {
-    const { classes, guias, value } = this.props;
+    const {
+      classes, guias, value, guiasError,
+    } = this.props;
     const { boxMessage } = this.state;
 
     return (
@@ -161,6 +168,7 @@ class Guias extends Component {
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
+                disabled={!!guiasError}
                 onClick={this.handleNewGuia}
               >
                 +Novo
@@ -194,6 +202,7 @@ class Guias extends Component {
                             <Fragment>
                               <Button
                                 size="small"
+                                disabled={!!guiasError}
                                 onClick={e => this.handleStatusGuia(e, row.publicID)}
                               >
                                 {row.status === 1 ? ('Ativo') : ('Removido')}
@@ -210,6 +219,7 @@ class Guias extends Component {
                         />
                         <ListItemSecondaryAction>
                           <IconButton
+                            disabled={!!guiasError}
                             onClick={() => this.handleDeleteGuia(row.publicID)}
                             aria-label="Deletar"
                           >
@@ -217,42 +227,6 @@ class Guias extends Component {
                           </IconButton>
                         </ListItemSecondaryAction>
                       </ListItem>
-                      /* <div>
-                        <Button
-                          to={{
-                            pathname: `/guias/${row.publicID}`,
-                            state: { ...row },
-                          }}
-                          component={Link}
-                          aria-label="Editar"
-                        >
-                          Editar
-                        </Button>
-                        <Avatar aria-label={row.paciente.nome} className={classes.avatar}>
-                          {row.paciente.nome.substring(0, 1).toUpperCase()}
-                        </Avatar>
-                        <p>{row.paciente.nome}</p>
-                        <p>
-                          {row.status === 1 ? (
-                            <span>Ativo</span>
-                          ) : (
-                            <span>Removido</span>
-                          )}
-                        </p>
-                        <p>
-                          {
-                            row.procedimentos.length > 0 && (
-                              formatCurrency(row.procedimentos[0].valorprocedimento)
-                            )
-                          }
-                        </p>
-                        <IconButton
-                          onClick={() => this.handleDeleteGuia(row.publicID)}
-                          aria-label="Deletar"
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                      </div> */
                     )
                   ))
                 }
