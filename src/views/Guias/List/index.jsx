@@ -16,8 +16,10 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText,
   ListItemSecondaryAction,
+  Select,
+  FormControl,
+  MenuItem,
 } from '@material-ui/core';
 
 // ICONS
@@ -30,7 +32,7 @@ import {
 import BoxSearch from '../../../components/Search';
 import { formatCurrency } from '../../../helpers';
 import { searchChange } from '../../../actions/search';
-import { loadGuias, deleteGuias } from '../../../actions/guias';
+import { loadGuias, deleteGuia, updateGuia } from '../../../actions/guias';
 
 const styles = theme => ({
   root: {
@@ -87,6 +89,10 @@ class Guias extends Component {
     }
   }
 
+  handleStatusGuiaCk = (event) => {
+    event.preventDefault();
+  }
+
   handleMessage(text) {
     const { guiasError } = this.props;
 
@@ -109,24 +115,26 @@ class Guias extends Component {
     });
   }
 
-  handleStatusGuia(e, openID) {
-    e.preventDefault();
-
-    this.setState({
-      boxMessage: { open: true, text: openID },
-    });
-  }
-
   handleDeleteGuia(postID) {
-    const { deleteGuias: propDeleteGuias } = this.props;
+    const { deleteGuia: propdeleteGuia } = this.props;
     this.handleMessage('Item excluido.');
-    propDeleteGuias({ status: 99 }, postID);
+    propdeleteGuia({ status: 99 }, postID);
   }
 
   handleNewGuia() {
     const { history } = this.props;
     this.handleMessage();
     history.push('/guias/criar');
+  }
+
+  handleStatusGuia(event, prevStatus, postID) {
+    const { updateGuia: propUpdateGuias } = this.props;
+    const { target } = event;
+
+    if (prevStatus !== target.value) {
+      this.handleMessage('Status atualizado.');
+      propUpdateGuias({ status: target.value }, postID);
+    }
   }
 
   render() {
@@ -180,7 +188,8 @@ class Guias extends Component {
               <List dense className={classes.root}>
                 {
                   guias.map(row => (
-                    row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                    (row.numero.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
+                      || row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0)
                     && row.status !== 99 && (
                       <ListItem
                         key={row.publicID}
@@ -196,27 +205,32 @@ class Guias extends Component {
                             {row.paciente.nome.substring(0, 1).toUpperCase()}
                           </Avatar>
                         </ListItemAvatar>
-                        <ListItemText
-                          primary={row.paciente.nome}
-                          secondary={(
-                            <Fragment>
-                              <Button
-                                size="small"
-                                disabled={!!guiasError}
-                                onClick={e => this.handleStatusGuia(e, row.publicID)}
-                              >
-                                {row.status === 1 ? ('Ativo') : ('Removido')}
-                              </Button>
-                              <span>
-                                {
-                                  row.procedimentos.length > 0 && (
-                                    formatCurrency(row.procedimentos[0].valorprocedimento)
-                                  )
-                                }
-                              </span>
-                            </Fragment>
-                          )}
-                        />
+                        <div>
+                          {row.numero}
+                          <br />
+                          {row.paciente.nome}
+                          <br />
+                          <FormControl className={classes.formControl}>
+                            <Select
+                              name={row.numero}
+                              value={row.status}
+                              onClick={this.handleStatusGuiaCk}
+                              onChange={e => this.handleStatusGuia(e, row.status, row.publicID)}
+                              disabled={!!guiasError}
+                              displayEmpty
+                            >
+                              <MenuItem value={1}>Criada</MenuItem>
+                              <MenuItem value={2}>Concluida</MenuItem>
+                              {/* <MenuItem value={99}>Deletada</MenuItem> */}
+                            </Select>
+                          </FormControl>
+                          <br />
+                          {
+                            row.procedimentos.length > 0 && (
+                              formatCurrency(row.procedimentos[0].valorprocedimento)
+                            )
+                          }
+                        </div>
                         <ListItemSecondaryAction>
                           <IconButton
                             disabled={!!guiasError}
@@ -246,7 +260,8 @@ Guias.propTypes = {
   loadGuias: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   guiasError: PropTypes.string.isRequired,
-  deleteGuias: PropTypes.func.isRequired,
+  deleteGuia: PropTypes.func.isRequired,
+  updateGuia: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -256,5 +271,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  deleteGuias, loadGuias, searchChange,
+  deleteGuia, loadGuias, searchChange, updateGuia,
 })(withStyles(styles)(withRouter(Guias)));
