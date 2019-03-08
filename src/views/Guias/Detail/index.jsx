@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 // MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 
 // LOCAL IMPORTS
 import { loadGuiaDetail } from '../../../actions/guias';
