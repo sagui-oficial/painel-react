@@ -23,6 +23,23 @@ export const OrderBy = (arr = [], propName) => (
     return 0;
   }));
 
+export const OrderByDate = (arr = [], propName, order = 'asc') => (
+  arr.slice(0).sort((a, b) => {
+    const firstDate = new Date(a[propName]);
+    const secondDate = new Date(b[propName]);
+    let orderDesc = 1;
+    let orderAsc = -1;
+
+    if (order === 'desc') {
+      orderDesc = -1;
+      orderAsc = 1;
+    }
+
+    if (firstDate > secondDate) return orderAsc;
+    if (firstDate < secondDate) return orderDesc;
+    return 0;
+  }));
+
 /**
  * Format price from currency code
  * @param {price} _number
@@ -34,6 +51,16 @@ export const formatCurrency = (_number, _locale = 'pt-BR', _format = 'BRL') => n
   currency: _format,
   minimumFractionDigits: 2,
 }).format(_number);
+
+export const formatDate = (_string, _locale = 'pt-BR') => {
+  const dateString = new Date(_string);
+  const optionsDate = {
+    // weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    year: 'numeric', month: 'numeric', day: 'numeric',
+  };
+
+  return dateString.toLocaleDateString(_locale, optionsDate);
+};
 
 /**
  * Generate random price to mock DB
