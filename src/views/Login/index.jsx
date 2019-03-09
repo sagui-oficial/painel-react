@@ -61,14 +61,12 @@ const Login = () => {
         createdAt: new Date(),
       });
       setValues({ ...defaultValues });
-      getData();
     }
   };
 
   const deleteData = (id) => {
     GET_PATIENTS.doc(id).delete().then(() => {
       setMsg({ open: true, text: 'Documento removido!' });
-      getData();
     }).catch((error) => {
       const message = { error: `Error ${error}` };
       setMsg({ open: true, text: 'Erro ao tentar remover!' });
@@ -101,6 +99,8 @@ const Login = () => {
       </ListItem>
     );
   });
+
+  getData();
 
   return (
     <div>
