@@ -12,6 +12,18 @@ export function convertTimestampToDate(_timestamp) {
 }
 
 /**
+ * Order an array by propName
+ * @param {*} arr
+ * @param {*} propName
+ */
+export const OrderBy = (arr = [], propName) => (
+  arr.slice(0).sort((a, b) => {
+    if (a[propName] > b[propName]) return 1;
+    if (a[propName] < b[propName]) return -1;
+    return 0;
+  }));
+
+/**
  * Format price from currency code
  * @param {price} _number
  * @param {countryCode} _locale
