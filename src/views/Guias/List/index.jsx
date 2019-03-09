@@ -30,7 +30,7 @@ import {
 
 // LOCAL IMPORTS
 import BoxSearch from '../../../components/Search';
-import { formatCurrency } from '../../../helpers';
+import { formatCurrency, formatDate, OrderByDate } from '../../../helpers';
 import { searchChange } from '../../../actions/search';
 import { loadGuias, deleteGuia, updateGuia } from '../../../actions/guias';
 
@@ -62,6 +62,8 @@ class Guias extends Component {
     super(props);
 
     this.state = {
+      allGuias: [],
+      orderBy: 'vencimento',
       boxMessage: {
         open: false,
         text: '',
@@ -73,6 +75,7 @@ class Guias extends Component {
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleNewGuia = this.handleNewGuia.bind(this);
     this.handleStatusGuia = this.handleStatusGuia.bind(this);
+    this.handleOrderGuias = this.handleOrderGuias.bind(this);
   }
 
   componentDidMount() {
@@ -82,7 +85,12 @@ class Guias extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { guiasError } = this.props;
+    const { guiasError, guias } = this.props;
+    const { orderBy } = this.state;
+
+    if (prevProps.guias !== guias) {
+      this.handleOrderGuias(guias, orderBy);
+    }
 
     if (prevProps.guiasError !== guiasError) {
       this.handleMessage('Conectado.');
@@ -91,6 +99,12 @@ class Guias extends Component {
 
   handleStatusGuiaCk = (event) => {
     event.preventDefault();
+  }
+
+  handleOrderGuias(guias, orderBy) {
+    this.setState({
+      allGuias: OrderByDate(guias, orderBy),
+    });
   }
 
   handleMessage(text) {
@@ -139,9 +153,9 @@ class Guias extends Component {
 
   render() {
     const {
-      classes, guias, value, guiasError,
+      classes, value, guiasError,
     } = this.props;
-    const { boxMessage } = this.state;
+    const { boxMessage, allGuias } = this.state;
 
     return (
       <Fragment>
@@ -165,7 +179,7 @@ class Guias extends Component {
             </IconButton>,
           ]}
         />
-        {guias && (
+        {allGuias && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
@@ -184,10 +198,10 @@ class Guias extends Component {
             </Grid>
             <Divider className={classes.divider} />
             <BoxSearch placeholder="Buscar guias" />
-            {guias && guias.length > 0 && (
+            {allGuias && allGuias.length > 0 && (
               <List dense className={classes.root}>
                 {
-                  guias.map(row => (
+                  allGuias.map(row => (
                     (row.numero.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
                       || row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0)
                     && row.status !== 99 && (
@@ -225,6 +239,8 @@ class Guias extends Component {
                             </Select>
                           </FormControl>
                           <br />
+                          {formatDate(row.vencimento)}
+                          {' - '}
                           {
                             row.procedimentos.length > 0 && (
                               formatCurrency(row.procedimentos[0].valorprocedimento)
