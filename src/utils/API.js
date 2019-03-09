@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 /**
- * API BACKEND
+ * URL API BACKEND
  */
 export const API = process.env.REACT_APP_PUBLIC_URL || 'http://localhost:5001/backoffice';
 
