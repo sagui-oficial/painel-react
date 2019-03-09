@@ -16,27 +16,21 @@ export function convertTimestampToDate(_timestamp) {
  * @param {*} arr
  * @param {*} propName
  */
-export const OrderBy = (arr = [], propName) => (
+export const sortBy = (arr = [], order = { by: '', type: 'string', sort: 'desc' }) => (
   arr.slice(0).sort((a, b) => {
-    if (a[propName] > b[propName]) return 1;
-    if (a[propName] < b[propName]) return -1;
-    return 0;
-  }));
+    const firstElement = order.by === 'string' ? a[order.by] : new Date(a[order.by]);
+    const secondElement = order.by === 'string' ? b[order.by] : new Date(b[order.by]);
 
-export const OrderByDate = (arr = [], propName, order = 'asc') => (
-  arr.slice(0).sort((a, b) => {
-    const firstDate = new Date(a[propName]);
-    const secondDate = new Date(b[propName]);
-    let orderDesc = 1;
-    let orderAsc = -1;
+    let orderDesc = -1;
+    let orderAsc = 1;
 
-    if (order === 'desc') {
-      orderDesc = -1;
-      orderAsc = 1;
+    if (order.sort === 'asc') {
+      orderDesc = 1;
+      orderAsc = -1;
     }
 
-    if (firstDate > secondDate) return orderAsc;
-    if (firstDate < secondDate) return orderDesc;
+    if (firstElement > secondElement) return orderAsc;
+    if (firstElement < secondElement) return orderDesc;
     return 0;
   }));
 
