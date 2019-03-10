@@ -7,7 +7,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 
 // PAGES
 import DashboardPage from '../views/Dashboard';
-import Guias from '../views/Guias/List';
+import Guias from '../views/Guias';
 import Pacientes from '../views/Pacientes';
 import Procedimentos from '../views/Procedimentos';
 import Planos from '../views/Planos';
