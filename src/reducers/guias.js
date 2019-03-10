@@ -13,7 +13,7 @@ export default function (state = INITIAL_STATE, action = {}) {
     case GET_GUIAS:
       return {
         ...state,
-        guias: action.payload,
+        guias: action.payload.filter(item => item.status !== 99),
         fetchError: '',
       };
     case GET_GUIA_DETAILS:
