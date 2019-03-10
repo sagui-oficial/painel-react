@@ -1,13 +1,13 @@
 import { SEARCH } from '../actions/search';
 
 const INITIAL_STATE = {
-  value: '',
+  inputValue: '',
 };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case SEARCH:
-      return { value: action.payload };
+      return { inputValue: action.payload };
     default:
       return state;
   }

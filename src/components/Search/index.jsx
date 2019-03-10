@@ -25,14 +25,14 @@ const styles = () => ({
 
 const BoxSearch = (props) => {
   const {
-    value, classes, searchChange: propSearchChange, placeholder,
+    inputValue, classes, searchChange: propSearchChange, placeholder,
   } = props;
   return (
     <Paper className={classes.root} elevation={1}>
       <InputBase
         className={classes.input}
         type="search"
-        value={value}
+        value={inputValue}
         onChange={propSearchChange}
         placeholder={placeholder}
       />
@@ -45,7 +45,7 @@ const BoxSearch = (props) => {
 
 BoxSearch.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  value: PropTypes.string.isRequired,
+  inputValue: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   searchChange: PropTypes.func.isRequired,
 };
@@ -54,7 +54,7 @@ BoxSearch.defaultProps = {
   placeholder: 'buscar...',
 };
 
-const mapStateToProps = state => ({ value: state.searchReducer.value });
+const mapStateToProps = state => ({ inputValue: state.searchReducer.inputValue });
 
 export default connect(mapStateToProps, {
   searchChange,

@@ -30,9 +30,9 @@ import {
 
 // LOCAL IMPORTS
 import BoxSearch from '../../../components/Search';
-import { formatCurrency, formatDate, OrderByDate } from '../../../helpers';
 import { searchChange } from '../../../actions/search';
 import { loadGuias, deleteGuia, updateGuia } from '../../../actions/guias';
+import { formatCurrency, formatDate/* , sortBy */ } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -62,8 +62,6 @@ class Guias extends Component {
     super(props);
 
     this.state = {
-      allGuias: [],
-      orderBy: 'vencimento',
       boxMessage: {
         open: false,
         text: '',
@@ -75,7 +73,6 @@ class Guias extends Component {
     this.handleDeleteGuia = this.handleDeleteGuia.bind(this);
     this.handleNewGuia = this.handleNewGuia.bind(this);
     this.handleStatusGuia = this.handleStatusGuia.bind(this);
-    this.handleOrderGuias = this.handleOrderGuias.bind(this);
   }
 
   componentDidMount() {
@@ -85,12 +82,7 @@ class Guias extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { guiasError, guias } = this.props;
-    const { orderBy } = this.state;
-
-    if (prevProps.guias !== guias) {
-      this.handleOrderGuias(guias, orderBy);
-    }
+    const { guiasError } = this.props;
 
     if (prevProps.guiasError !== guiasError) {
       this.handleMessage('Conectado.');
@@ -99,12 +91,6 @@ class Guias extends Component {
 
   handleStatusGuiaCk = (event) => {
     event.preventDefault();
-  }
-
-  handleOrderGuias(guias, orderBy) {
-    this.setState({
-      allGuias: OrderByDate(guias, orderBy),
-    });
   }
 
   handleMessage(text) {
@@ -131,8 +117,9 @@ class Guias extends Component {
 
   handleDeleteGuia(postID) {
     const { deleteGuia: propdeleteGuia } = this.props;
-    this.handleMessage('Item excluido.');
+
     propdeleteGuia({ status: 99 }, postID);
+    this.handleMessage('Item excluido.');
   }
 
   handleNewGuia() {
@@ -153,9 +140,9 @@ class Guias extends Component {
 
   render() {
     const {
-      classes, value, guiasError,
+      classes, inputValue, guiasError, guias,
     } = this.props;
-    const { boxMessage, allGuias } = this.state;
+    const { boxMessage } = this.state;
 
     return (
       <Fragment>
@@ -179,7 +166,7 @@ class Guias extends Component {
             </IconButton>,
           ]}
         />
-        {allGuias && (
+        {guias && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
@@ -198,67 +185,72 @@ class Guias extends Component {
             </Grid>
             <Divider className={classes.divider} />
             <BoxSearch placeholder="Buscar guias" />
-            {allGuias && allGuias.length > 0 && (
+            {guias && guias.length > 0 && (
               <List dense className={classes.root}>
                 {
-                  allGuias.map(row => (
-                    (row.numero.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0
-                      || row.paciente.nome.toLowerCase().indexOf(value.trim().toLowerCase()) >= 0)
-                    && row.status !== 99 && (
-                      <ListItem
-                        key={row.publicID}
-                        to={{
-                          pathname: `/guias/${row.publicID}`,
-                          state: { ...row },
-                        }}
-                        component={Link}
-                        button
-                      >
-                        <ListItemAvatar>
-                          <Avatar aria-label={row.paciente.nome} className={classes.avatar}>
-                            {row.paciente.nome.substring(0, 1).toUpperCase()}
-                          </Avatar>
-                        </ListItemAvatar>
-                        <div>
-                          {row.numero}
-                          <br />
-                          {row.paciente.nome}
-                          <br />
-                          <FormControl className={classes.formControl}>
-                            <Select
-                              name={row.numero}
-                              value={row.status}
-                              onClick={this.handleStatusGuiaCk}
-                              onChange={e => this.handleStatusGuia(e, row.status, row.publicID)}
+                  guias.map((row) => {
+                    const filterNumber = row.numero.toLowerCase();
+                    const filterName = row.paciente.nome.toLowerCase();
+                    const filterInputValue = inputValue.trim().toLowerCase();
+
+                    return (
+                      (filterNumber.indexOf(filterInputValue) >= 0
+                        || filterName.indexOf(filterInputValue) >= 0)
+                      && row.status !== 99 && (
+                        <ListItem
+                          key={row.publicID}
+                          to={{
+                            pathname: `/guias/${row.publicID}`,
+                            state: { ...row },
+                          }}
+                          component={Link}
+                          button
+                        >
+                          <ListItemAvatar>
+                            <Avatar aria-label={row.paciente.nome} className={classes.avatar}>
+                              {row.paciente.nome.substring(0, 1).toUpperCase()}
+                            </Avatar>
+                          </ListItemAvatar>
+                          <div>
+                            {row.numero}
+                            <br />
+                            {row.paciente.nome}
+                            <br />
+                            <FormControl>
+                              <Select
+                                name={row.numero}
+                                value={row.status}
+                                onClick={this.handleStatusGuiaCk}
+                                onChange={e => this.handleStatusGuia(e, row.status, row.publicID)}
+                                disabled={!!guiasError}
+                                displayEmpty
+                              >
+                                <MenuItem value={1}>Criada</MenuItem>
+                                <MenuItem value={2}>Concluida</MenuItem>
+                                {/* <MenuItem value={99}>Deletada</MenuItem> */}
+                              </Select>
+                            </FormControl>
+                            <br />
+                            {formatDate(row.vencimento)}
+                            {' - '}
+                            {
+                              row.procedimentos.length > 0 && (
+                                formatCurrency(row.procedimentos[0].valorprocedimento)
+                              )
+                            }
+                          </div>
+                          <ListItemSecondaryAction>
+                            <IconButton
                               disabled={!!guiasError}
-                              displayEmpty
+                              onClick={() => this.handleDeleteGuia(row.publicID)}
+                              aria-label="Deletar"
                             >
-                              <MenuItem value={1}>Criada</MenuItem>
-                              <MenuItem value={2}>Concluida</MenuItem>
-                              {/* <MenuItem value={99}>Deletada</MenuItem> */}
-                            </Select>
-                          </FormControl>
-                          <br />
-                          {formatDate(row.vencimento)}
-                          {' - '}
-                          {
-                            row.procedimentos.length > 0 && (
-                              formatCurrency(row.procedimentos[0].valorprocedimento)
-                            )
-                          }
-                        </div>
-                        <ListItemSecondaryAction>
-                          <IconButton
-                            disabled={!!guiasError}
-                            onClick={() => this.handleDeleteGuia(row.publicID)}
-                            aria-label="Deletar"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    )
-                  ))
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      ));
+                  })
                 }
               </List>
             )}
@@ -274,7 +266,7 @@ Guias.propTypes = {
   guias: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  inputValue: PropTypes.string.isRequired,
   guiasError: PropTypes.string.isRequired,
   deleteGuia: PropTypes.func.isRequired,
   updateGuia: PropTypes.func.isRequired,
@@ -283,7 +275,7 @@ Guias.propTypes = {
 const mapStateToProps = state => ({
   guias: state.guiasReducer.guias,
   guiasError: state.guiasReducer.fetchError,
-  value: state.searchReducer.value,
+  inputValue: state.searchReducer.inputValue,
 });
 
 export default connect(mapStateToProps, {
