@@ -101,6 +101,7 @@ class GuiasList extends Component {
   }
 
   componentDidMount() {
+    this.onLoadGuias();
     this.onHandleMessage();
   }
 
