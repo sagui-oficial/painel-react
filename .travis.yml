@@ -10,23 +10,23 @@ cache:
 before_install:
   - npm install
 
+# install:
+#   - npm install -g firebase-tools
+
 before_script:
   - npm run build
-  - rm -rf public
-  - mv build public
+
+script:
+  - echo "Deploying..."
 
 branches:
   only:
   - master
 
-# deploy:
-#   provider: codedeploy
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key: $AWS_SECRET_KEY
-#   bucket: "S3 Bucket"
-#   application: "SaguiFE"
-#   deployment_group: SaguiPainelReact
-#   region: sa-east-1
+deploy:
+  provider: firebase
+  token:
+    secure: $FIREBASE_TOKEN
 
 notifications:
   email:
