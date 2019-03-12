@@ -25,12 +25,12 @@ const hist = createBrowserHistory();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const store = createStore(
-  reducers,
-  composeEnhancers(
-    applyMiddleware(thunk, logger),
-  ),
-);
+let store;
+if (process.env.NODE_ENV !== 'production') {
+  store = createStore(reducers, composeEnhancers(applyMiddleware(thunk, logger)));
+} else {
+  store = createStore(reducers, applyMiddleware(thunk));
+}
 
 ReactDOM.render(
   <Provider store={store}>
