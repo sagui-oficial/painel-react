@@ -17,17 +17,12 @@ import DashboardLayout from './layouts/Dashboard';
 
 const hist = createBrowserHistory();
 
-/**
- * Chrome Extension Redux Store
- * @param __REDUX_DEVTOOLS_EXTENSION_COMPOSE__
- */
-/* eslint-disable no-underscore-dangle */
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-/* eslint-enable */
-
 let store;
 if (process.env.REACT_APP_STAGE === 'development') {
+  /* eslint-disable no-underscore-dangle */
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   store = createStore(reducers, composeEnhancers(applyMiddleware(thunk, logger)));
+  /* eslint-enable */
 } else {
   store = createStore(reducers, applyMiddleware(thunk));
 }
