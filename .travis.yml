@@ -10,18 +10,19 @@ cache:
 before_install:
   - npm install
 
-branches:
-  only:
-    - master
-
 before_deploy:
   - npm run build
   - echo "Deploying..."
 
 deploy:
+  skip_cleanup: true
   provider: firebase
   token:
     secure: $FIREBASE_TOKEN
+
+branches:
+  only:
+    - master
 
 notifications:
   email:
@@ -29,10 +30,3 @@ notifications:
     on_failure: always # if there is a fail
     recipients:
       - contato@brunomacedo.com.br
-
-jobs:
-  include:
-    - stage: test
-      script: echo "Stage 1 Test 1"
-    - stage: deploy
-      script: echo "Stage 2 Test 2"
