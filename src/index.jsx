@@ -26,7 +26,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
 let store;
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.REACT_APP_STAGE === 'development') {
   store = createStore(reducers, composeEnhancers(applyMiddleware(thunk, logger)));
 } else {
   store = createStore(reducers, applyMiddleware(thunk));
