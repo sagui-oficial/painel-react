@@ -10,18 +10,13 @@ cache:
 before_install:
   - npm install
 
-# install:
-#   - npm install -g firebase-tools
-
-before_script:
-  - npm run build
-
-script:
-  - echo "Deploying..."
-
 branches:
   only:
-  - master
+    - master
+
+before_deploy:
+  - npm run build
+  - echo "Deploying..."
 
 deploy:
   provider: firebase
@@ -34,3 +29,10 @@ notifications:
     on_failure: always # if there is a fail
     recipients:
       - contato@brunomacedo.com.br
+
+jobs:
+  include:
+    - stage: test
+      script: echo "Stage 1 Test 1"
+    - stage: deploy
+      script: echo "Stage 2 Test 2"
