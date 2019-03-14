@@ -149,7 +149,7 @@ class GuiasList extends Component {
     const regex = new RegExp(inputValue, 'gi');
 
     this.setState({
-      allGuias: guias.filter(item => item.paciente.nome.match(regex) !== null),
+      allGuias: guias.filter(item => item.Paciente.Nome.match(regex) !== null),
     });
   }
 
@@ -178,7 +178,7 @@ class GuiasList extends Component {
   onHandleDeleteGuia(postID) {
     const { deleteGuia: propdeleteGuia } = this.props;
 
-    propdeleteGuia({ status: 99 }, postID);
+    propdeleteGuia({ Status: 99 }, postID);
     this.onHandleMessage('Item excluido.');
   }
 
@@ -188,7 +188,7 @@ class GuiasList extends Component {
 
     if (prevStatus !== target.value) {
       this.onHandleMessage('Status atualizado.');
-      propUpdateGuias({ status: target.value }, postID);
+      propUpdateGuias({ Status: target.value }, postID);
     }
   }
 
@@ -228,36 +228,36 @@ class GuiasList extends Component {
           {allGuias.length ? (
             allGuias.map(item => (
               <ListItem
-                key={item.publicID}
+                key={item.PublicID}
                 className={classes.listItem}
                 to={{
-                  pathname: `/guias/${item.publicID}`,
+                  pathname: `/guias/${item.PublicID}`,
                   state: { ...item },
                 }}
                 component={Link}
                 button
               >
                 <ListItemAvatar>
-                  <Avatar aria-label={item.paciente.nome} className={classes.avatar}>
-                    {item.paciente.nome.substring(0, 1).toUpperCase()}
+                  <Avatar aria-label={item.Paciente.Nome} className={classes.avatar}>
+                    {item.Paciente.Nome.substring(0, 1).toUpperCase()}
                   </Avatar>
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
-                    {item.numero}
+                    {item.Numero}
                   </p>
 
                   <p>
-                    <strong>{item.paciente.nome}</strong>
+                    <strong>{item.Paciente.Nome}</strong>
                   </p>
 
                   <FormControl>
                     <Select
-                      name={item.numero}
-                      value={item.status}
+                      name={item.Numero}
+                      value={item.Status}
                       className={classes.selectBox}
                       onClick={e => e.preventDefault()}
-                      onChange={e => this.onHandleStatusGuia(e, item.status, item.publicID)}
+                      onChange={e => this.onHandleStatusGuia(e, item.Status, item.PublicID)}
                       disabled={!!error}
                       displayEmpty
                     >
@@ -268,12 +268,12 @@ class GuiasList extends Component {
                   </FormControl>
 
                   <p>
-                    {formatDate(item.vencimento)}
+                    {formatDate(item.Vencimento)}
                     {' - '}
                     {
-                      item.procedimentos.length > 0 && (
+                      item.Procedimentos.length > 0 && (
                         <strong>
-                          {formatCurrency(item.procedimentos[0].valorprocedimento)}
+                          {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
                         </strong>
                       )
                     }
@@ -282,7 +282,7 @@ class GuiasList extends Component {
                 <ListItemSecondaryAction className={classes.iconDelete}>
                   <IconButton
                     disabled={!!error}
-                    onClick={() => this.onHandleDeleteGuia(item.publicID)}
+                    onClick={() => this.onHandleDeleteGuia(item.PublicID)}
                     aria-label="Deletar"
                   >
                     <DeleteIcon />

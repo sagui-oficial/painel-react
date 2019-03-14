@@ -20,7 +20,7 @@ const MainRouters = () => (
     ))}
     <Route exact path="/login" component={Login} />
     <Route exact path="/guias/criar" component={GuiaCreate} />
-    <Route exact path="/guias/:id" component={GuiaDetail} />
+    <Route exact path="/guias/:Id" component={GuiaDetail} />
     <Route path="/" render={() => (<Redirect to="/guias" />)} />
   </Switch>
 );

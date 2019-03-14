@@ -13,7 +13,7 @@ export function loadGuias() {
       uri: 'gto/listargto',
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIAS, payload: res }))
+      .then(res => dispatch({ type: GET_GUIAS, payload: res.Result.GTOs }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -25,42 +25,42 @@ export function addGuia(data) {
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res }))
+      .then(res => dispatch({ type: SAVE_GUIA, payload: res.Result.GTOs }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function loadGuiaDetail(id) {
+export function loadGuiaDetail(Id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/obtergto`,
+      uri: `gto/${Id}/obtergto`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
+      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res.Result.GTO }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updateGuia(data, id) {
+export function updateGuia(data, Id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/atualizargto`,
+      uri: `gto/${Id}/atualizargto`,
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA, payload: res }))
+      .then(res => dispatch({ type: UPDATE_GUIA, payload: res.Result.GTOs }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function deleteGuia(data, id) {
+export function deleteGuia(data, Id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/deletargto`,
+      uri: `gto/${Id}/deletargto`,
       method: 'PATCH',
       data,
     })
-      .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
+      .then(() => dispatch({ type: DELETE_GUIA, payload: Id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

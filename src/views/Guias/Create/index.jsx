@@ -77,51 +77,51 @@ class GuiaCreate extends Component {
     const createID = uuidv1();
 
     await propAddGuia({
-      id: createID,
-      status: 1,
-      publicID: createID,
-      numero: createID.split('-')[0].toUpperCase(),
-      solicitacao: new Date(),
-      vencimento: new Date(),
-      planooperadora: {
-        id: 1,
-        publicID: uuidv1(),
-        nomefantasia: 'Operadora 1',
-        razaosocial: null,
-        cnpj: null,
-        dataenviolote: new Date(),
-        datarecebimentolote: new Date(),
-        listaprocedimentos: null,
-        listaarquivos: null,
+      Id: createID,
+      Status: 1,
+      PublicID: createID,
+      Numero: createID.split('-')[0].toUpperCase(),
+      Solicitacao: new Date(),
+      Vencimento: new Date(),
+      PlanoOperadora: {
+        Id: 1,
+        PublicID: uuidv1(),
+        NomeFantasia: 'Operadora 1',
+        RazaoSocial: null,
+        CNPJ: null,
+        DataEnvioLote: new Date(),
+        DataRecebimentoLote: new Date(),
+        ListaProcedimentos: null,
+        ListaArquivos: null,
       },
-      paciente: {
-        id: 1,
-        publicID: uuidv1(),
-        listaplanooperadorapaciente: null,
-        funcao: null,
-        nome: randomNames(),
-        anotacoes: null,
-        cpf: null,
-        email: null,
-        telefone: null,
+      Paciente: {
+        Id: 1,
+        PublicID: uuidv1(),
+        ListaPlanoOperadoraPaciente: null,
+        Funcao: null,
+        Nome: randomNames(),
+        Anotacoes: null,
+        CPF: null,
+        Email: null,
+        Telefone: null,
       },
-      arquivos: [
+      Arquivos: [
         {
-          nome: 'ArquivoTeste',
-          stream: null,
-          datacriacao: new Date(),
-          patharquivo: 'C:\\',
+          Nome: 'ArquivoTeste',
+          Stream: null,
+          DataCriacao: new Date(),
+          PathArquivo: 'C:\\',
         },
       ],
-      procedimentos: [
+      Procedimentos: [
         {
-          id: 1,
-          publicID: uuidv1(),
-          codigo: 1,
-          nomeprocedimento: 'Procedimento de Teste090',
-          valorprocedimento: randomPrice(50, 1500),
-          exigencias: 'Lorem lorem',
-          anotacoes: 'Bla Bla bla',
+          Id: 1,
+          PublicID: uuidv1(),
+          Codigo: 1,
+          NomeProcedimento: 'Procedimento de Teste090',
+          ValorProcedimento: randomPrice(50, 1500),
+          Exigencias: 'Lorem lorem',
+          Anotacoes: 'Bla Bla bla',
         },
       ],
     });
@@ -162,7 +162,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="Número da guia"
-                name="numero"
+                name="Numero"
                 helperText="Digite o número da guia."
                 margin="normal"
               />
@@ -171,7 +171,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="Status"
-                name="status"
+                name="Status"
                 margin="normal"
               />
             </Grid>
@@ -181,8 +181,8 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Data de vencimento"
-                name="vencimento"
+                label="Data de Vencimento"
+                name="Vencimento"
                 helperText="Ex.: 23/02/2019"
                 margin="normal"
               />
@@ -195,8 +195,8 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Nome do paciente"
-                name="paciente"
+                label="Nome do Paciente"
+                name="Paciente"
                 margin="normal"
               />
             </Grid>
@@ -204,7 +204,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="CPF"
-                name="cpf"
+                name="CPF"
                 margin="normal"
               />
             </Grid>
@@ -212,7 +212,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="Plano"
-                name="plano"
+                name="Plano"
                 margin="normal"
               />
             </Grid>
@@ -220,7 +220,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="Telefone"
-                name="telefone"
+                name="Telefone"
                 margin="normal"
                 helperText="(11) 9000-0000"
               />
@@ -229,7 +229,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="E-mail"
-                name="email"
+                name="Email"
                 margin="normal"
                 helperText="email@email.com.br"
               />

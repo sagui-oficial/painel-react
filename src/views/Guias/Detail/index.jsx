@@ -48,9 +48,9 @@ class GuiaDetail extends Component {
     const { loadGuiaData, loadGuiaDetail: loadGuiaFunc, match } = this.props;
 
     if (loadGuiaData.length === 0) {
-      await loadGuiaFunc(match.params.id);
+      await loadGuiaFunc(match.params.Id);
     } else {
-      this.setState({ loadGuiaLocal: loadGuiaData.find(item => item.id === match.params.id) });
+      this.setState({ loadGuiaLocal: loadGuiaData.find(item => item.Id === match.params.Id) });
     }
   }
 
@@ -62,24 +62,24 @@ class GuiaDetail extends Component {
       <div>
         {loadGuiaLocal && (
           <div className={classes.box}>
-            {loadGuiaLocal.publicID && (<p>{loadGuiaLocal.publicID}</p>)}
-            {loadGuiaLocal.paciente && (
+            {loadGuiaLocal.PublicID && (<p>{loadGuiaLocal.PublicID}</p>)}
+            {loadGuiaLocal.Paciente && (
               <Fragment>
-                <p>{loadGuiaLocal.paciente.nome && loadGuiaLocal.paciente.nome}</p>
-                <p>{loadGuiaLocal.paciente.cpf && loadGuiaLocal.paciente.cpf}</p>
-                <p>{loadGuiaLocal.paciente.email && loadGuiaLocal.paciente.email}</p>
-                <p>{loadGuiaLocal.paciente.telefone && loadGuiaLocal.paciente.telefone}</p>
+                <p>{loadGuiaLocal.Paciente.Nome && loadGuiaLocal.Paciente.Nome}</p>
+                <p>{loadGuiaLocal.Paciente.CPF && loadGuiaLocal.Paciente.CPF}</p>
+                <p>{loadGuiaLocal.Paciente.Email && loadGuiaLocal.Paciente.Email}</p>
+                <p>{loadGuiaLocal.Paciente.Telefone && loadGuiaLocal.Paciente.Telefone}</p>
               </Fragment>
             )}
 
-            {loadGuiaLocal.vencimento && (<p>{loadGuiaLocal.vencimento}</p>)}
+            {loadGuiaLocal.Vencimento && (<p>{loadGuiaLocal.Vencimento}</p>)}
 
             {
-              typeof loadGuiaLocal.status !== 'undefined' && (
+              typeof loadGuiaLocal.Status !== 'undefined' && (
                 <p>
-                  {loadGuiaLocal.status === 1 && ('Criada')}
-                  {loadGuiaLocal.status === 2 && ('Concluida')}
-                  {loadGuiaLocal.status === 99 && ('Deletada')}
+                  {loadGuiaLocal.Status === 1 && ('Criada')}
+                  {loadGuiaLocal.Status === 2 && ('Concluida')}
+                  {loadGuiaLocal.Status === 99 && ('Deletada')}
                 </p>
               )
             }
@@ -88,7 +88,7 @@ class GuiaDetail extends Component {
               loadGuiaLocal.procedimentos
               && loadGuiaLocal.procedimentos.length > 0
               && loadGuiaLocal.procedimentos.map(item => (
-                <p key={item.publicID}>{formatCurrency(item.valorprocedimento)}</p>
+                <p key={item.PublicID}>{formatCurrency(item.valorprocedimento)}</p>
               ))
             }
           </div>
