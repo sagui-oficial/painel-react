@@ -13,7 +13,9 @@ export function loadGuias() {
       uri: 'gto/listargto',
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIAS, payload: res.Result.GTOs }))
+      .then(res => dispatch({
+        type: GET_GUIAS, payload: res.Result.GTOs.filter(item => item.Status !== 99),
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -25,15 +27,15 @@ export function addGuia(data) {
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res.Result.GTOs }))
+      .then(res => dispatch({ type: SAVE_GUIA, payload: res.Result.GTO }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function loadGuiaDetail(Id) {
+export function loadGuiaDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${Id}/obtergto`,
+      uri: `gto/${id}/obtergto`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res.Result.GTO }))
@@ -41,26 +43,26 @@ export function loadGuiaDetail(Id) {
   };
 }
 
-export function updateGuia(data, Id) {
+export function updateGuia(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${Id}/atualizargto`,
+      uri: `gto/${id}/atualizargto`,
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA, payload: res.Result.GTOs }))
+      .then(res => dispatch({ type: UPDATE_GUIA, payload: res.Result.GTO }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function deleteGuia(data, Id) {
+export function deleteGuia(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${Id}/deletargto`,
-      method: 'PATCH',
+      uri: `gto/${id}/deletargto`,
+      method: 'PUT',
       data,
     })
-      .then(() => dispatch({ type: DELETE_GUIA, payload: Id }))
+      .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
