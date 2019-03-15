@@ -77,16 +77,15 @@ class GuiaCreate extends Component {
     const createID = uuidv1();
 
     await propAddGuia({
-      Id: createID,
-      Status: 1,
+      // Id: createID,
       PublicID: createID,
       Numero: createID.split('-')[0].toUpperCase(),
+      Status: 1,
       Solicitacao: new Date(),
       Vencimento: new Date(),
       PlanoOperadora: {
         Id: 1,
-        PublicID: uuidv1(),
-        NomeFantasia: 'Operadora 1',
+        NomeFantasia: 'Operadora 2',
         RazaoSocial: null,
         CNPJ: null,
         DataEnvioLote: new Date(),
@@ -95,9 +94,8 @@ class GuiaCreate extends Component {
         ListaArquivos: null,
       },
       Paciente: {
-        Id: 1,
-        PublicID: uuidv1(),
         ListaPlanoOperadoraPaciente: null,
+        Id: 1,
         Funcao: null,
         Nome: randomNames(),
         Anotacoes: null,
@@ -107,6 +105,7 @@ class GuiaCreate extends Component {
       },
       Arquivos: [
         {
+          Id: 0,
           Nome: 'ArquivoTeste',
           Stream: null,
           DataCriacao: new Date(),
@@ -115,13 +114,12 @@ class GuiaCreate extends Component {
       ],
       Procedimentos: [
         {
-          Id: 1,
-          PublicID: uuidv1(),
+          IdProcedimento: 1,
           Codigo: 1,
-          NomeProcedimento: 'Procedimento de Teste090',
+          NomeProcedimento: 'Procedimento de Teste',
           ValorProcedimento: randomPrice(50, 1500),
-          Exigencias: 'Lorem lorem',
-          Anotacoes: 'Bla Bla bla',
+          Exigencias: 'AAAAAA',
+          Anotacoes: 'AAAAAA',
         },
       ],
     });
