@@ -13,7 +13,7 @@ export default function (state = INITIAL_STATE, action = {}) {
     case GET_GUIAS:
       return {
         ...state,
-        guias: action.payload.filter(item => item.Status !== 99),
+        guias: action.payload,
         fetchError: '',
       };
     case GET_GUIA_DETAILS:
@@ -32,10 +32,10 @@ export default function (state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         guias: state.guias.map((guia) => {
-          if (guia.Id === action.payload.Id) {
+          if (guia.PublicID === action.payload.PublicID) {
             return {
               ...guia,
-              status: action.payload.Status,
+              Status: action.payload.Status,
             };
           }
 
@@ -46,7 +46,7 @@ export default function (state = INITIAL_STATE, action = {}) {
     case DELETE_GUIA:
       return {
         ...state,
-        guias: state.guias.filter(guia => guia.Id !== action.payload),
+        guias: state.guias.filter(guia => guia.PublicID !== action.payload),
         fetchError: '',
       };
     case FETCH_ERROR:
