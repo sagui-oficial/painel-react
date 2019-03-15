@@ -84,6 +84,7 @@ class GuiasList extends Component {
 
     this.state = {
       allGuias: [],
+      order: 'asc',
       boxMessage: {
         open: false,
         text: '',
@@ -96,6 +97,7 @@ class GuiasList extends Component {
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
     this.onHandleDeleteGuia = this.onHandleDeleteGuia.bind(this);
     this.onHandleStatusGuia = this.onHandleStatusGuia.bind(this);
+    this.onHandleOrderGuias = this.onHandleOrderGuias.bind(this);
   }
 
   componentDidMount() {
@@ -131,8 +133,10 @@ class GuiasList extends Component {
     const { guias, inputValue } = this.props;
     const regex = new RegExp(inputValue, 'gi');
 
+    const matchItem = items => items.match(regex) !== null;
+
     this.setState({
-      allGuias: guias.filter(item => item.Paciente.Nome.match(regex) !== null),
+      allGuias: guias.filter(item => matchItem(item.Paciente.Nome) || matchItem(item.Numero)),
     });
   }
 
@@ -169,8 +173,6 @@ class GuiasList extends Component {
     const { updateGuia: propUpdateGuias } = this.props;
     const { target } = event;
 
-    // const updateCurrentGuia = allGuias.filter(item => item.PublicID === postID);
-
     if (prevStatus !== target.value) {
       this.onHandleMessage('Status atualizado.');
 
@@ -180,9 +182,13 @@ class GuiasList extends Component {
     }
   }
 
+  onHandleOrderGuias(order) {
+    this.setState({ order });
+  }
+
   render() {
     const { classes, error } = this.props;
-    const { allGuias, boxMessage } = this.state;
+    const { allGuias, boxMessage, order } = this.state;
 
     return (
       <Fragment>
@@ -201,8 +207,8 @@ class GuiasList extends Component {
         >
           <Select
             className={classes.selectBox}
-            value="asc"
-            // onChange={e => this.onHandleOrderGuias(e.target.value)}
+            value={order}
+            onChange={e => this.onHandleOrderGuias(e.target.value)}
           >
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
