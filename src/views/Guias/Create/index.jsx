@@ -50,6 +50,9 @@ const styles = theme => ({
     ...theme.divider,
     marginBottom: theme.spacing.unit * 1.2,
   },
+  form: {
+    marginTop: theme.spacing.unit * 2,
+  },
   addBtn: {
     ...theme.roundedBtn,
     marginLeft: '1.5rem',
@@ -77,7 +80,7 @@ class GuiaCreate extends Component {
     const createID = uuidv1();
 
     await propAddGuia({
-      // Id: createID,
+      id: createID, // Only mock
       PublicID: createID,
       Numero: createID.split('-')[0].toUpperCase(),
       Status: 1,
@@ -154,7 +157,7 @@ class GuiaCreate extends Component {
           <Chip to="/guias/criar" component={RouterLink} className={`${classes.chip} ${classes.activeChip}`} label="Cadastrar" />
         </Breadcrumbs>
 
-        <form noValidate autoComplete="off">
+        <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={16}>
             <Grid item xs={12} sm={3}>
               <TextField
@@ -163,6 +166,7 @@ class GuiaCreate extends Component {
                 name="Numero"
                 helperText="Digite o número da guia."
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -171,6 +175,7 @@ class GuiaCreate extends Component {
                 label="Status"
                 name="Status"
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
           </Grid>
@@ -183,6 +188,7 @@ class GuiaCreate extends Component {
                 name="Vencimento"
                 helperText="Ex.: 23/02/2019"
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
           </Grid>
@@ -196,6 +202,7 @@ class GuiaCreate extends Component {
                 label="Nome do Paciente"
                 name="Paciente"
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -204,6 +211,7 @@ class GuiaCreate extends Component {
                 label="CPF"
                 name="CPF"
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -212,6 +220,7 @@ class GuiaCreate extends Component {
                 label="Plano"
                 name="Plano"
                 margin="normal"
+                variant="outlined"
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -220,6 +229,7 @@ class GuiaCreate extends Component {
                 label="Telefone"
                 name="Telefone"
                 margin="normal"
+                variant="outlined"
                 helperText="(11) 9000-0000"
               />
             </Grid>
@@ -229,6 +239,7 @@ class GuiaCreate extends Component {
                 label="E-mail"
                 name="Email"
                 margin="normal"
+                variant="outlined"
                 helperText="email@email.com.br"
               />
             </Grid>
