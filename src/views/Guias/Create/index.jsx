@@ -14,12 +14,20 @@ import {
   Chip,
   Avatar,
   TextField,
+  MenuItem,
 } from '@material-ui/core';
 
 import { Home as HomeIcon } from '@material-ui/icons';
 
 import { addGuia } from '../../../actions/guias';
 import { randomPrice, randomNames } from '../../../helpers';
+
+const listStatus = [
+  { label: 'Criada', value: 1 },
+  { label: 'Concluída', value: 2 },
+  // { label: 'Glosada', value: 3 },
+  // { label: 'Recurso', value: 4 },
+];
 
 const styles = theme => ({
   chip: {
@@ -72,14 +80,38 @@ class GuiaCreate extends Component {
   constructor(props) {
     super(props);
 
-    this.handleAddGuia = this.handleAddGuia.bind(this);
+    this.state = {
+      sendGuia: {
+        Status: 1,
+        Numero: '',
+        Solicitacao: new Date(),
+        Vencimento: new Date(),
+      },
+    };
+
+    this.onHandleAddGuia = this.onHandleAddGuia.bind(this);
+    this.onHandleTarget = this.onHandleTarget.bind(this);
   }
 
-  async handleAddGuia() {
-    const { addGuia: propAddGuia, history } = this.props;
-    const createID = uuidv1();
+  onHandleTarget(event) {
+    const { target } = event;
+    const { sendGuia } = this.state;
 
-    await propAddGuia({
+    this.setState({
+      sendGuia: {
+        ...sendGuia,
+        [target.name]: target.value,
+      },
+    });
+  }
+
+  async onHandleAddGuia() {
+    const { sendGuia } = this.state;
+    console.log(sendGuia);
+    // const { addGuia: propAddGuia, history } = this.props;
+    // const createID = uuidv1();
+
+    /* await propAddGuia({
       id: createID, // Only mock
       PublicID: createID,
       Numero: createID.split('-')[0].toUpperCase(),
@@ -125,13 +157,14 @@ class GuiaCreate extends Component {
           Anotacoes: 'AAAAAA',
         },
       ],
-    });
+    }); */
 
-    history.push(`/guias/${createID}`);
+    // history.push(`/guias/${createID}`);
   }
 
   render() {
     const { classes } = this.props;
+    const { sendGuia } = this.state;
 
     return (
       <Fragment>
@@ -144,7 +177,7 @@ class GuiaCreate extends Component {
             color="primary"
             size="medium"
             className={classes.addBtn}
-            onClick={this.handleAddGuia}
+            onClick={this.onHandleAddGuia}
           >
             Salvar
           </Button>
@@ -172,11 +205,18 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={3}>
               <TextField
                 fullWidth
+                select
+                value={sendGuia.Status}
                 label="Status"
                 name="Status"
                 margin="normal"
                 variant="outlined"
-              />
+                onChange={this.onHandleTarget}
+              >
+                {listStatus.map(option => (
+                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                ))}
+              </TextField>
             </Grid>
           </Grid>
 
@@ -184,8 +224,8 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Data de Vencimento"
-                name="Vencimento"
+                label="Data de solicitação"
+                name="Solicitacao"
                 helperText="Ex.: 23/02/2019"
                 margin="normal"
                 variant="outlined"
@@ -250,7 +290,7 @@ class GuiaCreate extends Component {
             color="primary"
             size="medium"
             className={`${classes.addBtn} footerBtn`}
-            onClick={this.handleAddGuia}
+            onClick={this.onHandleAddGuia}
           >
             Salvar
           </Button>
