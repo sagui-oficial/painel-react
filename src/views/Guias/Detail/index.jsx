@@ -20,74 +20,51 @@ class GuiaDetail extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      loadGuiaLocal: {},
-    };
-
     this.loadGuia = this.loadGuia.bind(this);
-    this.handleUpdateStateGuia = this.handleUpdateStateGuia.bind(this);
   }
 
   componentDidMount() {
     this.loadGuia();
   }
 
-  componentDidUpdate(prevProps) {
-    this.handleUpdateStateGuia(prevProps);
-  }
-
-  handleUpdateStateGuia(prevProps) {
-    const { loadGuiaData } = this.props;
-
-    if (prevProps.loadGuiaData !== loadGuiaData) {
-      this.setState({ loadGuiaLocal: loadGuiaData });
-    }
-  }
-
   async loadGuia() {
-    const { loadGuiaData, loadGuiaDetail: loadGuiaFunc, match } = this.props;
-
-    if (loadGuiaData.length === 0) {
-      await loadGuiaFunc(match.params.Id);
-    } else {
-      this.setState({ loadGuiaLocal: loadGuiaData.find(item => item.Id === match.params.Id) });
-    }
+    const { loadGuiaDetail: loadGuiaFunc, match } = this.props;
+    await loadGuiaFunc(match.params.Id);
   }
 
   render() {
-    const { classes } = this.props;
-    const { loadGuiaLocal } = this.state;
+    const { classes, loadGuiaData } = this.props;
 
     return (
       <div>
-        {loadGuiaLocal && (
+        {loadGuiaData && (
           <div className={classes.box}>
-            {loadGuiaLocal.PublicID && (<p>{loadGuiaLocal.PublicID}</p>)}
-            {loadGuiaLocal.Paciente && (
+            {loadGuiaData.PublicID && (<p>{loadGuiaData.PublicID}</p>)}
+            {loadGuiaData.Paciente && (
               <Fragment>
-                <p>{loadGuiaLocal.Paciente.Nome && loadGuiaLocal.Paciente.Nome}</p>
-                <p>{loadGuiaLocal.Paciente.CPF && loadGuiaLocal.Paciente.CPF}</p>
-                <p>{loadGuiaLocal.Paciente.Email && loadGuiaLocal.Paciente.Email}</p>
-                <p>{loadGuiaLocal.Paciente.Telefone && loadGuiaLocal.Paciente.Telefone}</p>
+                <p>{loadGuiaData.Paciente.Nome && loadGuiaData.Paciente.Nome}</p>
+                <p>{loadGuiaData.Paciente.CPF && loadGuiaData.Paciente.CPF}</p>
+                <p>{loadGuiaData.Paciente.Email && loadGuiaData.Paciente.Email}</p>
+                <p>{loadGuiaData.Paciente.Telefone && loadGuiaData.Paciente.Telefone}</p>
               </Fragment>
             )}
 
-            {loadGuiaLocal.Vencimento && (<p>{loadGuiaLocal.Vencimento}</p>)}
+            {loadGuiaData.Vencimento && (<p>{loadGuiaData.Vencimento}</p>)}
 
             {
-              typeof loadGuiaLocal.Status !== 'undefined' && (
+              typeof loadGuiaData.Status !== 'undefined' && (
                 <p>
-                  {loadGuiaLocal.Status === 1 && ('Criada')}
-                  {loadGuiaLocal.Status === 2 && ('Concluida')}
-                  {loadGuiaLocal.Status === 99 && ('Deletada')}
+                  {loadGuiaData.Status === 1 && ('Criada')}
+                  {loadGuiaData.Status === 2 && ('Concluida')}
+                  {loadGuiaData.Status === 99 && ('Deletada')}
                 </p>
               )
             }
 
             {
-              loadGuiaLocal.procedimentos
-              && loadGuiaLocal.procedimentos.length > 0
-              && loadGuiaLocal.procedimentos.map(item => (
+              loadGuiaData.procedimentos
+              && loadGuiaData.procedimentos.length > 0
+              && loadGuiaData.procedimentos.map(item => (
                 <p key={item.PublicID}>{formatCurrency(item.valorprocedimento)}</p>
               ))
             }
