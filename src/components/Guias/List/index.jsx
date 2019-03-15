@@ -26,7 +26,7 @@ import BoxSearch from '../../Search';
 import Message from '../../Message';
 import { searchChange } from '../../../actions/search';
 import { deleteGuia, updateGuia } from '../../../actions/guias';
-import { sortBy, formatDate, formatCurrency } from '../../../helpers';
+import { formatDate, formatCurrency } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -84,7 +84,6 @@ class GuiasList extends Component {
 
     this.state = {
       allGuias: [],
-      order: { by: 'vencimento', type: 'date', sort: 'asc' },
       boxMessage: {
         open: false,
         text: '',
@@ -92,7 +91,6 @@ class GuiasList extends Component {
     };
 
     this.onLoadGuias = this.onLoadGuias.bind(this);
-    this.onHandleOrderGuias = this.onHandleOrderGuias.bind(this);
     this.onHandleSearch = this.onHandleSearch.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
@@ -123,24 +121,9 @@ class GuiasList extends Component {
 
   onLoadGuias() {
     const { guias } = this.props;
-    const { order } = this.state;
-    const orderGuias = sortBy(guias, order);
 
     this.setState({
-      allGuias: orderGuias,
-    });
-  }
-
-  onHandleOrderGuias(_value) {
-    const { allGuias, order } = this.state;
-    const orderGuias = sortBy(allGuias, { by: 'vencimento', type: 'date', sort: _value });
-
-    this.setState({
-      allGuias: orderGuias,
-      order: {
-        ...order,
-        sort: _value,
-      },
+      allGuias: guias,
     });
   }
 
@@ -186,16 +169,20 @@ class GuiasList extends Component {
     const { updateGuia: propUpdateGuias } = this.props;
     const { target } = event;
 
+    // const updateCurrentGuia = allGuias.filter(item => item.PublicID === postID);
+
     if (prevStatus !== target.value) {
       this.onHandleMessage('Status atualizado.');
-      propUpdateGuias({ Status: target.value }, postID);
+
+      propUpdateGuias({
+        Status: target.value,
+      }, postID);
     }
   }
 
   render() {
     const { classes, error } = this.props;
-    const { allGuias, order } = this.state;
-    const { boxMessage } = this.state;
+    const { allGuias, boxMessage } = this.state;
 
     return (
       <Fragment>
@@ -214,8 +201,8 @@ class GuiasList extends Component {
         >
           <Select
             className={classes.selectBox}
-            value={order.sort}
-            onChange={e => this.onHandleOrderGuias(e.target.value)}
+            value="asc"
+            // onChange={e => this.onHandleOrderGuias(e.target.value)}
           >
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
@@ -254,7 +241,7 @@ class GuiasList extends Component {
                   <FormControl>
                     <Select
                       name={item.Numero}
-                      value={item.Status}
+                      value={item.Status ? item.Status : 2}
                       className={classes.selectBox}
                       onClick={e => e.preventDefault()}
                       onChange={e => this.onHandleStatusGuia(e, item.Status, item.PublicID)}
