@@ -14,7 +14,7 @@ export function loadGuias() {
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_GUIAS, payload: res.Result.GTOs.filter(item => item.Status !== 99),
+        type: GET_GUIAS, payload: res.filter(item => item.Status !== 99),
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -27,7 +27,7 @@ export function addGuia(data) {
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res.Result.GTO }))
+      .then(res => dispatch({ type: SAVE_GUIA, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -38,7 +38,7 @@ export function loadGuiaDetail(id) {
       uri: `gto/${id}/obtergto`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res.Result.GTO }))
+      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -50,7 +50,7 @@ export function updateGuia(data, id) {
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA, payload: res.Result.GTO }))
+      .then(res => dispatch({ type: UPDATE_GUIA, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -59,7 +59,7 @@ export function deleteGuia(data, id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `gto/${id}/deletargto`,
-      method: 'PUT',
+      method: 'PATCH',
       data,
     })
       .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
