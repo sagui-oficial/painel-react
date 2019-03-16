@@ -269,18 +269,6 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={3}>
               <TextField
                 fullWidth
-                disabled
-                label="Plano"
-                name="NomeFantasia"
-                value={sendGuia.PlanoOperadora.NomeFantasia}
-                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
                 label="Telefone"
                 name="Telefone"
                 margin="normal"
@@ -296,6 +284,21 @@ class GuiaCreate extends Component {
                 margin="normal"
                 variant="outlined"
                 helperText="email@email.com.br"
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                fullWidth
+                disabled
+                label="Plano"
+                name="NomeFantasia"
+                value={sendGuia.PlanoOperadora.NomeFantasia}
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
           </Grid>
