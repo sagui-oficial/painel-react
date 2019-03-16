@@ -20,13 +20,11 @@ import {
 import { Home as HomeIcon } from '@material-ui/icons';
 
 import { addGuia } from '../../../actions/guias';
-import { randomPrice, randomNames } from '../../../helpers';
+import { fixDateOnSave, convertDatePicker } from '../../../helpers';
 
 const listStatus = [
   { label: 'Criada', value: 1 },
   { label: 'Concluída', value: 2 },
-  // { label: 'Glosada', value: 3 },
-  // { label: 'Recurso', value: 4 },
 ];
 
 const styles = theme => ({
@@ -83,83 +81,67 @@ class GuiaCreate extends Component {
     this.state = {
       sendGuia: {
         Status: 1,
-        Numero: '',
-        Solicitacao: new Date(),
-        Vencimento: new Date(),
+        Numero: String(),
+        Solicitacao: convertDatePicker(new Date()),
+        Vencimento: convertDatePicker(new Date()),
+        PlanoOperadora: {
+          id: Number(),
+          PublicID: String(),
+          NomeFantasia: String(),
+        },
+        Paciente: {
+          Nome: String(),
+          CPF: String(),
+          ListaPlanoOperadoraPaciente: Number(),
+        },
       },
     };
 
     this.onHandleAddGuia = this.onHandleAddGuia.bind(this);
-    this.onHandleTarget = this.onHandleTarget.bind(this);
+    this.onHandleTargetGuia = this.onHandleTargetGuia.bind(this);
+    this.onHandleTargetPaciente = this.onHandleTargetPaciente.bind(this);
   }
 
-  onHandleTarget(event) {
-    const { target } = event;
+  onHandleTargetGuia(value, name) {
     const { sendGuia } = this.state;
 
     this.setState({
       sendGuia: {
         ...sendGuia,
-        [target.name]: target.value,
+        [name]: value,
+      },
+    });
+  }
+
+  onHandleTargetPaciente(event) {
+    const { sendGuia } = this.state;
+    const { target } = event;
+
+    this.setState({
+      sendGuia: {
+        ...sendGuia,
+        Paciente: {
+          ...sendGuia.Paciente,
+          [target.name]: target.value,
+        },
       },
     });
   }
 
   async onHandleAddGuia() {
-    const { sendGuia } = this.state;
-    console.log(sendGuia);
     // const { addGuia: propAddGuia, history } = this.props;
-    // const createID = uuidv1();
+    const { sendGuia } = this.state;
+    const PublicID = uuidv1();
 
-    /* await propAddGuia({
-      id: createID, // Only mock
-      PublicID: createID,
-      Numero: createID.split('-')[0].toUpperCase(),
-      Status: 1,
-      Solicitacao: new Date(),
-      Vencimento: new Date(),
-      PlanoOperadora: {
-        Id: 1,
-        NomeFantasia: 'Operadora 2',
-        RazaoSocial: null,
-        CNPJ: null,
-        DataEnvioLote: new Date(),
-        DataRecebimentoLote: new Date(),
-        ListaProcedimentos: null,
-        ListaArquivos: null,
-      },
-      Paciente: {
-        ListaPlanoOperadoraPaciente: null,
-        Id: 1,
-        Funcao: null,
-        Nome: randomNames(),
-        Anotacoes: null,
-        CPF: null,
-        Email: null,
-        Telefone: null,
-      },
-      Arquivos: [
-        {
-          Id: 0,
-          Nome: 'ArquivoTeste',
-          Stream: null,
-          DataCriacao: new Date(),
-          PathArquivo: 'C:\\',
-        },
-      ],
-      Procedimentos: [
-        {
-          IdProcedimento: 1,
-          Codigo: 1,
-          NomeProcedimento: 'Procedimento de Teste',
-          ValorProcedimento: randomPrice(50, 1500),
-          Exigencias: 'AAAAAA',
-          Anotacoes: 'AAAAAA',
-        },
-      ],
-    }); */
+    console.log(JSON.stringify({
+      ...sendGuia,
+      PublicID,
+      Solicitacao: fixDateOnSave(sendGuia.Solicitacao),
+      Vencimento: fixDateOnSave(sendGuia.Vencimento),
+    }));
 
-    // history.push(`/guias/${createID}`);
+    /* await propAddGuia();
+    history.push(`/guias/${PublicID}`); */
   }
 
   render() {
@@ -197,6 +179,10 @@ class GuiaCreate extends Component {
                 fullWidth
                 label="Número da guia"
                 name="Numero"
+                value={sendGuia.Numero}
+                onChange={e => (
+                  this.onHandleTargetGuia(e.target.value.toUpperCase().trim(), e.target.name)
+                )}
                 helperText="Digite o número da guia."
                 margin="normal"
                 variant="outlined"
@@ -207,11 +193,11 @@ class GuiaCreate extends Component {
                 fullWidth
                 select
                 value={sendGuia.Status}
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
                 label="Status"
                 name="Status"
                 margin="normal"
                 variant="outlined"
-                onChange={this.onHandleTarget}
               >
                 {listStatus.map(option => (
                   <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
@@ -226,9 +212,31 @@ class GuiaCreate extends Component {
                 fullWidth
                 label="Data de solicitação"
                 name="Solicitacao"
+                type="date"
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
+                defaultValue={sendGuia.Solicitacao}
                 helperText="Ex.: 23/02/2019"
                 margin="normal"
                 variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Data de vencimento"
+                name="Vencimento"
+                type="date"
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
+                defaultValue={sendGuia.Vencimento}
+                helperText="Ex.: 23/02/2019"
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
           </Grid>
@@ -240,7 +248,9 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 label="Nome do Paciente"
-                name="Paciente"
+                name="Nome"
+                value={sendGuia.Paciente.Nome}
+                onChange={this.onHandleTargetPaciente}
                 margin="normal"
                 variant="outlined"
               />
@@ -250,6 +260,8 @@ class GuiaCreate extends Component {
                 fullWidth
                 label="CPF"
                 name="CPF"
+                value={sendGuia.Paciente.CPF}
+                onChange={this.onHandleTargetPaciente}
                 margin="normal"
                 variant="outlined"
               />
@@ -257,8 +269,11 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={3}>
               <TextField
                 fullWidth
+                disabled
                 label="Plano"
-                name="Plano"
+                name="NomeFantasia"
+                value={sendGuia.PlanoOperadora.NomeFantasia}
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
                 margin="normal"
                 variant="outlined"
               />
