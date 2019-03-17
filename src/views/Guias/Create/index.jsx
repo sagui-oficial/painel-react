@@ -215,7 +215,7 @@ class GuiaCreate extends Component {
                 type="date"
                 onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
                 defaultValue={sendGuia.Solicitacao}
-                helperText="Ex.: 23/02/2019"
+                helperText="23/02/2019"
                 margin="normal"
                 variant="outlined"
                 InputLabelProps={{
@@ -231,7 +231,7 @@ class GuiaCreate extends Component {
                 type="date"
                 onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
                 defaultValue={sendGuia.Vencimento}
-                helperText="Ex.: 23/02/2019"
+                helperText="23/02/2019"
                 margin="normal"
                 variant="outlined"
                 InputLabelProps={{
@@ -247,13 +247,19 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Nome do Paciente"
-                name="Nome"
+                select
                 value={sendGuia.Paciente.Nome}
-                onChange={this.onHandleTargetPaciente}
+                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
+                // onChange={this.onHandleTargetPaciente}
+                label="Nome do paciente"
+                name="Nome"
                 margin="normal"
                 variant="outlined"
-              />
+              >
+                {listStatus.map(option => (
+                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                ))}
+              </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -264,6 +270,7 @@ class GuiaCreate extends Component {
                 onChange={this.onHandleTargetPaciente}
                 margin="normal"
                 variant="outlined"
+                helperText="020.000.009-92"
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -290,7 +297,7 @@ class GuiaCreate extends Component {
               <TextField
                 fullWidth
                 disabled
-                label="Plano"
+                label="Plano/Operadora"
                 name="NomeFantasia"
                 value={sendGuia.PlanoOperadora.NomeFantasia}
                 onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
