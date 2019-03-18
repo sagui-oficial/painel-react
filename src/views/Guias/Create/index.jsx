@@ -20,10 +20,10 @@ import {
 import { Home as HomeIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
-import { Control, Option } from '../../../components/AutoComplete';
 import { addGuia } from '../../../actions/guias';
-import { loadPatients } from '../../../actions/pacientes';
+import { loadPacientes } from '../../../actions/pacientes';
 import { fixDateOnSave, convertDatePicker } from '../../../helpers';
+import { Control, Option } from '../../../components/AutoComplete';
 
 const listStatus = [
   { label: 'Criada', value: 1 },
@@ -108,7 +108,7 @@ class GuiaCreate extends Component {
   }
 
   componentDidMount() {
-    const { loadPatients: propsLoadPatients } = this.props;
+    const { loadPacientes: propsLoadPatients } = this.props;
     propsLoadPatients();
   }
 
@@ -360,7 +360,7 @@ class GuiaCreate extends Component {
 
 GuiaCreate.propTypes = {
   addGuia: PropTypes.func.isRequired,
-  loadPatients: PropTypes.func.isRequired,
+  loadPacientes: PropTypes.func.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object).isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
@@ -373,5 +373,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  addGuia, loadPatients,
+  addGuia, loadPacientes,
 })(withStyles(styles)(GuiaCreate));

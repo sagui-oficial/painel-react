@@ -13,7 +13,7 @@ import {
 
 // LOCAL IMPORTS
 import { loadGuias } from '../../actions/guias';
-import GuiasList from '../../components/Guias/List';
+import GuiasList from './List';
 
 const styles = theme => ({
   divider: {
