@@ -5,6 +5,7 @@ import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
 import GuiaDetail from '../views/Guias/Detail';
 import GuiaCreate from '../views/Guias/Create';
+import Pacientes from '../views/Pacientes';
 
 const MainRouters = () => (
   <Switch>
@@ -19,8 +20,14 @@ const MainRouters = () => (
       )
     ))}
     <Route exact path="/login" component={Login} />
+
+    {/* GUIAS */}
     <Route exact path="/guias/criar" component={GuiaCreate} />
-    <Route exact path="/guias/:Id" component={GuiaDetail} />
+    <Route exact path="/guias/:id" component={GuiaDetail} />
+
+    {/* PACIENTES */}
+    <Route exact path="/pacientes/criar" component={Pacientes} />
+    <Route exact path="/pacientes/:id" component={Pacientes} />
     <Route path="/" render={() => (<Redirect to="/guias" />)} />
   </Switch>
 );
