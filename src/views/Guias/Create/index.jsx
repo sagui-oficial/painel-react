@@ -20,6 +20,7 @@ import {
 import { Home as HomeIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
+import { Control, Option } from '../../../components/AutoComplete';
 import { addGuia } from '../../../actions/guias';
 import { loadPatients } from '../../../actions/pacientes';
 import { fixDateOnSave, convertDatePicker } from '../../../helpers';
@@ -28,57 +29,6 @@ const listStatus = [
   { label: 'Criada', value: 1 },
   { label: 'Concluída', value: 2 },
 ];
-
-// component
-function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
-}
-
-function Control(props) {
-  const {
-    innerRef, children, innerProps, selectProps,
-  } = props;
-  return (
-    <TextField
-      fullWidth
-      label="Nome do paciente"
-      margin="normal"
-      variant="outlined"
-      name="Nome"
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          style: { display: 'flex', padding: '9px 14px' },
-          inputRef: innerRef,
-          children,
-          ...innerProps,
-        },
-      }}
-      {...selectProps.textFieldProps}
-    />
-  );
-}
-
-function Option(props) {
-  const {
-    isFocused, isSelected, innerProps, children,
-  } = props;
-  return (
-    <MenuItem
-      selected={isFocused}
-      style={{
-        fontWeight: isSelected ? 500 : 400,
-      }}
-      {...innerProps}
-    >
-      {children}
-    </MenuItem>
-  );
-}
-// component
 
 const styles = theme => ({
   chip: {
