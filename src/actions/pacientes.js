@@ -3,7 +3,7 @@ import { APIResquest } from '../utils/api';
 export const GET_PACIENTES = 'GET_PACIENTES';
 export const FETCH_ERROR = 'FETCH_ERROR';
 
-export function loadPatients() {
+export function loadPacientes() {
   return async (dispatch) => {
     await APIResquest({
       uri: 'pacientes',
