@@ -18,14 +18,67 @@ import {
 } from '@material-ui/core';
 
 import { Home as HomeIcon } from '@material-ui/icons';
+import Select from 'react-select';
 
 import { addGuia } from '../../../actions/guias';
+import { loadPatients } from '../../../actions/pacientes';
 import { fixDateOnSave, convertDatePicker } from '../../../helpers';
 
 const listStatus = [
   { label: 'Criada', value: 1 },
   { label: 'Concluída', value: 2 },
 ];
+
+// component
+function inputComponent({ inputRef, ...props }) {
+  return <div ref={inputRef} {...props} />;
+}
+
+function Control(props) {
+  const {
+    innerRef, children, innerProps, selectProps,
+  } = props;
+  return (
+    <TextField
+      fullWidth
+      label="Nome do paciente"
+      margin="normal"
+      variant="outlined"
+      name="Nome"
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        inputComponent,
+        inputProps: {
+          style: { display: 'flex', padding: '9px 14px' },
+          inputRef: innerRef,
+          children,
+          ...innerProps,
+        },
+      }}
+      {...selectProps.textFieldProps}
+    />
+  );
+}
+
+function Option(props) {
+  const {
+    isFocused, isSelected, innerProps, children,
+  } = props;
+  return (
+    <MenuItem
+      selected={isFocused}
+      style={{
+        fontWeight: isSelected ? 500 : 400,
+      }}
+      {...innerProps}
+    >
+      {children}
+    </MenuItem>
+  );
+}
+// component
 
 const styles = theme => ({
   chip: {
@@ -79,6 +132,7 @@ class GuiaCreate extends Component {
     super(props);
 
     this.state = {
+      selectedName: null,
       sendGuia: {
         Status: 1,
         Numero: String(),
@@ -100,6 +154,12 @@ class GuiaCreate extends Component {
     this.onHandleAddGuia = this.onHandleAddGuia.bind(this);
     this.onHandleTargetGuia = this.onHandleTargetGuia.bind(this);
     this.onHandleTargetPaciente = this.onHandleTargetPaciente.bind(this);
+    this.onHandleTargetPacienteNome = this.onHandleTargetPacienteNome.bind(this);
+  }
+
+  componentDidMount() {
+    const { loadPatients: propsLoadPatients } = this.props;
+    propsLoadPatients();
   }
 
   onHandleTargetGuia(value, name) {
@@ -128,6 +188,25 @@ class GuiaCreate extends Component {
     });
   }
 
+  onHandleTargetPacienteNome(target) {
+    const { sendGuia } = this.state;
+    const { value, id } = target;
+
+    this.setState({
+      selectedName: target,
+      sendGuia: {
+        ...sendGuia,
+        Paciente: {
+          ...sendGuia.Paciente,
+          Nome: value,
+        },
+        PlanoOperadora: {
+          NomeFantasia: `Operadora plano1 ${id}`,
+        },
+      },
+    });
+  }
+
   async onHandleAddGuia() {
     // const { addGuia: propAddGuia, history } = this.props;
     const { sendGuia } = this.state;
@@ -145,8 +224,8 @@ class GuiaCreate extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { sendGuia } = this.state;
+    const { classes, pacientes } = this.props;
+    const { sendGuia, selectedName } = this.state;
 
     return (
       <Fragment>
@@ -244,22 +323,26 @@ class GuiaCreate extends Component {
           <br />
 
           <Grid container spacing={16}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                select
-                value={sendGuia.Paciente.Nome}
-                onChange={e => this.onHandleTargetGuia(e.target.value, e.target.name)}
-                // onChange={this.onHandleTargetPaciente}
-                label="Nome do paciente"
-                name="Nome"
-                margin="normal"
-                variant="outlined"
-              >
-                {listStatus.map(option => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </TextField>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              style={{
+                position: 'relative',
+                zIndex: '2',
+              }}
+            >
+              <Select
+                options={pacientes.map(suggestion => ({
+                  id: suggestion.PublicID,
+                  value: suggestion.Nome,
+                  label: suggestion.Nome,
+                }))}
+                components={{ Control, Option }}
+                value={selectedName}
+                onChange={this.onHandleTargetPacienteNome}
+                placeholder="Selecione..."
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -327,15 +410,18 @@ class GuiaCreate extends Component {
 
 GuiaCreate.propTypes = {
   addGuia: PropTypes.func.isRequired,
-  classes: PropTypes.instanceOf(Object).isRequired,
+  loadPatients: PropTypes.func.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  pacientes: PropTypes.instanceOf(Object).isRequired,
+  classes: PropTypes.instanceOf(Object).isRequired,
 };
 
 const mapStateToProps = state => ({
   guia: state.guiasReducer.guias,
+  pacientes: state.pacientesReducer.pacientes,
   guiasError: state.guiasReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  addGuia,
+  addGuia, loadPatients,
 })(withStyles(styles)(GuiaCreate));
