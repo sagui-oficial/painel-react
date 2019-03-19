@@ -24,7 +24,7 @@ import {
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
 import { searchChange, resetSearch } from '../../../actions/search';
-import { deleteProcedimento, updateProcedimento } from '../../../actions/procedimentos';
+import { deleteProcedimento } from '../../../actions/procedimentos';
 
 const styles = theme => ({
   root: {
@@ -94,7 +94,6 @@ class ProcedimentosList extends Component {
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
     this.onHandleDelete = this.onHandleDelete.bind(this);
-    this.onHandleStatus = this.onHandleStatus.bind(this);
     this.onHandleOrder = this.onHandleOrder.bind(this);
   }
 
@@ -170,19 +169,6 @@ class ProcedimentosList extends Component {
     this.onHandleMessage('Item excluido.');
   }
 
-  onHandleStatus(event, prevStatus, postID) {
-    const { updateProcedimento: propUpdateProcedimento } = this.props;
-    const { target } = event;
-
-    if (prevStatus !== target.value) {
-      this.onHandleMessage('Status atualizado.');
-
-      propUpdateProcedimento({
-        Status: target.value,
-      }, postID);
-    }
-  }
-
   onHandleOrder(order) {
     this.setState({ order });
   }
@@ -238,9 +224,8 @@ class ProcedimentosList extends Component {
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
-                    {item.Numero}
+                    {item.PublicID}
                   </p>
-
                   <p>
                     <strong>{item.NomeProcedimento}</strong>
                   </p>
@@ -272,7 +257,6 @@ ProcedimentosList.propTypes = {
   error: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
   deleteProcedimento: PropTypes.func.isRequired,
-  updateProcedimento: PropTypes.func.isRequired,
   resetSearch: PropTypes.func.isRequired,
 };
 
@@ -281,5 +265,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  searchChange, resetSearch, deleteProcedimento, updateProcedimento,
+  searchChange, resetSearch, deleteProcedimento,
 })(withStyles(styles)(withRouter(ProcedimentosList)));

@@ -77,23 +77,23 @@ class PacientesList extends Component {
       order: 'asc',
     };
 
-    this.onLoadPacientes = this.onLoadPacientes.bind(this);
+    this.onLoad = this.onLoad.bind(this);
     this.onHandleSearch = this.onHandleSearch.bind(this);
-    this.onHandleOrderPacientes = this.onHandleOrderPacientes.bind(this);
+    this.onHandleOrder = this.onHandleOrder.bind(this);
   }
 
   componentDidMount() {
     const { resetSearch: propResetSearch } = this.props;
     propResetSearch();
 
-    this.onLoadPacientes();
+    this.onLoad();
   }
 
   componentDidUpdate(prevProps) {
     const { pacientes, inputValue } = this.props;
 
     if (prevProps.pacientes !== pacientes) {
-      this.onLoadPacientes();
+      this.onLoad();
     }
 
     if (prevProps.inputValue !== inputValue) {
@@ -101,7 +101,7 @@ class PacientesList extends Component {
     }
   }
 
-  onLoadPacientes() {
+  onLoad() {
     const { pacientes } = this.props;
 
     this.setState({
@@ -120,7 +120,7 @@ class PacientesList extends Component {
     });
   }
 
-  onHandleOrderPacientes(order) {
+  onHandleOrder(order) {
     this.setState({ order });
   }
 
@@ -140,7 +140,7 @@ class PacientesList extends Component {
           <Select
             className={classes.selectBox}
             value={order}
-            onChange={e => this.onHandleOrderPacientes(e.target.value)}
+            onChange={e => this.onHandleOrder(e.target.value)}
           >
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
@@ -168,6 +168,9 @@ class PacientesList extends Component {
                   </Avatar>
                 </ListItemAvatar>
                 <div className={classes.boxList}>
+                  <p className={classes.smallItemText}>
+                    {item.PublicID}
+                  </p>
                   <p>
                     <strong>{item.Nome}</strong>
                   </p>
