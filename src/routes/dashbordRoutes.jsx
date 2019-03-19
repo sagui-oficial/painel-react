@@ -9,8 +9,8 @@ import LayersIcon from '@material-ui/icons/Layers';
 import DashboardPage from '../views/Dashboard';
 import Guias from '../views/Guias';
 import Pacientes from '../views/Pacientes';
-import Procedimentos from '../views/Procedimentos';
 import Planos from '../views/Planos';
+import Procedimentos from '../views/Procedimentos';
 
 const dashboardRoutes = [
   {
@@ -18,7 +18,7 @@ const dashboardRoutes = [
     path: '/dashboard',
     menuText: 'Dashboard',
     icon: DashboardIcon,
-    active: false,
+    active: true,
     component: DashboardPage,
   },
   {
@@ -39,19 +39,19 @@ const dashboardRoutes = [
   },
   {
     id: 4,
-    path: '/procedimentos',
-    menuText: 'Procedimentos',
-    icon: ListAltIcon,
-    active: true,
-    component: Procedimentos,
-  },
-  {
-    id: 5,
     path: '/planos',
     menuText: 'Planos',
     icon: LayersIcon,
     active: true,
     component: Planos,
+  },
+  {
+    id: 5,
+    path: '/procedimentos',
+    menuText: 'Procedimentos',
+    icon: ListAltIcon,
+    active: true,
+    component: Procedimentos,
   },
 ];
 

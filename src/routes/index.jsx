@@ -6,6 +6,7 @@ import Login from '../views/Login';
 import GuiaDetail from '../views/Guias/Detail';
 import GuiaCreate from '../views/Guias/Create';
 import Pacientes from '../views/Pacientes';
+import Procedimentos from '../views/Procedimentos';
 
 const MainRouters = () => (
   <Switch>
@@ -31,8 +32,12 @@ const MainRouters = () => (
     <Route exact path="/pacientes/criar" component={Pacientes} />
     <Route exact path="/pacientes/:id" component={Pacientes} />
 
+    {/* PROCEDIMENTOS */}
+    <Route exact path="/procedimentos/criar" component={Procedimentos} />
+    <Route exact path="/procedimentos/:id" component={Procedimentos} />
+
     {/* 404 */}
-    <Route path="/" render={() => (<Redirect to="/guias" />)} />
+    <Route path="/" render={() => (<Redirect to="/dashboard" />)} />
   </Switch>
 );
 
