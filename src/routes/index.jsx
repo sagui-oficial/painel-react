@@ -19,6 +19,8 @@ const MainRouters = () => (
         />
       )
     ))}
+
+    {/* AUTH */}
     <Route exact path="/login" component={Login} />
 
     {/* GUIAS */}
@@ -28,6 +30,8 @@ const MainRouters = () => (
     {/* PACIENTES */}
     <Route exact path="/pacientes/criar" component={Pacientes} />
     <Route exact path="/pacientes/:id" component={Pacientes} />
+
+    {/* 404 */}
     <Route path="/" render={() => (<Redirect to="/guias" />)} />
   </Switch>
 );

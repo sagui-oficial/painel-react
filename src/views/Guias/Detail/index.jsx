@@ -29,7 +29,7 @@ class GuiaDetail extends Component {
 
   async loadGuia() {
     const { loadGuiaDetail: loadGuiaFunc, match } = this.props;
-    await loadGuiaFunc(match.params.Id);
+    await loadGuiaFunc(match.params.id);
   }
 
   render() {
