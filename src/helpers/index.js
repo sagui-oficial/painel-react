@@ -15,8 +15,8 @@ export const formatDate = (_string, _locale = 'pt-BR') => {
   return dateString.toLocaleDateString(_locale, optionsDate);
 };
 
-export const convertDatePicker = (_timestamp) => {
-  const getDate = new Date(_timestamp);
+export const convertDatePicker = (_string) => {
+  const getDate = new Date(_string);
   const year = getDate.getFullYear();
   const day = `0${(getDate.getDate())}`;
   const month = `0${getDate.getMonth() + 1}`;
@@ -28,3 +28,20 @@ export const fixDateOnSave = (_string) => {
   const mydate = new Date(parts[0], parts[1] - 1, parts[2]);
   return mydate;
 };
+
+export const OrderBy = (arr = [], propName, order = 'asc') => (
+  arr.slice(0).sort((a, b) => {
+    const firstDate = new Date(a[propName]);
+    const secondDate = new Date(b[propName]);
+    let orderDesc = 1;
+    let orderAsc = -1;
+
+    if (order === 'desc') {
+      orderDesc = -1;
+      orderAsc = 1;
+    }
+
+    if (firstDate > secondDate) return orderAsc;
+    if (firstDate < secondDate) return orderDesc;
+    return 0;
+  }));

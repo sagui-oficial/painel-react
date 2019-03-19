@@ -4,55 +4,47 @@ import {
 } from '../actions/guias';
 
 const INITIAL_STATE = {
+  guia: {},
   guias: [],
   fetchError: '',
 };
 
-export default function (state = INITIAL_STATE, action = {}) {
-  switch (action.type) {
+export default function (state = INITIAL_STATE, { type, payload }) {
+  switch (type) {
     case GET_GUIAS:
       return {
         ...state,
-        guias: action.payload,
+        guias: payload,
         fetchError: '',
       };
     case GET_GUIA_DETAILS:
       return {
         ...state,
-        guias: action.payload,
+        guia: payload,
         fetchError: '',
       };
     case SAVE_GUIA:
       return {
         ...state,
-        guias: state.guias.concat([action.payload]),
+        guia: payload,
         fetchError: '',
       };
     case UPDATE_GUIA:
       return {
         ...state,
-        guias: state.guias.map((item) => {
-          if (item.PublicID === action.payload.PublicID) {
-            return {
-              ...item,
-              Status: action.payload.Status,
-            };
-          }
-
-          return item;
-        }),
+        guia: payload,
         fetchError: '',
       };
     case DELETE_GUIA:
       return {
         ...state,
-        guias: state.guias.filter(item => item.PublicID !== action.payload),
+        guias: state.guias.filter(item => item.PublicID !== payload),
         fetchError: '',
       };
     case FETCH_ERROR:
       return {
         ...state,
-        fetchError: action.payload,
+        fetchError: payload,
       };
     default:
       return state;

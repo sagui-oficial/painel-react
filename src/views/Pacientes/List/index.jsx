@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -16,7 +15,6 @@ import {
 } from '@material-ui/core';
 
 import BoxSearch from '../../../components/Search';
-import { searchChange, resetSearch } from '../../../actions/search';
 
 const styles = theme => ({
   root: {
@@ -83,21 +81,14 @@ class PacientesList extends Component {
   }
 
   componentDidMount() {
-    const { resetSearch: propResetSearch } = this.props;
-    propResetSearch();
-
     this.onLoad();
   }
 
   componentDidUpdate(prevProps) {
-    const { pacientes, inputValue } = this.props;
+    const { pacientes } = this.props;
 
     if (prevProps.pacientes !== pacientes) {
       this.onLoad();
-    }
-
-    if (prevProps.inputValue !== inputValue) {
-      this.onHandleSearch();
     }
   }
 
@@ -110,13 +101,10 @@ class PacientesList extends Component {
   }
 
   onHandleSearch() {
-    const { pacientes, inputValue } = this.props;
-    const regex = new RegExp(inputValue, 'gi');
-
-    const matchItem = items => items.match(regex) !== null;
+    const { pacientes } = this.props;
 
     this.setState({
-      allPacientes: pacientes.filter(item => matchItem(item.Nome)),
+      allPacientes: pacientes,
     });
   }
 
@@ -190,14 +178,6 @@ class PacientesList extends Component {
 PacientesList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object).isRequired,
-  inputValue: PropTypes.string.isRequired,
-  resetSearch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  inputValue: state.searchReducer.inputValue,
-});
-
-export default connect(mapStateToProps, {
-  searchChange, resetSearch,
-})(withStyles(styles)(withRouter(PacientesList)));
+export default withStyles(styles)(withRouter(PacientesList));

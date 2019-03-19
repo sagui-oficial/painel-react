@@ -12,7 +12,10 @@ import {
   TextField,
 } from '@material-ui/core';
 
-import { addProcedimento } from '../../../actions/procedimentos';
+import {
+  addProcedimento, loadProcedimentoDetail,
+  updateProcedimento,
+} from '../../../actions/procedimentos';
 import Breadcrumb from '../../../components/Breadcrumb';
 
 const styles = theme => ({
@@ -43,6 +46,11 @@ class ProcedimentoForm extends Component {
     super(props);
 
     this.state = {
+      editing: false,
+      breadcrumb: [
+        { label: 'Procedimentos', url: '/procedimentos' },
+        { label: 'Cadastrar', url: '/procedimentos/criar' },
+      ],
       sendProcedimento: {
         Status: 1,
         Codigo: String(),
@@ -50,26 +58,40 @@ class ProcedimentoForm extends Component {
         Exigencias: String(),
         Anotacoes: String(),
       },
-      breadcrumb: [
-        {
-          label: 'Procedimentos',
-          url: '/procedimentos',
-        },
-        {
-          label: 'Cadastrar',
-          url: '/procedimentos/criar',
-        },
-      ],
     };
 
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
+    this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    this.onHandlePageLoad();
+  }
 
-    console.log(match.params.id);
+  componentDidUpdate(prevProps) {
+    const { procedimento } = this.props;
+
+    if (prevProps.procedimento !== procedimento) {
+      this.setState({
+        sendProcedimento: procedimento,
+      });
+    }
+  }
+
+  onHandlePageLoad() {
+    const {
+      match,
+      loadProcedimentoDetail: propLoadProcedimentoDetail,
+    } = this.props;
+
+    if (match.params.id) {
+      propLoadProcedimentoDetail(match.params.id);
+
+      this.setState({
+        editing: true,
+      });
+    }
   }
 
   onHandleTarget({ value, name }) {
@@ -84,27 +106,39 @@ class ProcedimentoForm extends Component {
   }
 
   async onHandleAdd() {
-    const { addProcedimento: propAddProcedimento, history } = this.props;
-    const { sendProcedimento } = this.state;
+    const {
+      addProcedimento: propAddProcedimento,
+      updateProcedimento: propUpdateProcedimento, history,
+    } = this.props;
+    const { sendProcedimento, editing } = this.state;
     const PublicID = uuidv1();
 
-    await propAddProcedimento({
-      ...sendProcedimento,
-      id: PublicID,
-      PublicID,
-    });
-    history.push(`/procedimentos/${PublicID}`);
+    if (editing) {
+      await propUpdateProcedimento({
+        ...sendProcedimento,
+      }, sendProcedimento.id);
+    } else {
+      await propAddProcedimento({
+        ...sendProcedimento,
+        id: PublicID,
+        PublicID,
+      });
+
+      history.push(`/procedimentos/${PublicID}`);
+    }
   }
 
   render() {
     const { classes } = this.props;
-    const { sendProcedimento, breadcrumb } = this.state;
+    const { sendProcedimento, breadcrumb, editing } = this.state;
 
     return (
       <Fragment>
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
-            Cadastrar procedimento
+            {editing ? 'Editar' : 'Cadastrar'}
+            {' '}
+            procedimento
           </Typography>
           <Button
             variant="outlined"
@@ -165,7 +199,7 @@ class ProcedimentoForm extends Component {
                 multiline
                 rows="4"
                 rowsMax="10"
-                value={sendProcedimento.Exigencias}
+                value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
                 onChange={e => (
                   this.onHandleTarget(e.target)
                 )}
@@ -181,7 +215,7 @@ class ProcedimentoForm extends Component {
                 multiline
                 rows="4"
                 rowsMax="10"
-                value={sendProcedimento.Anotacoes}
+                value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
                 onChange={e => (
                   this.onHandleTarget(e.target)
                 )}
@@ -209,14 +243,22 @@ class ProcedimentoForm extends Component {
 ProcedimentoForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  procedimento: PropTypes.instanceOf(Object),
   match: PropTypes.instanceOf(Object).isRequired,
   addProcedimento: PropTypes.func.isRequired,
+  updateProcedimento: PropTypes.func.isRequired,
+  loadProcedimentoDetail: PropTypes.func.isRequired,
+};
+
+ProcedimentoForm.defaultProps = {
+  procedimento: {},
 };
 
 const mapStateToProps = state => ({
+  procedimento: state.procedimentosReducer.procedimento,
   procedimentosError: state.procedimentosReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  addProcedimento,
+  addProcedimento, loadProcedimentoDetail, updateProcedimento,
 })(withStyles(styles)(ProcedimentoForm));

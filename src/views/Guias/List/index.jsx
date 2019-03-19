@@ -24,7 +24,6 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import { searchChange, resetSearch } from '../../../actions/search';
 import { deleteGuia, updateGuia } from '../../../actions/guias';
 import { formatDate, formatCurrency } from '../../../helpers';
 
@@ -101,22 +100,15 @@ class GuiasList extends Component {
   }
 
   componentDidMount() {
-    const { resetSearch: propResetSearch } = this.props;
-    propResetSearch();
-
     this.onLoadGuias();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { guias, inputValue, error } = this.props;
+    const { guias, error } = this.props;
 
     if (prevProps.guias !== guias) {
       this.onLoadGuias();
-    }
-
-    if (prevProps.inputValue !== inputValue) {
-      this.onHandleSearch();
     }
 
     if (prevProps.error !== error) {
@@ -133,15 +125,10 @@ class GuiasList extends Component {
   }
 
   onHandleSearch() {
-    const { guias, inputValue } = this.props;
-
-    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
-    const matchItem = items => fixString(items).indexOf(fixString(inputValue)) > -1;
+    const { guias } = this.props;
 
     this.setState({
-      allGuias: guias.filter(item => (
-        matchItem(item.Paciente.Nome) || matchItem(item.Numero)
-      )),
+      allGuias: guias,
     });
   }
 
@@ -302,16 +289,10 @@ GuiasList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   guias: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
-  inputValue: PropTypes.string.isRequired,
   deleteGuia: PropTypes.func.isRequired,
   updateGuia: PropTypes.func.isRequired,
-  resetSearch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  inputValue: state.searchReducer.inputValue,
-});
-
-export default connect(mapStateToProps, {
-  searchChange, resetSearch, deleteGuia, updateGuia,
+export default connect(null, {
+  deleteGuia, updateGuia,
 })(withStyles(styles)(withRouter(GuiasList)));

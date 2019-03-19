@@ -23,8 +23,8 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import { searchChange, resetSearch } from '../../../actions/search';
 import { deleteProcedimento } from '../../../actions/procedimentos';
+import { OrderBy } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -82,6 +82,7 @@ class ProcedimentosList extends Component {
 
     this.state = {
       allProcedimentos: [],
+      search: '',
       order: 'asc',
       boxMessage: {
         open: false,
@@ -98,22 +99,15 @@ class ProcedimentosList extends Component {
   }
 
   componentDidMount() {
-    const { resetSearch: propResetSearch } = this.props;
-    propResetSearch();
-
     this.onLoad();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { procedimentos, inputValue, error } = this.props;
+    const { procedimentos, error } = this.props;
 
     if (prevProps.procedimentos !== procedimentos) {
       this.onLoad();
-    }
-
-    if (prevProps.inputValue !== inputValue) {
-      this.onHandleSearch();
     }
 
     if (prevProps.error !== error) {
@@ -126,22 +120,6 @@ class ProcedimentosList extends Component {
 
     this.setState({
       allProcedimentos: procedimentos,
-    });
-  }
-
-  onHandleSearch() {
-    const { procedimentos, inputValue } = this.props;
-    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
-    const matchItem = items => fixString(items).indexOf(fixString(inputValue)) > -1;
-
-    this.setState({
-      allProcedimentos: procedimentos.filter((item) => {
-        const Codigo = typeof item.Codigo !== 'undefined' ? item.Codigo.toString() : '';
-
-        return (
-          matchItem(item.NomeProcedimento) || matchItem(Codigo)
-        );
-      }),
     });
   }
 
@@ -174,13 +152,32 @@ class ProcedimentosList extends Component {
     this.onHandleMessage('Item excluido.');
   }
 
+  onHandleSearch({ value, name }) {
+    const { procedimentos } = this.props;
+    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
+    const matchItem = items => fixString(items).indexOf(fixString(value)) > -1;
+
+    this.setState(prevState => ({
+      [name]: value,
+      allProcedimentos: OrderBy(procedimentos, 'Vencimento', prevState.order).filter((item) => {
+        const Codigo = typeof item.Codigo !== 'undefined' ? item.Codigo.toString() : '';
+        return matchItem(item.NomeProcedimento) || matchItem(Codigo);
+      }),
+    }));
+  }
+
   onHandleOrder(order) {
-    this.setState({ order });
+    this.setState(prevState => ({
+      order,
+      allProcedimentos: OrderBy(prevState.allProcedimentos, 'Vencimento', order),
+    }));
   }
 
   render() {
     const { classes, error } = this.props;
-    const { allProcedimentos, boxMessage, order } = this.state;
+    const {
+      allProcedimentos, boxMessage, order, search,
+    } = this.state;
 
     return (
       <Fragment>
@@ -207,7 +204,12 @@ class ProcedimentosList extends Component {
           </Select>
         </Grid>
 
-        <BoxSearch placeholder="Buscar procedimentos" />
+        <BoxSearch
+          value={search}
+          name="search"
+          onChange={e => this.onHandleSearch(e.target)}
+          placeholder="Buscar procedimentos"
+        />
 
         <List dense className={classes.root}>
           {allProcedimentos.length ? (
@@ -262,15 +264,9 @@ ProcedimentosList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   procedimentos: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
-  inputValue: PropTypes.string.isRequired,
   deleteProcedimento: PropTypes.func.isRequired,
-  resetSearch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  inputValue: state.searchReducer.inputValue,
-});
-
-export default connect(mapStateToProps, {
-  searchChange, resetSearch, deleteProcedimento,
+export default connect(null, {
+  deleteProcedimento,
 })(withStyles(styles)(withRouter(ProcedimentosList)));
