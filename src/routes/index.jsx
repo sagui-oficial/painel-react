@@ -5,12 +5,11 @@ import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
 
 import GuiaDetail from '../views/Guias/Detail';
-import GuiaCreate from '../views/Guias/Form';
+import GuiaForm from '../views/Guias/Form';
 
 import Pacientes from '../views/Pacientes';
 
-import Procedimentos from '../views/Procedimentos';
-import ProcedimentoCreate from '../views/Procedimentos/Form';
+import ProcedimentoForm from '../views/Procedimentos/Form';
 
 const MainRouters = () => (
   <Switch>
@@ -29,7 +28,7 @@ const MainRouters = () => (
     <Route exact path="/login" component={Login} />
 
     {/* GUIAS */}
-    <Route exact path="/guias/criar" component={GuiaCreate} />
+    <Route exact path="/guias/criar" component={GuiaForm} />
     <Route exact path="/guias/:id" component={GuiaDetail} />
 
     {/* PACIENTES */}
@@ -37,8 +36,8 @@ const MainRouters = () => (
     <Route exact path="/pacientes/:id" component={Pacientes} />
 
     {/* PROCEDIMENTOS */}
-    <Route exact path="/procedimentos/criar" component={ProcedimentoCreate} />
-    <Route exact path="/procedimentos/:id" component={Procedimentos} />
+    <Route exact path="/procedimentos/criar" component={ProcedimentoForm} />
+    <Route exact path="/procedimentos/:id" component={ProcedimentoForm} />
 
     {/* 404 */}
     <Route path="/" render={() => (<Redirect to="/dashboard" />)} />
