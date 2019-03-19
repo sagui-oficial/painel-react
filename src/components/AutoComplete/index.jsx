@@ -14,13 +14,13 @@ export function Control(props) {
   const {
     innerRef, children, innerProps, selectProps,
   } = props;
+
   return (
     <TextField
       fullWidth
-      label="Nome do paciente"
+      label={selectProps.label}
       margin="normal"
       variant="outlined"
-      name="Nome"
       InputLabelProps={{
         shrink: true,
       }}
