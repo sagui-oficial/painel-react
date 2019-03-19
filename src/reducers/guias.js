@@ -31,22 +31,22 @@ export default function (state = INITIAL_STATE, action = {}) {
     case UPDATE_GUIA:
       return {
         ...state,
-        guias: state.guias.map((guia) => {
-          if (guia.PublicID === action.payload.PublicID) {
+        guias: state.guias.map((item) => {
+          if (item.PublicID === action.payload.PublicID) {
             return {
-              ...guia,
+              ...item,
               Status: action.payload.Status,
             };
           }
 
-          return guia;
+          return item;
         }),
         fetchError: '',
       };
     case DELETE_GUIA:
       return {
         ...state,
-        guias: state.guias.filter(guia => guia.PublicID !== action.payload),
+        guias: state.guias.filter(item => item.PublicID !== action.payload),
         fetchError: '',
       };
     case FETCH_ERROR:
