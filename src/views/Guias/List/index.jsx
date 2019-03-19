@@ -24,7 +24,7 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import { searchChange } from '../../../actions/search';
+import { searchChange, resetSearch } from '../../../actions/search';
 import { deleteGuia, updateGuia } from '../../../actions/guias';
 import { formatDate, formatCurrency } from '../../../helpers';
 
@@ -101,6 +101,9 @@ class GuiasList extends Component {
   }
 
   componentDidMount() {
+    const { resetSearch: propResetSearch } = this.props;
+    propResetSearch();
+
     this.onLoadGuias();
     this.onHandleMessage();
   }
@@ -300,6 +303,7 @@ GuiasList.propTypes = {
   inputValue: PropTypes.string.isRequired,
   deleteGuia: PropTypes.func.isRequired,
   updateGuia: PropTypes.func.isRequired,
+  resetSearch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -307,5 +311,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  searchChange, deleteGuia, updateGuia,
+  searchChange, resetSearch, deleteGuia, updateGuia,
 })(withStyles(styles)(withRouter(GuiasList)));
