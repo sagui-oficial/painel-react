@@ -3,10 +3,14 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
+
 import GuiaDetail from '../views/Guias/Detail';
-import GuiaCreate from '../views/Guias/Create';
+import GuiaCreate from '../views/Guias/Form';
+
 import Pacientes from '../views/Pacientes';
+
 import Procedimentos from '../views/Procedimentos';
+import ProcedimentoCreate from '../views/Procedimentos/Form';
 
 const MainRouters = () => (
   <Switch>
@@ -33,7 +37,7 @@ const MainRouters = () => (
     <Route exact path="/pacientes/:id" component={Pacientes} />
 
     {/* PROCEDIMENTOS */}
-    <Route exact path="/procedimentos/criar" component={Procedimentos} />
+    <Route exact path="/procedimentos/criar" component={ProcedimentoCreate} />
     <Route exact path="/procedimentos/:id" component={Procedimentos} />
 
     {/* 404 */}
