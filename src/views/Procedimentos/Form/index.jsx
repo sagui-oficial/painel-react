@@ -90,6 +90,7 @@ class ProcedimentoForm extends Component {
 
     await propAddProcedimento({
       ...sendProcedimento,
+      id: PublicID,
       PublicID,
     });
     history.push(`/procedimentos/${PublicID}`);

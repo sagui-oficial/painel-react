@@ -131,14 +131,17 @@ class ProcedimentosList extends Component {
 
   onHandleSearch() {
     const { procedimentos, inputValue } = this.props;
-    const regex = new RegExp(inputValue, 'gi');
-
-    const matchItem = items => items.match(regex) !== null;
+    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
+    const matchItem = items => fixString(items).indexOf(fixString(inputValue)) > -1;
 
     this.setState({
-      allProcedimentos: procedimentos.filter(item => (
-        matchItem(item.NomeProcedimento) || matchItem(item.Codigo.toString())
-      )),
+      allProcedimentos: procedimentos.filter((item) => {
+        const Codigo = typeof item.Codigo !== 'undefined' ? item.Codigo.toString() : '';
+
+        return (
+          matchItem(item.NomeProcedimento) || matchItem(Codigo)
+        );
+      }),
     });
   }
 

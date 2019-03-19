@@ -134,12 +134,14 @@ class GuiasList extends Component {
 
   onHandleSearch() {
     const { guias, inputValue } = this.props;
-    const regex = new RegExp(inputValue, 'gi');
 
-    const matchItem = items => items.match(regex) !== null;
+    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
+    const matchItem = items => fixString(items).indexOf(fixString(inputValue)) > -1;
 
     this.setState({
-      allGuias: guias.filter(item => matchItem(item.Paciente.Nome) || matchItem(item.Numero)),
+      allGuias: guias.filter(item => (
+        matchItem(item.Paciente.Nome) || matchItem(item.Numero)
+      )),
     });
   }
 
