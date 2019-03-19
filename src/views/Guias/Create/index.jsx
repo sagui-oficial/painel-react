@@ -272,6 +272,10 @@ class GuiaCreate extends Component {
 
           <br />
 
+          <Typography variant="h6" color="inherit" noWrap>
+            Informação sobre o paciente
+          </Typography>
+
           <Grid container spacing={16}>
             <Grid
               item
@@ -283,6 +287,7 @@ class GuiaCreate extends Component {
               }}
             >
               <Select
+                label="Nome do paciente"
                 options={pacientes.map(suggestion => ({
                   id: suggestion.PublicID,
                   value: suggestion.Nome,
@@ -297,6 +302,7 @@ class GuiaCreate extends Component {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
+                disabled
                 label="CPF"
                 name="CPF"
                 value={sendGuia.Paciente.CPF}
@@ -304,26 +310,37 @@ class GuiaCreate extends Component {
                 margin="normal"
                 variant="outlined"
                 helperText="020.000.009-92"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <TextField
                 fullWidth
+                disabled
                 label="Telefone"
                 name="Telefone"
                 margin="normal"
                 variant="outlined"
                 helperText="(11) 9000-0000"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
+                disabled
                 label="E-mail"
                 name="Email"
                 margin="normal"
                 variant="outlined"
                 helperText="email@email.com.br"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -339,6 +356,37 @@ class GuiaCreate extends Component {
                 InputLabelProps={{
                   shrink: true,
                 }}
+              />
+            </Grid>
+          </Grid>
+
+          <br />
+
+          <Typography variant="h6" color="inherit" noWrap>
+            Adicionar procedimentos
+          </Typography>
+
+          <Grid container spacing={16}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              style={{
+                position: 'relative',
+                zIndex: '2',
+              }}
+            >
+              <Select
+                label="Procedimentos"
+                options={pacientes.map(suggestion => ({
+                  id: suggestion.PublicID,
+                  value: suggestion.Nome,
+                  label: suggestion.Nome,
+                }))}
+                components={{ Control, Option }}
+                value={selectedName}
+                onChange={this.onHandleTargetPacienteNome}
+                placeholder="Selecione..."
               />
             </Grid>
           </Grid>

@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 
 import BoxSearch from '../../../components/Search';
-import { searchChange } from '../../../actions/search';
+import { searchChange, resetSearch } from '../../../actions/search';
 
 const styles = theme => ({
   root: {
@@ -83,6 +83,9 @@ class PacientesList extends Component {
   }
 
   componentDidMount() {
+    const { resetSearch: propResetSearch } = this.props;
+    propResetSearch();
+
     this.onLoadPacientes();
   }
 
@@ -185,6 +188,7 @@ PacientesList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object).isRequired,
   inputValue: PropTypes.string.isRequired,
+  resetSearch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -192,5 +196,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  searchChange,
+  searchChange, resetSearch,
 })(withStyles(styles)(withRouter(PacientesList)));
