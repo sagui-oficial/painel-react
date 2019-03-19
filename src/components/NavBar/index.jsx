@@ -165,7 +165,7 @@ class NavBar extends Component {
             }}
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
-              <Link to="/guias" className={classes.linkLogo}>
+              <Link to="/" className={classes.linkLogo}>
                 <img src={logo} className={classes.logo} alt="logo" />
               </Link>
             </div>
@@ -222,7 +222,7 @@ class NavBar extends Component {
                 </IconButton>
               </Hidden>
               <Hidden mdUp implementation="css">
-                <Link to="/guias" className={classes.linkLogo}>
+                <Link to="/" className={classes.linkLogo}>
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Hidden>
