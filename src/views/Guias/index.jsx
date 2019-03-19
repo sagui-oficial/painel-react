@@ -34,7 +34,7 @@ const styles = theme => ({
 class Guias extends Component {
   constructor(props) {
     super(props);
-    this.handleNewGuia = this.handleNewGuia.bind(this);
+    this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -42,7 +42,7 @@ class Guias extends Component {
     propLoadGuias();
   }
 
-  handleNewGuia() {
+  onHandleAddNew() {
     const { history } = this.props;
     history.push('/guias/criar');
   }
@@ -66,7 +66,7 @@ class Guias extends Component {
                 size="medium"
                 className={classes.addBtn}
                 disabled={!!guiasError}
-                onClick={this.handleNewGuia}
+                onClick={this.onHandleAddNew}
               >
                 +Novo
               </Button>

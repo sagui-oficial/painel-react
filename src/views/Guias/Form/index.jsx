@@ -22,7 +22,7 @@ import Select from 'react-select';
 
 import { addGuia } from '../../../actions/guias';
 import { loadPacientes } from '../../../actions/pacientes';
-import { fixDateOnSave, convertDatePicker } from '../../../helpers';
+import { fixDateOnSave, convertDatePicker, formatCurrency } from '../../../helpers';
 import { Control, Option } from '../../../components/AutoComplete';
 
 const listStatus = [
@@ -83,6 +83,7 @@ class GuiaCreate extends Component {
 
     this.state = {
       selectedName: null,
+      ValorTotal: 0,
       sendGuia: {
         Status: 1,
         Numero: String(),
@@ -144,6 +145,7 @@ class GuiaCreate extends Component {
 
     this.setState({
       selectedName: target,
+      ValorTotal: null,
       sendGuia: {
         ...sendGuia,
         Paciente: {
@@ -175,7 +177,7 @@ class GuiaCreate extends Component {
 
   render() {
     const { classes, pacientes } = this.props;
-    const { sendGuia, selectedName } = this.state;
+    const { sendGuia, selectedName, ValorTotal } = this.state;
 
     return (
       <Fragment>
@@ -232,6 +234,21 @@ class GuiaCreate extends Component {
                   <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                 ))}
               </TextField>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                fullWidth
+                value={formatCurrency(ValorTotal)}
+                label="Valor total"
+                margin="normal"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
           </Grid>
 
