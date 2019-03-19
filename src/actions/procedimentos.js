@@ -35,7 +35,7 @@ export function addProcedimento(data) {
 export function loadProcedimentoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `${id}/procedimentos`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PROCEDIMENTO_DETAILS, payload: res }))
@@ -46,7 +46,7 @@ export function loadProcedimentoDetail(id) {
 export function updateProcedimento(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `${id}/procedimentos`,
       method: 'PATCH',
       data,
     })
@@ -58,7 +58,7 @@ export function updateProcedimento(data, id) {
 export function deleteProcedimento(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `${id}/procedimentos`,
       method: 'PATCH',
       data,
     })
