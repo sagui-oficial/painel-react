@@ -136,7 +136,9 @@ class ProcedimentosList extends Component {
     const matchItem = items => items.match(regex) !== null;
 
     this.setState({
-      allProcedimentos: procedimentos.filter(item => matchItem(item.NomeProcedimento)),
+      allProcedimentos: procedimentos.filter(item => (
+        matchItem(item.NomeProcedimento) || matchItem(item.Codigo.toString())
+      )),
     });
   }
 
@@ -224,7 +226,9 @@ class ProcedimentosList extends Component {
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
-                    {item.PublicID}
+                    <strong>Código:</strong>
+                    {' '}
+                    {item.Codigo}
                   </p>
                   <p>
                     <strong>{item.NomeProcedimento}</strong>
