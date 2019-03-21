@@ -29,7 +29,7 @@ export const fixDateOnSave = (_string) => {
   return mydate;
 };
 
-export const OrderBy = (arr = [], propName, order = 'asc') => (
+export const OrderByDate = (arr = [], propName, order = 'asc') => (
   arr.slice(0).sort((a, b) => {
     const firstDate = new Date(a[propName]);
     const secondDate = new Date(b[propName]);
@@ -43,5 +43,22 @@ export const OrderBy = (arr = [], propName, order = 'asc') => (
 
     if (firstDate > secondDate) return orderAsc;
     if (firstDate < secondDate) return orderDesc;
+    return 0;
+  }));
+
+export const OrderBy = (arr = [], propName, order = 'asc') => (
+  arr.slice(0).sort((a, b) => {
+    const firstDate = a[propName];
+    const secondDate = b[propName];
+    let orderDesc = 1;
+    let orderAsc = -1;
+
+    if (order === 'desc') {
+      orderDesc = -1;
+      orderAsc = 1;
+    }
+
+    if (firstDate > secondDate) return orderDesc;
+    if (firstDate < secondDate) return orderAsc;
     return 0;
   }));
