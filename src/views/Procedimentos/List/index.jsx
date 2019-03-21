@@ -83,7 +83,7 @@ class ProcedimentosList extends Component {
     this.state = {
       allProcedimentos: [],
       search: '',
-      order: 'asc',
+      order: 'Ordenar',
       boxMessage: {
         open: false,
         text: '',
@@ -159,7 +159,7 @@ class ProcedimentosList extends Component {
 
     this.setState(prevState => ({
       [name]: value,
-      allProcedimentos: OrderBy(procedimentos, 'Vencimento', prevState.order).filter((item) => {
+      allProcedimentos: OrderBy(procedimentos, 'NomeProcedimento', prevState.order).filter((item) => {
         const Codigo = typeof item.Codigo !== 'undefined' ? item.Codigo.toString() : '';
         return matchItem(item.NomeProcedimento) || matchItem(Codigo);
       }),
@@ -169,7 +169,7 @@ class ProcedimentosList extends Component {
   onHandleOrder(order) {
     this.setState(prevState => ({
       order,
-      allProcedimentos: OrderBy(prevState.allProcedimentos, 'Vencimento', order),
+      allProcedimentos: OrderBy(prevState.allProcedimentos, 'NomeProcedimento', order),
     }));
   }
 
@@ -199,8 +199,9 @@ class ProcedimentosList extends Component {
             value={order}
             onChange={e => this.onHandleOrder(e.target.value)}
           >
-            <MenuItem value="asc">Mais recentes</MenuItem>
-            <MenuItem value="desc">Mais antigos</MenuItem>
+            <MenuItem value="Ordenar">Ordenar</MenuItem>
+            <MenuItem value="asc">A-Z</MenuItem>
+            <MenuItem value="desc">Z-A</MenuItem>
           </Select>
         </Grid>
 

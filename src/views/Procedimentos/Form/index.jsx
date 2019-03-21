@@ -17,6 +17,7 @@ import {
   updateProcedimento,
 } from '../../../actions/procedimentos';
 import Breadcrumb from '../../../components/Breadcrumb';
+import Message from '../../../components/Message';
 
 const styles = theme => ({
   divider: {
@@ -58,25 +59,51 @@ class ProcedimentoForm extends Component {
         Exigencias: String(),
         Anotacoes: String(),
       },
+      boxMessage: {
+        open: false,
+        text: '',
+      },
     };
 
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
     this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
+    this.onHandleMessage = this.onHandleMessage.bind(this);
+    this.onHandleOnClose = this.onHandleOnClose.bind(this);
   }
 
   componentDidMount() {
     this.onHandlePageLoad();
+    this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
     const { procedimento } = this.props;
 
     if (prevProps.procedimento !== procedimento) {
-      this.setState({
-        sendProcedimento: procedimento,
-      });
+      this.onHandleSendProcedimento(procedimento);
     }
+  }
+
+  onHandleMessage(text) {
+    if (typeof text !== 'undefined') {
+      this.setState({ boxMessage: { open: true, text } });
+    }
+  }
+
+  onHandleOnClose() {
+    const { boxMessage } = this.state;
+    const { text } = boxMessage;
+
+    this.setState({
+      boxMessage: { open: false, text },
+    });
+  }
+
+  onHandleSendProcedimento(procedimento) {
+    this.setState({
+      sendProcedimento: procedimento,
+    });
   }
 
   onHandlePageLoad() {
@@ -100,7 +127,7 @@ class ProcedimentoForm extends Component {
     this.setState({
       sendProcedimento: {
         ...sendProcedimento,
-        [name]: value,
+        [name]: name === 'Codigo' ? value.toUpperCase() : value,
       },
     });
   }
@@ -117,6 +144,7 @@ class ProcedimentoForm extends Component {
       await propUpdateProcedimento({
         ...sendProcedimento,
       }, sendProcedimento.id);
+      this.onHandleMessage('Procedimento modificado.');
     } else {
       await propAddProcedimento({
         ...sendProcedimento,
@@ -124,16 +152,26 @@ class ProcedimentoForm extends Component {
         PublicID,
       });
 
+      this.setState({ editing: true });
+      this.onHandleMessage('Procedimento adicionado.');
       history.push(`/procedimentos/${PublicID}`);
     }
   }
 
   render() {
     const { classes } = this.props;
-    const { sendProcedimento, breadcrumb, editing } = this.state;
+    const {
+      sendProcedimento, breadcrumb,
+      editing, boxMessage,
+    } = this.state;
 
     return (
       <Fragment>
+        <Message
+          text={boxMessage.text}
+          open={boxMessage.open}
+          onHandleOnClose={this.onHandleOnClose}
+        />
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
             {editing ? 'Editar' : 'Cadastrar'}
@@ -256,7 +294,6 @@ ProcedimentoForm.defaultProps = {
 
 const mapStateToProps = state => ({
   procedimento: state.procedimentosReducer.procedimento,
-  procedimentosError: state.procedimentosReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
