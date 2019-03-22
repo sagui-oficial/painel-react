@@ -5,10 +5,10 @@ import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
 
 import GuiaDetail from '../views/Guias/Detail';
-import GuiaForm from '../views/Guias/Form';
-
 import Pacientes from '../views/Pacientes';
 
+import GuiaForm from '../views/Guias/Form';
+import PlanoForm from '../views/Planos/Form';
 import ProcedimentoForm from '../views/Procedimentos/Form';
 
 const MainRouters = () => (
@@ -34,6 +34,10 @@ const MainRouters = () => (
     {/* PACIENTES */}
     <Route exact path="/pacientes/criar" component={Pacientes} />
     <Route exact path="/pacientes/:id" component={Pacientes} />
+
+    {/* PLANOS */}
+    <Route exact path="/planos/criar" component={PlanoForm} />
+    <Route exact path="/planos/:id" component={PlanoForm} />
 
     {/* PROCEDIMENTOS */}
     <Route exact path="/procedimentos/criar" component={ProcedimentoForm} />
