@@ -12,13 +12,19 @@ import Pacientes from '../views/Pacientes';
 import Planos from '../views/Planos';
 import Procedimentos from '../views/Procedimentos';
 
+// FORMS
+import GuiaForm from '../views/Guias/Form';
+import PacienteForm from '../views/Pacientes/Form';
+import PlanoForm from '../views/Planos/Form';
+import ProcedimentoForm from '../views/Procedimentos/Form';
+
 const dashboardRoutes = [
   {
     id: 1,
     path: '/dashboard',
     menuText: 'Dashboard',
     icon: DashboardIcon,
-    active: true,
+    active: false,
     component: DashboardPage,
   },
   {
@@ -28,6 +34,7 @@ const dashboardRoutes = [
     icon: LibraryBooksIcon,
     active: true,
     component: Guias,
+    editMode: GuiaForm,
   },
   {
     id: 3,
@@ -36,6 +43,7 @@ const dashboardRoutes = [
     icon: PersonIcon,
     active: true,
     component: Pacientes,
+    editMode: PacienteForm,
   },
   {
     id: 4,
@@ -44,6 +52,7 @@ const dashboardRoutes = [
     icon: LayersIcon,
     active: true,
     component: Planos,
+    editMode: PlanoForm,
   },
   {
     id: 5,
@@ -52,6 +61,7 @@ const dashboardRoutes = [
     icon: ListAltIcon,
     active: true,
     component: Procedimentos,
+    editMode: ProcedimentoForm,
   },
 ];
 
