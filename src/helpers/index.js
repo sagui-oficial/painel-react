@@ -29,7 +29,7 @@ export const fixDateOnSave = (_string) => {
   return mydate;
 };
 
-export const OrderByDate = (arr = [], propName, order = 'asc') => (
+export const orderByDate = (arr = [], propName, order = 'asc') => (
   arr.slice(0).sort((a, b) => {
     const firstDate = new Date(a[propName]);
     const secondDate = new Date(b[propName]);
@@ -46,7 +46,7 @@ export const OrderByDate = (arr = [], propName, order = 'asc') => (
     return 0;
   }));
 
-export const OrderBy = (arr = [], propName, order = 'asc') => (
+export const orderBy = (arr = [], propName, order = 'asc') => (
   arr.slice(0).sort((a, b) => {
     const firstDate = a[propName];
     const secondDate = b[propName];
@@ -62,3 +62,21 @@ export const OrderBy = (arr = [], propName, order = 'asc') => (
     if (firstDate < secondDate) return orderAsc;
     return 0;
   }));
+
+export const normalizeString = (_str) => {
+  if (typeof _str !== 'undefined') {
+    return _str
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s\s+/, ' ')
+      .toLowerCase();
+  }
+
+  return false;
+};
+
+export const matchItem = (_string, _value) => {
+  const item = typeof _string !== 'undefined' ? _string.toString() : '';
+  return normalizeString(item).indexOf(normalizeString(_value)) > -1;
+};
