@@ -249,7 +249,7 @@ class PlanosList extends Component {
               </ListItem>
             ))
           ) : (
-            <ListItem className={classes.listItem}>Nenhum procedimento encontrado.</ListItem>
+            <ListItem className={classes.listItem}>Nenhum plano encontrado.</ListItem>
           )
           }
         </List>
