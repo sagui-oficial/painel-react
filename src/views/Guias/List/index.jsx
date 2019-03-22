@@ -25,7 +25,7 @@ import {
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
 import { deleteGuia, updateGuia } from '../../../actions/guias';
-import { formatDate, formatCurrency } from '../../../helpers';
+import { formatDate, formatCurrency, OrderByDate } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -83,7 +83,8 @@ class GuiasList extends Component {
 
     this.state = {
       allGuias: [],
-      order: 'asc',
+      search: '',
+      order: 'Ordenar',
       boxMessage: {
         open: false,
         text: '',
@@ -96,7 +97,7 @@ class GuiasList extends Component {
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
     this.onHandleDeleteGuia = this.onHandleDeleteGuia.bind(this);
     this.onHandleStatusGuia = this.onHandleStatusGuia.bind(this);
-    this.onHandleOrderGuias = this.onHandleOrderGuias.bind(this);
+    this.onHandleOrder = this.onHandleOrder.bind(this);
   }
 
   componentDidMount() {
@@ -117,14 +118,6 @@ class GuiasList extends Component {
   }
 
   onLoadGuias() {
-    const { guias } = this.props;
-
-    this.setState({
-      allGuias: guias,
-    });
-  }
-
-  onHandleSearch() {
     const { guias } = this.props;
 
     this.setState({
@@ -174,13 +167,33 @@ class GuiasList extends Component {
     }
   }
 
-  onHandleOrderGuias(order) {
-    this.setState({ order });
+  onHandleSearch({ value, name }) {
+    const { guias } = this.props;
+    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
+    const matchItem = items => fixString(items).indexOf(fixString(value)) > -1;
+
+    this.setState(prevState => ({
+      [name]: value,
+      allGuias: OrderByDate(guias, 'Vencimento', prevState.order).filter((item) => {
+        const Nome = typeof item.Paciente.Nome !== 'undefined' ? item.Paciente.Nome.toString() : '';
+        const Numero = typeof item.Numero !== 'undefined' ? item.Numero.toString() : '';
+        return matchItem(Numero) || matchItem(Nome);
+      }),
+    }));
+  }
+
+  onHandleOrder(order) {
+    this.setState(prevState => ({
+      order,
+      allGuias: OrderByDate(prevState.allGuias, 'Vencimento', order),
+    }));
   }
 
   render() {
     const { classes, error } = this.props;
-    const { allGuias, boxMessage, order } = this.state;
+    const {
+      allGuias, boxMessage, order, search,
+    } = this.state;
 
     return (
       <Fragment>
@@ -200,14 +213,20 @@ class GuiasList extends Component {
           <Select
             className={classes.selectBox}
             value={order}
-            onChange={e => this.onHandleOrderGuias(e.target.value)}
+            onChange={e => this.onHandleOrder(e.target.value)}
           >
+            <MenuItem value="Ordenar">Ordenar</MenuItem>
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
           </Select>
         </Grid>
 
-        <BoxSearch placeholder="Buscar guias" />
+        <BoxSearch
+          value={search}
+          name="search"
+          onChange={e => this.onHandleSearch(e.target)}
+          placeholder="Buscar guias"
+        />
 
         <List dense className={classes.root}>
           {allGuias.length ? (
