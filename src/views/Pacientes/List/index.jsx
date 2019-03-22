@@ -1,20 +1,30 @@
 import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import {
+  IconButton,
   Avatar,
   List,
   ListItem,
   ListItemAvatar,
+  ListItemSecondaryAction,
   Select,
   MenuItem,
   Grid,
 } from '@material-ui/core';
 
+import {
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
+
 import BoxSearch from '../../../components/Search';
+import Message from '../../../components/Message';
+import { deletePaciente } from '../../../actions/pacientes';
+import { orderBy, matchItem } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -72,52 +82,109 @@ class PacientesList extends Component {
 
     this.state = {
       allPacientes: [],
+      search: '',
       order: 'asc',
+      boxMessage: {
+        open: false,
+        text: '',
+      },
     };
 
     this.onLoad = this.onLoad.bind(this);
     this.onHandleSearch = this.onHandleSearch.bind(this);
+    this.onHandleMessage = this.onHandleMessage.bind(this);
+    this.onHandleOnClose = this.onHandleOnClose.bind(this);
+    this.onHandleDelete = this.onHandleDelete.bind(this);
     this.onHandleOrder = this.onHandleOrder.bind(this);
   }
 
   componentDidMount() {
     this.onLoad();
+    this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { pacientes } = this.props;
+    const { pacientes, error } = this.props;
 
     if (prevProps.pacientes !== pacientes) {
       this.onLoad();
+    }
+
+    if (prevProps.error !== error) {
+      this.onHandleMessage('Conectado.');
     }
   }
 
   onLoad() {
     const { pacientes } = this.props;
+    const { order } = this.state;
 
     this.setState({
-      allPacientes: pacientes,
+      allPacientes: orderBy(pacientes, 'Nome', order),
     });
   }
 
-  onHandleSearch() {
-    const { pacientes } = this.props;
+  onHandleMessage(text) {
+    const { error } = this.props;
+
+    if (error.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: error } });
+      return;
+    }
+
+    if (typeof text !== 'undefined') {
+      this.setState({ boxMessage: { open: true, text } });
+    }
+  }
+
+  onHandleOnClose() {
+    const { boxMessage } = this.state;
+    const { text } = boxMessage;
 
     this.setState({
-      allPacientes: pacientes,
+      boxMessage: { open: false, text },
     });
+  }
+
+  onHandleDelete(postID) {
+    const { deletePaciente: propdeletePaciente } = this.props;
+
+    propdeletePaciente({ Status: 99 }, postID);
+    this.onHandleMessage('Item excluido.');
+  }
+
+  onHandleSearch({ value, name }) {
+    const { pacientes } = this.props;
+
+    this.setState(prevState => ({
+      [name]: value,
+      allPacientes: orderBy(pacientes, 'Nome', prevState.order).filter(item => (
+        matchItem(item.Nome, value) || matchItem(item.CPF, value)
+      )),
+    }));
   }
 
   onHandleOrder(order) {
-    this.setState({ order });
+    this.setState(prevState => ({
+      order,
+      allPacientes: orderBy(prevState.allPacientes, 'Nome', order),
+    }));
   }
 
   render() {
-    const { classes } = this.props;
-    const { allPacientes, order } = this.state;
+    const { classes, error } = this.props;
+    const {
+      allPacientes, boxMessage, order, search,
+    } = this.state;
 
     return (
       <Fragment>
+        <Message
+          text={boxMessage.text}
+          open={boxMessage.open}
+          onHandleOnClose={this.onHandleOnClose}
+        />
+
         <Grid
           container
           direction="row"
@@ -130,12 +197,17 @@ class PacientesList extends Component {
             value={order}
             onChange={e => this.onHandleOrder(e.target.value)}
           >
-            <MenuItem value="asc">Mais recentes</MenuItem>
-            <MenuItem value="desc">Mais antigos</MenuItem>
+            <MenuItem value="asc">A-Z</MenuItem>
+            <MenuItem value="desc">Z-A</MenuItem>
           </Select>
         </Grid>
 
-        <BoxSearch placeholder="Buscar pacientes" />
+        <BoxSearch
+          value={search}
+          name="search"
+          onChange={e => this.onHandleSearch(e.target)}
+          placeholder="Buscar pacientes"
+        />
 
         <List dense className={classes.root}>
           {allPacientes.length ? (
@@ -157,16 +229,27 @@ class PacientesList extends Component {
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
-                    {item.PublicID}
+                    <strong>CPF:</strong>
+                    {' '}
+                    {item.CPF}
                   </p>
                   <p>
                     <strong>{item.Nome}</strong>
                   </p>
                 </div>
+                <ListItemSecondaryAction className={classes.iconDelete}>
+                  <IconButton
+                    disabled={!!error}
+                    onClick={() => this.onHandleDelete(item.PublicID)}
+                    aria-label="Deletar"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             ))
           ) : (
-            <ListItem className={classes.listItem}>Nenhum paciente.</ListItem>
+            <ListItem className={classes.listItem}>Nenhum paciente encontrado.</ListItem>
           )
           }
         </List>
@@ -178,6 +261,10 @@ class PacientesList extends Component {
 PacientesList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object).isRequired,
+  error: PropTypes.string.isRequired,
+  deletePaciente: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(withRouter(PacientesList));
+export default connect(null, {
+  deletePaciente,
+})(withStyles(styles)(withRouter(PacientesList)));

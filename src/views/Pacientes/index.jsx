@@ -34,22 +34,22 @@ const styles = theme => ({
 class Pacientes extends Component {
   constructor(props) {
     super(props);
-    this.handleNewPaciente = this.handleNewPaciente.bind(this);
+    this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
-    const { loadPacientes: propLoadPacientes } = this.props;
-    propLoadPacientes();
+    const { loadPacientes: propLoadItems } = this.props;
+    propLoadItems();
   }
 
-  handleNewPaciente() {
+  onHandleAddNew() {
     const { history } = this.props;
     history.push('/pacientes/criar');
   }
 
   render() {
     const {
-      classes, pacientes,
+      classes, error, pacientes,
     } = this.props;
 
     return (
@@ -58,20 +58,21 @@ class Pacientes extends Component {
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Cadastro de pacientes
+                Pacientes
               </Typography>
               <Button
                 variant="outlined"
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
-                onClick={this.handleNewPaciente}
+                disabled={!!error}
+                onClick={this.onHandleAddNew}
               >
                 +Novo
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <PacientesList pacientes={pacientes} />
+            <PacientesList pacientes={pacientes} error={error} />
           </Fragment>
         )}
       </Fragment>
@@ -84,10 +85,12 @@ Pacientes.propTypes = {
   pacientes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   loadPacientes: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
   pacientes: state.pacientesReducer.pacientes,
+  error: state.pacientesReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
