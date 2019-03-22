@@ -4,7 +4,7 @@ export const GET_GUIAS = 'GET_GUIAS';
 export const GET_GUIA_DETAILS = 'GET_GUIA_DETAILS';
 export const SAVE_GUIA = 'SAVE_GUIA';
 export const DELETE_GUIA = 'DELETE_GUIA';
-export const UPDATE_GUIA = 'UPDATE_GUIA';
+export const UPDATE_GUIA_STATUS = 'UPDATE_GUIA_STATUS';
 export const FETCH_ERROR = 'FETCH_ERROR';
 
 export function loadGuias() {
@@ -43,14 +43,14 @@ export function loadGuiaDetail(id) {
   };
 }
 
-export function updateGuia(data, id) {
+export function updateGuiaStatus(data, id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `gto/${id}/atualizargto`,
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA, payload: res }))
+      .then(res => dispatch({ type: UPDATE_GUIA_STATUS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
