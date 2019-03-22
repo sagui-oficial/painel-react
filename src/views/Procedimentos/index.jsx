@@ -38,8 +38,8 @@ class Procedimentos extends Component {
   }
 
   componentDidMount() {
-    const { loadProcedimentos: propLoadGuias } = this.props;
-    propLoadGuias();
+    const { loadProcedimentos: propLoadItems } = this.props;
+    propLoadItems();
   }
 
   onHandleAddNew() {
@@ -49,7 +49,7 @@ class Procedimentos extends Component {
 
   render() {
     const {
-      classes, procedimentosError, procedimentos,
+      classes, error, procedimentos,
     } = this.props;
 
     return (
@@ -65,14 +65,14 @@ class Procedimentos extends Component {
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
-                disabled={!!procedimentosError}
+                disabled={!!error}
                 onClick={this.onHandleAddNew}
               >
                 +Novo
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <ProcedimentosList procedimentos={procedimentos} error={procedimentosError} />
+            <ProcedimentosList procedimentos={procedimentos} error={error} />
           </Fragment>
         )}
       </Fragment>
@@ -85,12 +85,12 @@ Procedimentos.propTypes = {
   procedimentos: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   loadProcedimentos: PropTypes.func.isRequired,
-  procedimentosError: PropTypes.string.isRequired,
+  error: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
   procedimentos: state.procedimentosReducer.procedimentos,
-  procedimentosError: state.procedimentosReducer.fetchError,
+  error: state.procedimentosReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
