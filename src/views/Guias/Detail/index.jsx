@@ -83,7 +83,7 @@ GuiaDetail.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loadGuiaData: state.guiasReducer.guias,
+  loadGuiaData: state.guiasReducer.guia,
   guiasError: state.guiasReducer.fetchError,
 });
 
