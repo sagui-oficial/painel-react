@@ -245,6 +245,8 @@ class GuiasList extends Component {
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
+                    <strong>Número:</strong>
+                    {' '}
                     {item.Numero}
                   </p>
 
