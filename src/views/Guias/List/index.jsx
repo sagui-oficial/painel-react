@@ -24,8 +24,10 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import { deleteGuia, updateGuia } from '../../../actions/guias';
-import { formatDate, formatCurrency, OrderByDate } from '../../../helpers';
+import { deleteGuia, updateGuiaStatus } from '../../../actions/guias';
+import {
+  formatDate, formatCurrency, orderByDate, matchItem,
+} from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -84,14 +86,14 @@ class GuiasList extends Component {
     this.state = {
       allGuias: [],
       search: '',
-      order: 'Ordenar',
+      order: 'asc',
       boxMessage: {
         open: false,
         text: '',
       },
     };
 
-    this.onLoadGuias = this.onLoadGuias.bind(this);
+    this.onLoad = this.onLoad.bind(this);
     this.onHandleSearch = this.onHandleSearch.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
@@ -101,7 +103,7 @@ class GuiasList extends Component {
   }
 
   componentDidMount() {
-    this.onLoadGuias();
+    this.onLoad();
     this.onHandleMessage();
   }
 
@@ -109,7 +111,7 @@ class GuiasList extends Component {
     const { guias, error } = this.props;
 
     if (prevProps.guias !== guias) {
-      this.onLoadGuias();
+      this.onLoad();
     }
 
     if (prevProps.error !== error) {
@@ -117,11 +119,11 @@ class GuiasList extends Component {
     }
   }
 
-  onLoadGuias() {
+  onLoad() {
     const { guias } = this.props;
-
+    const { order } = this.state;
     this.setState({
-      allGuias: guias,
+      allGuias: orderByDate(guias, 'Vencimento', order),
     });
   }
 
@@ -155,13 +157,13 @@ class GuiasList extends Component {
   }
 
   onHandleStatusGuia(event, prevStatus, postID) {
-    const { updateGuia: propUpdateGuias } = this.props;
+    const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
     const { target } = event;
 
     if (prevStatus !== target.value) {
       this.onHandleMessage('Status atualizado.');
 
-      propUpdateGuias({
+      propUpdateGuiaStatus({
         Status: target.value,
       }, postID);
     }
@@ -169,23 +171,19 @@ class GuiasList extends Component {
 
   onHandleSearch({ value, name }) {
     const { guias } = this.props;
-    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
-    const matchItem = items => fixString(items).indexOf(fixString(value)) > -1;
 
     this.setState(prevState => ({
       [name]: value,
-      allGuias: OrderByDate(guias, 'Vencimento', prevState.order).filter((item) => {
-        const Nome = typeof item.Paciente.Nome !== 'undefined' ? item.Paciente.Nome.toString() : '';
-        const Numero = typeof item.Numero !== 'undefined' ? item.Numero.toString() : '';
-        return matchItem(Numero) || matchItem(Nome);
-      }),
+      allGuias: orderByDate(guias, 'Vencimento', prevState.order).filter(item => (
+        matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
+      )),
     }));
   }
 
   onHandleOrder(order) {
     this.setState(prevState => ({
       order,
-      allGuias: OrderByDate(prevState.allGuias, 'Vencimento', order),
+      allGuias: orderByDate(prevState.allGuias, 'Vencimento', order),
     }));
   }
 
@@ -215,7 +213,6 @@ class GuiasList extends Component {
             value={order}
             onChange={e => this.onHandleOrder(e.target.value)}
           >
-            <MenuItem value="Ordenar">Ordenar</MenuItem>
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
           </Select>
@@ -309,9 +306,9 @@ GuiasList.propTypes = {
   guias: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
   deleteGuia: PropTypes.func.isRequired,
-  updateGuia: PropTypes.func.isRequired,
+  updateGuiaStatus: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  deleteGuia, updateGuia,
+  deleteGuia, updateGuiaStatus,
 })(withStyles(styles)(withRouter(GuiasList)));

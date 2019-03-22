@@ -24,7 +24,7 @@ import {
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
 import { deleteProcedimento } from '../../../actions/procedimentos';
-import { OrderBy } from '../../../helpers';
+import { orderBy, matchItem } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -83,7 +83,7 @@ class ProcedimentosList extends Component {
     this.state = {
       allProcedimentos: [],
       search: '',
-      order: 'Ordenar',
+      order: 'asc',
       boxMessage: {
         open: false,
         text: '',
@@ -117,9 +117,10 @@ class ProcedimentosList extends Component {
 
   onLoad() {
     const { procedimentos } = this.props;
+    const { order } = this.state;
 
     this.setState({
-      allProcedimentos: procedimentos,
+      allProcedimentos: orderBy(procedimentos, 'NomeProcedimento', order),
     });
   }
 
@@ -154,22 +155,19 @@ class ProcedimentosList extends Component {
 
   onHandleSearch({ value, name }) {
     const { procedimentos } = this.props;
-    const fixString = _string => _string !== 'undefined' && _string.toLowerCase();
-    const matchItem = items => fixString(items).indexOf(fixString(value)) > -1;
 
     this.setState(prevState => ({
       [name]: value,
-      allProcedimentos: OrderBy(procedimentos, 'NomeProcedimento', prevState.order).filter((item) => {
-        const Codigo = typeof item.Codigo !== 'undefined' ? item.Codigo.toString() : '';
-        return matchItem(item.NomeProcedimento) || matchItem(Codigo);
-      }),
+      allProcedimentos: orderBy(procedimentos, 'NomeProcedimento', prevState.order).filter(item => (
+        matchItem(item.NomeProcedimento, value) || matchItem(item.Codigo, value)
+      )),
     }));
   }
 
   onHandleOrder(order) {
     this.setState(prevState => ({
       order,
-      allProcedimentos: OrderBy(prevState.allProcedimentos, 'NomeProcedimento', order),
+      allProcedimentos: orderBy(prevState.allProcedimentos, 'NomeProcedimento', order),
     }));
   }
 
@@ -199,7 +197,6 @@ class ProcedimentosList extends Component {
             value={order}
             onChange={e => this.onHandleOrder(e.target.value)}
           >
-            <MenuItem value="Ordenar">Ordenar</MenuItem>
             <MenuItem value="asc">A-Z</MenuItem>
             <MenuItem value="desc">Z-A</MenuItem>
           </Select>
