@@ -82,8 +82,9 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+    paddingBottom: '60px',
     position: 'relative',
-    overflow: 'hidden',
+    overflow: 'auto',
     // height: '100vh',
   },
   mainContainer: {
@@ -171,6 +172,9 @@ class NavBar extends Component {
             </div>
             <Divider />
             <List>
+              <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
+                Navegação
+              </Typography>
               {dashboardRoutes.map(itemList => (
                 itemList.active && (
                   <ListItem
@@ -190,23 +194,6 @@ class NavBar extends Component {
               ))}
             </List>
             <Divider />
-            <List>
-              <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
-                Configurações
-              </Typography>
-              <ListItem button>
-                <ListItemIcon>
-                  <MenuIcon />
-                </ListItemIcon>
-                <ListItemText primary="Usuários" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <MenuIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dentistas" />
-              </ListItem>
-            </List>
           </SwipeableDrawer>
         </Hidden>
         <main className={classes.content}>
