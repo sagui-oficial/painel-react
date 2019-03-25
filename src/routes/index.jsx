@@ -4,22 +4,22 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
 
+const activeRouters = dashboardRoutes.filter(item => item.active);
+
 const MainRouters = () => (
   <Switch>
     {/* AUTH */}
     <Route exact path="/login" component={Login} />
 
-    {dashboardRoutes.map((itemList, index, element) => (
-      itemList.active && [
-        <Route exact key={itemList.id} path={itemList.path} component={itemList.component} />,
-        itemList.editMode && [
-          <Route exact path={`${itemList.path}/criar`} component={itemList.editMode} />,
-          <Route exact path={`${itemList.path}/:id`} component={itemList.editMode} />,
-        ],
-        console.dir(element),
-      ]
-    ))}
-    <Route path="/" render={() => (<Redirect to="/guias" />)} />
+    {activeRouters.map(itemList => [
+      <Route exact key={itemList.id} path={itemList.path} component={itemList.component} />,
+      itemList.editMode && [
+        <Route exact path={`${itemList.path}/criar`} component={itemList.editMode} />,
+        <Route exact path={`${itemList.path}/:id`} component={itemList.editMode} />,
+      ],
+    ])}
+
+    <Route path="/" render={() => (<Redirect to={activeRouters[0].path} />)} />
   </Switch>
 );
 
