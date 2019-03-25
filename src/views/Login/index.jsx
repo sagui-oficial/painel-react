@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 
 import logo from '../../assets/images/logo.svg';
-import './index.sass';
 
 const user = {
   username: 'oi@sagui.app',
