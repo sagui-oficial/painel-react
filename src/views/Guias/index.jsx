@@ -58,7 +58,7 @@ class Guias extends Component {
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Gerenciamento de guias
+                Guias
               </Typography>
               <Button
                 variant="outlined"
