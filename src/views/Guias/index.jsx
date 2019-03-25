@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 // LOCAL IMPORTS
+import Master from '../../components/Master';
 import { loadGuias } from '../../actions/guias';
 import GuiasList from './List';
 
@@ -53,7 +54,7 @@ class Guias extends Component {
     } = this.props;
 
     return (
-      <Fragment>
+      <Master>
         {guias && (
           <Fragment>
             <Grid container alignItems="center">
@@ -75,7 +76,7 @@ class Guias extends Component {
             <GuiasList guias={guias} error={guiasError} />
           </Fragment>
         )}
-      </Fragment>
+      </Master>
     );
   }
 }

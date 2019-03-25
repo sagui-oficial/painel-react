@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -15,6 +15,7 @@ import {
 
 import Select from 'react-select';
 
+import Master from '../../../components/Master';
 import { addGuia } from '../../../actions/guias';
 import { loadPacientes } from '../../../actions/pacientes';
 import { fixDateOnSave, convertDatePicker, formatCurrency } from '../../../helpers';
@@ -158,7 +159,7 @@ class GuiaForm extends Component {
     } = this.state;
 
     return (
-      <Fragment>
+      <Master>
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
             Cadastrar guia
@@ -393,7 +394,7 @@ class GuiaForm extends Component {
             Salvar
           </Button>
         </form>
-      </Fragment>
+      </Master>
     );
   }
 }

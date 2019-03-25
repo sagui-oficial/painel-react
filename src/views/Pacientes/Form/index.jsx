@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -18,6 +18,7 @@ import {
 } from '../../../actions/pacientes';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
+import Master from '../../../components/Master';
 
 const styles = theme => ({
   divider: {
@@ -169,7 +170,7 @@ class PacienteForm extends Component {
     } = this.state;
 
     return (
-      <Fragment>
+      <Master>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -241,7 +242,7 @@ class PacienteForm extends Component {
             Salvar
           </Button>
         </form>
-      </Fragment>
+      </Master>
     );
   }
 }

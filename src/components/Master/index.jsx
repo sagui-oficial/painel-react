@@ -55,8 +55,6 @@ const styles = theme => ({
   toolbarContainer: {
     background: 'none',
     boxShadow: 'none',
-    // display: 'flex',
-    // justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -85,7 +83,6 @@ const styles = theme => ({
     paddingBottom: '60px',
     position: 'relative',
     overflow: 'auto',
-    // height: '100vh',
   },
   mainContainer: {
     marginTop: theme.spacing.unit * 8,

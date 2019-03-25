@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 // LOCAL IMPORTS
+import Master from '../../components/Master';
 import { loadPlanos } from '../../actions/planos';
 import PlanosList from './List';
 
@@ -53,7 +54,7 @@ class Planos extends Component {
     } = this.props;
 
     return (
-      <Fragment>
+      <Master>
         {planos && (
           <Fragment>
             <Grid container alignItems="center">
@@ -75,7 +76,7 @@ class Planos extends Component {
             <PlanosList planos={planos} error={error} />
           </Fragment>
         )}
-      </Fragment>
+      </Master>
     );
   }
 }

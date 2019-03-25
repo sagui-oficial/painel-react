@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 // LOCAL IMPORTS
+import Master from '../../components/Master';
 import { loadPacientes } from '../../actions/pacientes';
 import PacientesList from './List';
 
@@ -53,7 +54,7 @@ class Pacientes extends Component {
     } = this.props;
 
     return (
-      <Fragment>
+      <Master>
         {pacientes && (
           <Fragment>
             <Grid container alignItems="center">
@@ -75,7 +76,7 @@ class Pacientes extends Component {
             <PacientesList pacientes={pacientes} error={error} />
           </Fragment>
         )}
-      </Fragment>
+      </Master>
     );
   }
 }

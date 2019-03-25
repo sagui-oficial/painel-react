@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -14,6 +14,7 @@ import {
 
 import Select from 'react-select';
 
+import Master from '../../../components/Master';
 import {
   addPlano, loadPlanoDetail,
   updatePlano,
@@ -280,7 +281,7 @@ class PlanoForm extends Component {
     const { ListaProcedimentos } = sendPlano;
 
     return (
-      <Fragment>
+      <Master>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -456,7 +457,7 @@ class PlanoForm extends Component {
             Salvar
           </Button>
         </form>
-      </Fragment>
+      </Master>
     );
   }
 }

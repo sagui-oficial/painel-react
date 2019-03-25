@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 // LOCAL IMPORTS
+import Master from '../../../components/Master';
 import { loadGuiaDetail } from '../../../actions/guias';
 import { formatCurrency } from '../../../helpers';
 
-const styles = (/* theme */) => ({
+const styles = () => ({
   box: {
     padding: '20px',
     border: '1px solid #ccc',
@@ -36,7 +37,7 @@ class GuiaDetail extends Component {
     const { classes, loadGuiaData } = this.props;
 
     return (
-      <div>
+      <Master>
         {loadGuiaData && (
           <div className={classes.box}>
             {loadGuiaData.PublicID && (<p>{loadGuiaData.PublicID}</p>)}
@@ -70,7 +71,7 @@ class GuiaDetail extends Component {
             }
           </div>
         )}
-      </div>
+      </Master>
     );
   }
 }

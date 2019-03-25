@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -16,6 +16,7 @@ import {
   addProcedimento, loadProcedimentoDetail,
   updateProcedimento,
 } from '../../../actions/procedimentos';
+import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 
@@ -222,7 +223,7 @@ class ProcedimentoForm extends Component {
     } = this.state;
 
     return (
-      <Fragment>
+      <Master>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -335,7 +336,7 @@ class ProcedimentoForm extends Component {
             Salvar
           </Button>
         </form>
-      </Fragment>
+      </Master>
     );
   }
 }

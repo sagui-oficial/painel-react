@@ -8,17 +8,28 @@ const activeRouters = dashboardRoutes.filter(item => item.active);
 
 const MainRouters = () => (
   <Switch>
-    {/* AUTH */}
-    <Route exact path="/login" component={Login} />
-
     {activeRouters.map(itemList => [
-      <Route exact key={itemList.id} path={itemList.path} component={itemList.component} />,
+      <Route
+        exact
+        key={itemList.id}
+        path={itemList.path}
+        component={itemList.component}
+      />,
       itemList.editMode && [
-        <Route exact path={`${itemList.path}/criar`} component={itemList.editMode} />,
-        <Route exact path={`${itemList.path}/:id`} component={itemList.editMode} />,
+        <Route
+          exact
+          path={`${itemList.path}/criar`}
+          component={itemList.editMode}
+        />,
+        <Route
+          exact
+          path={`${itemList.path}/:id`}
+          component={itemList.editMode}
+        />,
       ],
     ])}
 
+    <Route exact path="/" component={Login} />
     <Route path="/" render={() => (<Redirect to={activeRouters[0].path} />)} />
   </Switch>
 );
