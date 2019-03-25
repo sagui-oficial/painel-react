@@ -59,6 +59,10 @@ class ProcedimentoForm extends Component {
         Exigencias: String(),
         Anotacoes: String(),
       },
+      isValidField: {
+        Codigo: false,
+        NomeProcedimento: false,
+      },
       boxMessage: {
         open: false,
         text: '',
@@ -67,6 +71,8 @@ class ProcedimentoForm extends Component {
 
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
+    this.onHandleBlur = this.onHandleBlur.bind(this);
+    this.onHandleValidateFields = this.onHandleValidateFields.bind(this);
     this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
@@ -78,14 +84,25 @@ class ProcedimentoForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { procedimento } = this.props;
+    const { procedimento, error } = this.props;
 
     if (prevProps.procedimento !== procedimento) {
       this.onHandleSendProcedimento(procedimento);
     }
+
+    if (prevProps.error !== error) {
+      this.onHandleMessage('Conectado.');
+    }
   }
 
   onHandleMessage(text) {
+    const { error } = this.props;
+
+    if (error.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: error } });
+      return;
+    }
+
     if (typeof text !== 'undefined') {
       this.setState({ boxMessage: { open: true, text } });
     }
@@ -130,16 +147,55 @@ class ProcedimentoForm extends Component {
         [name]: name === 'Codigo' ? value.toUpperCase() : value,
       },
     });
+
+    this.onHandleBlur({ value, name });
+  }
+
+  onHandleBlur({ value, name }) {
+    const { isValidField } = this.state;
+
+    this.setState({
+      isValidField: {
+        ...isValidField,
+        [name]: value.trim().length === 0,
+      },
+    });
+  }
+
+  onHandleValidateFields(event) {
+    event.preventDefault();
+
+    const { isValidField, sendProcedimento } = this.state;
+    const setValidFields = {};
+
+    Object.keys(isValidField).map((item) => {
+      setValidFields[item] = sendProcedimento[item].trim().length === 0;
+      return setValidFields;
+    });
+
+    this.setState({
+      ...isValidField,
+      isValidField: setValidFields,
+    });
+
+    const countAll = Object.keys(setValidFields).length;
+    const countTrues = Object.values(setValidFields).filter(item => item === false);
+
+    if (countAll === countTrues.length) {
+      this.onHandleAdd();
+    } else {
+      this.onHandleMessage('Preencha todos os campos.');
+    }
   }
 
   async onHandleAdd() {
+    const PublicID = uuidv1();
+    const { sendProcedimento, editing } = this.state;
+
     const {
       addProcedimento: propAddProcedimento,
       updateProcedimento: propUpdateProcedimento, history,
     } = this.props;
-    const { sendProcedimento, editing } = this.state;
-    const PublicID = uuidv1();
-
     if (editing) {
       await propUpdateProcedimento({
         ...sendProcedimento,
@@ -159,10 +215,10 @@ class ProcedimentoForm extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, error } = this.props;
     const {
       sendProcedimento, breadcrumb,
-      editing, boxMessage,
+      editing, boxMessage, isValidField,
     } = this.state;
 
     return (
@@ -179,11 +235,13 @@ class ProcedimentoForm extends Component {
             procedimento
           </Typography>
           <Button
+            type="submit"
             variant="outlined"
             color="primary"
             size="medium"
+            disabled={!!error}
             className={classes.addBtn}
-            onClick={this.onHandleAdd}
+            onClick={this.onHandleValidateFields}
           >
             Salvar
           </Button>
@@ -193,17 +251,22 @@ class ProcedimentoForm extends Component {
 
         <Breadcrumb breadcrumb={breadcrumb} />
 
-        <form className={classes.form} noValidate autoComplete="off">
+        <form
+          noValidate
+          autoComplete="off"
+          className={classes.form}
+        >
           <Grid container spacing={16}>
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 label="Código"
                 name="Codigo"
+                required
+                error={isValidField.Codigo}
                 value={sendProcedimento.Codigo}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o código"
                 margin="normal"
                 variant="outlined"
@@ -217,10 +280,11 @@ class ProcedimentoForm extends Component {
                 fullWidth
                 label="Nome do procedimento"
                 name="NomeProcedimento"
+                required
+                error={isValidField.NomeProcedimento}
                 value={sendProcedimento.NomeProcedimento}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o nome do procedimento."
                 margin="normal"
                 variant="outlined"
@@ -238,9 +302,7 @@ class ProcedimentoForm extends Component {
                 rows="4"
                 rowsMax="10"
                 value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
                 margin="normal"
                 variant="outlined"
               />
@@ -254,9 +316,7 @@ class ProcedimentoForm extends Component {
                 rows="4"
                 rowsMax="10"
                 value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
                 margin="normal"
                 variant="outlined"
               />
@@ -264,11 +324,13 @@ class ProcedimentoForm extends Component {
           </Grid>
 
           <Button
+            type="submit"
             variant="outlined"
             color="primary"
             size="medium"
+            disabled={!!error}
             className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleAdd}
+            onClick={this.onHandleValidateFields}
           >
             Salvar
           </Button>
@@ -286,6 +348,7 @@ ProcedimentoForm.propTypes = {
   addProcedimento: PropTypes.func.isRequired,
   updateProcedimento: PropTypes.func.isRequired,
   loadProcedimentoDetail: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
 };
 
 ProcedimentoForm.defaultProps = {
@@ -294,6 +357,7 @@ ProcedimentoForm.defaultProps = {
 
 const mapStateToProps = state => ({
   procedimento: state.procedimentosReducer.procedimento,
+  error: state.procedimentosReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
