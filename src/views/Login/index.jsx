@@ -1,25 +1,44 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+
 import {
-  Paper, withStyles, Grid, TextField, Button,
+  withStyles, Grid, TextField, Button,
 } from '@material-ui/core';
 
+import { loginSubmit } from '../../actions/login';
 import logo from '../../assets/images/logo.svg';
-
-const user = {
-  username: 'oi@sagui.app',
-  password: '123456',
-};
+import background from '../../assets/images/bg-login.jpg';
 
 const styles = theme => ({
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: theme.palette.primary.main,
+    backgroundImage: `url(${background})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'bottom center',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
   logo: {
     maxWidth: '120px',
     width: '100%',
     margin: '0 auto 20px',
   },
-  margin: {
-    margin: theme.spacing.unit * 2,
+  form: {
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 2,
+    width: '100%',
+    maxWidth: '340px',
+    height: '100%',
+    margin: '0',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   padding: {
     padding: theme.spacing.unit,
@@ -32,10 +51,12 @@ const styles = theme => ({
 class Login extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: String(),
       password: String(),
-      auth: false,
+      errorMessage: String(),
+      loading: false,
     };
 
     this.baseState = this.state;
@@ -46,94 +67,122 @@ class Login extends Component {
   onHandleChange({ name, value }) {
     this.setState({
       [name]: value,
+      errorMessage: '',
     });
   }
 
-  onHandleSubmit(e) {
+  async onHandleSubmit(e) {
     e.preventDefault();
-    const { username, password } = this.state;
 
-    if (user.username === username
-    && user.password === password) {
-      this.setState({ auth: true });
+    this.setState({ loading: true });
+
+    const { username, password } = this.state;
+    const { loginSubmit: propLoginSubmit } = this.props;
+
+    const { type, message } = await propLoginSubmit(username, password);
+
+    if (type === 'error') {
+      this.setState({
+        errorMessage: message,
+        loading: false,
+        password: '',
+      });
     }
   }
 
   render() {
-    const { classes } = this.props;
-    const { username, password, auth } = this.state;
+    const {
+      username, password, errorMessage, loading,
+    } = this.state;
+    const { classes, auth, homeRoute } = this.props;
+
+    if (auth) {
+      return (
+        <Redirect to={homeRoute} />
+      );
+    }
+
+    console.log('Error Message', errorMessage);
 
     return (
-      !auth ? (
-        <Paper className={classes.padding}>
-          <form onSubmit={this.onHandleSubmit} className={classes.margin}>
-            <Grid container spacing={8} alignItems="center">
-              <Grid item md sm xs style={{ textAlign: 'center' }}>
-                <img src={logo} className={classes.logo} alt="logo" />
-              </Grid>
+      <div className={classes.container}>
+        <form onSubmit={this.onHandleSubmit} className={classes.form}>
+          <Grid container spacing={8} alignItems="center">
+            <Grid item md sm xs style={{ textAlign: 'center' }}>
+              <img src={logo} className={classes.logo} alt="logo" />
             </Grid>
-            <Grid container spacing={8} alignItems="flex-end">
-              <Grid item md sm xs>
-                <TextField
-                  name="username"
-                  label="E-mail"
-                  type="email"
-                  placeholder="email@exemplo.com.br"
-                  autoComplete="off"
-                  value={username}
-                  onChange={e => this.onHandleChange(e.target)}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  minLength="3"
-                  fullWidth
-                  autoFocus
-                  required
-                />
-              </Grid>
-            </Grid>
-            <br />
-            <Grid container spacing={8} alignItems="flex-end">
-              <Grid item md sm xs>
-                <TextField
-                  name="password"
-                  label="Senha"
-                  type="password"
-                  placeholder="******"
-                  value={password}
-                  onChange={e => this.onHandleChange(e.target)}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  minLength="6"
-                  fullWidth
-                  required
-                />
-              </Grid>
-            </Grid>
-            <Grid container justify="center" style={{ marginTop: '20px' }}>
-              <Button
-                type="submit"
+          </Grid>
+          <Grid container spacing={8} alignItems="flex-end">
+            <Grid item md sm xs>
+              <TextField
+                name="username"
+                label="E-mail"
+                type="email"
+                placeholder="email@exemplo.com.br"
+                autoComplete="off"
+                value={username}
+                onChange={e => this.onHandleChange(e.target)}
                 variant="outlined"
-                color="primary"
-                style={{ textTransform: 'none' }}
-              >
-                Entrar
-              </Button>
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                minLength="3"
+                fullWidth
+                autoFocus
+                required
+              />
             </Grid>
-          </form>
-        </Paper>
-      ) : (
-        <Redirect to="/guias" />
-      )
+          </Grid>
+          <br />
+          <Grid container spacing={8} alignItems="flex-end">
+            <Grid item md sm xs>
+              <TextField
+                name="password"
+                label="Senha"
+                type="password"
+                placeholder="••••••"
+                value={password}
+                onChange={e => this.onHandleChange(e.target)}
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                minLength="6"
+                fullWidth
+                required
+              />
+            </Grid>
+          </Grid>
+          <Grid container justify="center" style={{ marginTop: '20px' }}>
+            <Button
+              type="submit"
+              variant="outlined"
+              color="primary"
+              style={{ textTransform: 'none' }}
+              disabled={loading}
+            >
+              { loading ? 'Carregando...' : 'Entrar' }
+            </Button>
+          </Grid>
+        </form>
+      </div>
     );
   }
 }
 
 Login.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
+  loginSubmit: PropTypes.func.isRequired,
+  homeRoute: PropTypes.string.isRequired,
+  auth: PropTypes.string,
 };
 
-export default withStyles(styles)(Login);
+Login.defaultProps = {
+  auth: String(),
+};
+
+const mapStateToProps = state => ({
+  auth: state.firebase.auth.uid,
+});
+
+export default connect(mapStateToProps, { loginSubmit })(withStyles(styles)(Login));

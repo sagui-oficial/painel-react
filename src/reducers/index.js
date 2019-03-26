@@ -1,4 +1,7 @@
 import { combineReducers } from 'redux';
+import { firestoreReducer } from 'redux-firestore';
+import { firebaseReducer } from 'react-redux-firebase';
+
 import guiasReducer from './guias';
 import pacientesReducer from './pacientes';
 import procedimentosReducer from './procedimentos';
@@ -9,4 +12,6 @@ export default combineReducers({
   pacientesReducer,
   procedimentosReducer,
   planosReducer,
+  firestore: firestoreReducer,
+  firebase: firebaseReducer,
 });
