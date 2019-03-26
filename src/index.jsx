@@ -1,9 +1,10 @@
 /* global document window */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+
 import { createStore, applyMiddleware, compose } from 'redux';
+import { reduxFirestore, getFirestore } from 'redux-firestore';
+import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
@@ -11,29 +12,41 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
 import reducers from './reducers';
-import './assets/styles/default.sass';
-import * as serviceWorker from './serviceWorker';
+import { env } from './config/variables';
+import firebaseConfig from './config/firebase';
 import DashboardLayout from './layouts/Dashboard';
 
-const hist = createBrowserHistory();
+import './assets/styles/default.sass';
+import * as serviceWorker from './serviceWorker';
 
 let store;
-if (process.env.REACT_APP_STAGE === 'development') {
-  /* eslint-disable no-underscore-dangle */
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  store = createStore(reducers, composeEnhancers(applyMiddleware(thunk, logger)));
-  /* eslint-enable */
+/* eslint-disable no-underscore-dangle */
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+/* eslint-enable */
+
+if (env.REACT_APP_ENV !== 'production') {
+  store = createStore(reducers,
+    composeEnhancers(
+      applyMiddleware(logger, thunk.withExtraArgument({ getFirebase, getFirestore })),
+      reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
+      reduxFirestore(firebaseConfig),
+    ));
 } else {
-  store = createStore(reducers, applyMiddleware(thunk));
+  store = createStore(reducers,
+    compose(
+      applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
+      reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
+      reduxFirestore(firebaseConfig),
+    ));
 }
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Router history={hist}>
+store.firebaseAuthIsReady.then(() => {
+  ReactDOM.render(
+    <Provider store={store}>
       <DashboardLayout />
-    </Router>
-  </Provider>,
-  document.getElementById('root'),
-);
+    </Provider>,
+    document.getElementById('root'),
+  );
+});
 
 serviceWorker.register();
