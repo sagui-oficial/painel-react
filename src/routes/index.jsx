@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import PrivateRoute from '../components/PrivateRoute';
 import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
+import SignUp from '../views/SignUp';
 
 const activeRouters = dashboardRoutes.filter(item => item.active);
 
@@ -36,6 +37,7 @@ const MainRouters = ({ auth }) => (
         ],
       ])}
 
+      <PrivateRoute exact path="/signup" component={SignUp} auth={auth} />
       <Route exact path="/" render={() => <Login homeRoute={activeRouters[0].path} />} />
     </Switch>
   </BrowserRouter>
