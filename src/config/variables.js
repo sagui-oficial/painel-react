@@ -6,7 +6,7 @@ export const {
   REACT_APP_STORAGEBUCKET,
   REACT_APP_MESSAGINGSENDERID,
   REACT_APP_GA,
-  REACT_APP_ENV,
+  REACT_APP_STAGE,
 } = process.env;
 
 export const env = {
@@ -17,5 +17,5 @@ export const env = {
   REACT_APP_STORAGEBUCKET,
   REACT_APP_MESSAGINGSENDERID,
   REACT_APP_GA,
-  REACT_APP_ENV,
+  REACT_APP_STAGE,
 };

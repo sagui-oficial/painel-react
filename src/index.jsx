@@ -24,7 +24,7 @@ let store;
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-if (env.REACT_APP_ENV !== 'production') {
+if (env.REACT_APP_STAGE !== 'production') {
   store = createStore(reducers,
     composeEnhancers(
       applyMiddleware(logger, thunk.withExtraArgument({ getFirebase, getFirestore })),
