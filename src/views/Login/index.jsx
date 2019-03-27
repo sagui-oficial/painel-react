@@ -102,8 +102,6 @@ class Login extends Component {
       );
     }
 
-    console.log('Error Message', errorMessage);
-
     return (
       <div className={classes.container}>
         <form onSubmit={this.onHandleSubmit} className={classes.form}>
@@ -154,6 +152,8 @@ class Login extends Component {
             </Grid>
           </Grid>
           <Grid container justify="center" style={{ marginTop: '20px' }}>
+            <br />
+            <p>{errorMessage || 'Preencha todos os campos.'}</p>
             <Button
               type="submit"
               variant="outlined"
