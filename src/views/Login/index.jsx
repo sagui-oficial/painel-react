@@ -40,6 +40,12 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  small: {
+    fontSize: '11px',
+    color: '#555',
+    marginBottom: '0',
+    marginTop: '5px',
+  },
   padding: {
     padding: theme.spacing.unit,
     maxWidth: '320px',
@@ -151,9 +157,8 @@ class Login extends Component {
               />
             </Grid>
           </Grid>
+          <p className={classes.small}>{errorMessage || 'Preencha todos os campos.'}</p>
           <Grid container justify="center" style={{ marginTop: '20px' }}>
-            <br />
-            <p>{errorMessage || 'Preencha todos os campos.'}</p>
             <Button
               type="submit"
               variant="outlined"

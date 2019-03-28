@@ -17,7 +17,7 @@ import firebaseConfig from './config/firebase';
 import DashboardLayout from './layouts/Dashboard';
 
 import './assets/styles/default.sass';
-import * as serviceWorker from './serviceWorker';
+// import * as serviceWorker from './serviceWorker';
 
 let store;
 /* eslint-disable no-underscore-dangle */
@@ -49,4 +49,4 @@ store.firebaseAuthIsReady.then(() => {
   );
 });
 
-serviceWorker.register();
+// serviceWorker.register();
