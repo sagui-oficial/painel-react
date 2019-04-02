@@ -45,21 +45,21 @@ class Procedimentos extends Component {
 
   onHandleAddNew() {
     const { history } = this.props;
-    history.push('/procedimentos/criar');
+    history.push('/procedimentos/cadastrar');
   }
 
   render() {
     const {
-      classes, error, procedimentos,
+      classes, error, procedimentos, title,
     } = this.props;
 
     return (
-      <Master>
+      <Master title={title}>
         {procedimentos && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Procedimentos
+                {title}
               </Typography>
               <Button
                 variant="outlined"
@@ -87,6 +87,11 @@ Procedimentos.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  title: PropTypes.string,
+};
+
+Procedimentos.defaultProps = {
+  title: String(),
 };
 
 const mapStateToProps = state => ({

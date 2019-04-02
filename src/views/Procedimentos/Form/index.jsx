@@ -51,7 +51,6 @@ class ProcedimentoForm extends Component {
       editing: false,
       breadcrumb: [
         { label: 'Procedimentos', url: '/procedimentos' },
-        { label: 'Cadastrar', url: '/procedimentos/criar' },
       ],
       sendProcedimento: {
         Status: 1,
@@ -216,14 +215,16 @@ class ProcedimentoForm extends Component {
   }
 
   render() {
-    const { classes, error } = this.props;
+    const {
+      classes, error, title, match,
+    } = this.props;
     const {
       sendProcedimento, breadcrumb,
       editing, boxMessage, isValidField,
     } = this.state;
 
     return (
-      <Master>
+      <Master title={`${title} procedimento`}>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -250,7 +251,7 @@ class ProcedimentoForm extends Component {
 
         <Divider className={classes.divider} />
 
-        <Breadcrumb breadcrumb={breadcrumb} />
+        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
         <form
           noValidate
@@ -350,10 +351,12 @@ ProcedimentoForm.propTypes = {
   updateProcedimento: PropTypes.func.isRequired,
   loadProcedimentoDetail: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 ProcedimentoForm.defaultProps = {
   procedimento: {},
+  title: String(),
 };
 
 const mapStateToProps = state => ({
