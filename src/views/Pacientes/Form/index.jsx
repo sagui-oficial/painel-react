@@ -51,7 +51,6 @@ class PacienteForm extends Component {
       editing: false,
       breadcrumb: [
         { label: 'Pacientes', url: '/pacientes' },
-        { label: 'Cadastrar', url: '/pacientes/criar' },
       ],
       sendPaciente: {
         Status: 1,
@@ -163,14 +162,14 @@ class PacienteForm extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, title, match } = this.props;
     const {
       sendPaciente, breadcrumb,
       editing, boxMessage,
     } = this.state;
 
     return (
-      <Master>
+      <Master title={`${title} paciente`}>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -195,7 +194,7 @@ class PacienteForm extends Component {
 
         <Divider className={classes.divider} />
 
-        <Breadcrumb breadcrumb={breadcrumb} />
+        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
         <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={16}>
@@ -255,10 +254,12 @@ PacienteForm.propTypes = {
   addPaciente: PropTypes.func.isRequired,
   updatePaciente: PropTypes.func.isRequired,
   loadPacienteDetail: PropTypes.func.isRequired,
+  title: PropTypes.string,
 };
 
 PacienteForm.defaultProps = {
   paciente: {},
+  title: String(),
 };
 
 const mapStateToProps = state => ({

@@ -45,21 +45,21 @@ class Pacientes extends Component {
 
   onHandleAddNew() {
     const { history } = this.props;
-    history.push('/pacientes/criar');
+    history.push('/pacientes/cadastrar');
   }
 
   render() {
     const {
-      classes, error, pacientes,
+      classes, error, pacientes, title,
     } = this.props;
 
     return (
-      <Master>
+      <Master title={title}>
         {pacientes && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Pacientes
+                {title}
               </Typography>
               <Button
                 variant="outlined"
@@ -87,6 +87,11 @@ Pacientes.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   loadPacientes: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  title: PropTypes.string,
+};
+
+Pacientes.defaultProps = {
+  title: String(),
 };
 
 const mapStateToProps = state => ({
