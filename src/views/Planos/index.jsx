@@ -45,21 +45,21 @@ class Planos extends Component {
 
   onHandleAddNew() {
     const { history } = this.props;
-    history.push('/planos/criar');
+    history.push('/planos/cadastrar');
   }
 
   render() {
     const {
-      classes, error, planos,
+      classes, error, planos, title,
     } = this.props;
 
     return (
-      <Master>
+      <Master title={title}>
         {planos && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Planos
+                {title}
               </Typography>
               <Button
                 variant="outlined"
@@ -87,6 +87,11 @@ Planos.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   loadPlanos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  title: PropTypes.string,
+};
+
+Planos.defaultProps = {
+  title: String(),
 };
 
 const mapStateToProps = state => ({

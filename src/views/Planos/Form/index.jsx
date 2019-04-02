@@ -57,7 +57,6 @@ class PlanoForm extends Component {
       editing: false,
       breadcrumb: [
         { label: 'Planos', url: '/planos' },
-        { label: 'Cadastrar', url: '/planos/criar' },
       ],
       AdicionarProcedimentos: {},
       sendPlano: {
@@ -272,7 +271,9 @@ class PlanoForm extends Component {
   }
 
   render() {
-    const { classes, error, procedimentos } = this.props;
+    const {
+      classes, error, procedimentos, title, match,
+    } = this.props;
     const {
       sendPlano, breadcrumb, selectedName,
       editing, boxMessage, isValidField,
@@ -281,7 +282,7 @@ class PlanoForm extends Component {
     const { ListaProcedimentos } = sendPlano;
 
     return (
-      <Master>
+      <Master title={`${title} plano`}>
         <Message
           text={boxMessage.text}
           open={boxMessage.open}
@@ -308,7 +309,7 @@ class PlanoForm extends Component {
 
         <Divider className={classes.divider} />
 
-        <Breadcrumb breadcrumb={breadcrumb} />
+        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
         <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={16}>
@@ -473,10 +474,12 @@ PlanoForm.propTypes = {
   loadPlanoDetail: PropTypes.func.isRequired,
   loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 PlanoForm.defaultProps = {
   plano: {},
+  title: String(),
 };
 
 const mapStateToProps = state => ({
