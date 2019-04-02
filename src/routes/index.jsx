@@ -19,19 +19,22 @@ const MainRouters = ({ auth }) => (
           key={itemList.id}
           path={itemList.path}
           component={itemList.component}
+          title={itemList.menuText}
           auth={auth}
         />,
         itemList.editMode && [
           <PrivateRoute
             exact
-            path={`${itemList.path}/criar`}
+            path={`${itemList.path}/cadastrar`}
             component={itemList.editMode}
+            title="Cadastrar"
             auth={auth}
           />,
           <PrivateRoute
             exact
             path={`${itemList.path}/:id`}
             component={itemList.editMode}
+            title="Editar"
             auth={auth}
           />,
         ],
