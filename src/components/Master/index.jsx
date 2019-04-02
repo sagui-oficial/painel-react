@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { Helmet } from 'react-helmet';
 
 // MATERIAL IMPORTS
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -143,10 +144,16 @@ class NavBar extends Component {
 
   render() {
     const { menu } = this.state;
-    const { classes, children } = this.props;
+    const { classes, children, title } = this.props;
 
     return (
       <div className={classes.root}>
+        <Helmet>
+          <title>
+            {title || 'Sagui'}
+          </title>
+        </Helmet>
+
         <CssBaseline />
 
         {/* DESKTOP SIDEBAR */}
@@ -224,6 +231,11 @@ class NavBar extends Component {
 NavBar.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   children: PropTypes.instanceOf(Object).isRequired,
+  title: PropTypes.string,
+};
+
+NavBar.defaultProps = {
+  title: String(),
 };
 
 export default withStyles(styles)(NavBar);
