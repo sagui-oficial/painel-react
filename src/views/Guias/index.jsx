@@ -45,21 +45,21 @@ class Guias extends Component {
 
   onHandleAddNew() {
     const { history } = this.props;
-    history.push('/guias/criar');
+    history.push('/guias/cadastrar');
   }
 
   render() {
     const {
-      classes, guiasError, guias,
+      classes, guiasError, guias, title,
     } = this.props;
 
     return (
-      <Master>
+      <Master title={title}>
         {guias && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
-                Guias
+                {title}
               </Typography>
               <Button
                 variant="outlined"
@@ -87,6 +87,11 @@ Guias.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
   guiasError: PropTypes.string.isRequired,
+  title: PropTypes.string,
+};
+
+Guias.defaultProps = {
+  title: String(),
 };
 
 const mapStateToProps = state => ({

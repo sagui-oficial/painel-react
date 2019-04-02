@@ -54,7 +54,6 @@ class GuiaForm extends Component {
       ValorTotal: 0,
       breadcrumb: [
         { label: 'Guias', url: '/guias' },
-        { label: 'Cadastrar', url: '/guias/criar' },
       ],
       listStatus: [
         { label: 'Criada', value: 1 },
@@ -136,7 +135,7 @@ class GuiaForm extends Component {
   }
 
   async onHandleAddGuia() {
-    // const { addGuia: propAddGuia, history } = this.props;
+    const { addGuia: propAddGuia, history } = this.props;
     const { sendGuia } = this.state;
     const PublicID = uuidv1();
 
@@ -147,19 +146,21 @@ class GuiaForm extends Component {
       Vencimento: fixDateOnSave(sendGuia.Vencimento),
     }));
 
-    /* await propAddGuia();
-    history.push(`/guias/${PublicID}`); */
+    await propAddGuia();
+    history.push(`/guias/${PublicID}`);
   }
 
   render() {
-    const { classes, pacientes } = this.props;
+    const {
+      classes, pacientes, title, match,
+    } = this.props;
     const {
       sendGuia, selectedName, listStatus,
       ValorTotal, breadcrumb,
     } = this.state;
 
     return (
-      <Master>
+      <Master title={`${title} guia`}>
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
             Cadastrar guia
@@ -177,7 +178,7 @@ class GuiaForm extends Component {
 
         <Divider className={classes.divider} />
 
-        <Breadcrumb breadcrumb={breadcrumb} />
+        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
         <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={16}>
@@ -402,9 +403,15 @@ class GuiaForm extends Component {
 GuiaForm.propTypes = {
   addGuia: PropTypes.func.isRequired,
   loadPacientes: PropTypes.func.isRequired,
+  match: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object).isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
+  title: PropTypes.string,
+};
+
+GuiaForm.defaultProps = {
+  title: String(),
 };
 
 const mapStateToProps = state => ({
