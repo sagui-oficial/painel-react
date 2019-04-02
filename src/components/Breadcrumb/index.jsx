@@ -47,7 +47,7 @@ const Breadcrumb = (props) => {
         return (
           <Chip
             key={key}
-            to={item.url}
+            to={item.url || 'cadastrar'}
             label={item.label}
             className={`${classes.chip} ${index === breadcrumb.length - 1 && classes.activeChip}`}
             component={RouterLink}
