@@ -4,99 +4,108 @@ import { connect } from 'react-redux';
 import { signup } from '../../actions/login';
 
 class SignUp extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.state = {
-			fullname: '',
-			username: '',
-			password: '',
-			loading: false
-		};
+    this.state = {
+      fullname: String(),
+      username: String(),
+      password: String(),
+      loading: false,
+    };
 
-		this.baseState = this.state;
+    this.baseState = this.state;
 
-		this.onHandleChange = this.onHandleChange.bind(this);
-		this.onHandleSubmit = this.onHandleSubmit.bind(this);
-	}
+    this.onHandleChange = this.onHandleChange.bind(this);
+    this.onHandleSubmit = this.onHandleSubmit.bind(this);
+  }
 
-	resetForm() {
-		this.setState(this.baseState);
-	}
+  async onHandleSubmit(e) {
+    e.preventDefault();
 
-	onHandleChange({ name, value }) {
-		this.setState({ [name]: value });
-	}
+    const { fullname, username, password } = this.state;
+    const { signup: propSignup } = this.props;
 
-	async onHandleSubmit(e) {
-		e.preventDefault();
+    this.setState({ loading: true });
 
-		const { fullname, username, password } = this.state;
+    const { type, message } = await propSignup({
+      name: fullname, email: username, password,
+    });
 
-		this.setState({ loading: true });
+    console.warn(type, message);
 
-		const { type, message } = await this.props.signup({name: fullname, email: username, password});
-		console.warn(type, message);
+    this.setState({ loading: false });
 
-		this.setState({ loading: false });
+    this.resetForm();
+  }
 
-		this.resetForm();
-	}
+  onHandleChange({ name, value }) {
+    this.setState({ [name]: value });
+  }
 
-	render() {
-		const { username, password, fullname, loading } = this.state;
+  resetForm() {
+    this.setState(this.baseState);
+  }
 
-		return (
-			<div id="login">
-				<div id="box">
-					<form onSubmit={(e) => this.onHandleSubmit(e)}>
-						<input
-							type="text"
-							className="full"
-							name="fullname"
-							onChange={(e) => this.onHandleChange(e.target)}
-							value={fullname}
-							placeholder="name"
-							autoComplete="off"
-							required
-							minLength="3" />
+  render() {
+    const {
+      username, password, fullname, loading,
+    } = this.state;
 
-						<input
-							type="text"
-							className="full"
-							name="username"
-							onChange={(e) => this.onHandleChange(e.target)}
-							value={username}
-							placeholder="email"
-							autoComplete="off"
-							required
-							minLength="3" />
+    return (
+      <div id="login">
+        <div id="box">
+          <form onSubmit={e => this.onHandleSubmit(e)}>
+            <input
+              type="text"
+              className="full"
+              name="fullname"
+              onChange={e => this.onHandleChange(e.target)}
+              value={fullname}
+              placeholder="name"
+              autoComplete="off"
+              required
+              minLength="3"
+            />
 
-						<input
-							type="password"
-							className="full"
-							name="password"
-							onChange={(e) => this.onHandleChange(e.target)}
-							value={password}
-							autoComplete="new-password"
-							placeholder="password"
-							required
-							minLength="6" />
+            <input
+              type="text"
+              className="full"
+              name="username"
+              onChange={e => this.onHandleChange(e.target)}
+              value={username}
+              placeholder="email"
+              autoComplete="off"
+              required
+              minLength="3"
+            />
 
-						<div id="login-actions">
-							<button className="blue-theme" disabled={loading}>
-								Sign Up
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		);
-	}
+            <input
+              type="password"
+              className="full"
+              name="password"
+              onChange={e => this.onHandleChange(e.target)}
+              value={password}
+              autoComplete="new-password"
+              placeholder="password"
+              required
+              minLength="6"
+            />
+
+            <div id="login-actions">
+              <button type="submit" className="blue-theme" disabled={loading}>
+                Sign Up
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 }
 
 SignUp.propTypes = {
-	signup: PropTypes.func
+  signup: PropTypes.func.isRequired,
 };
 
 export default connect(null, { signup })(SignUp);
