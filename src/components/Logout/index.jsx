@@ -69,7 +69,9 @@ class MenuListComposition extends Component {
           open={open}
           anchorEl={this.anchorEl}
           transition
-          style={{ zIndex: 1102 }}
+          style={{
+            zIndex: 1102,
+          }}
         >
           {({ TransitionProps }) => (
             <Grow
@@ -118,4 +120,6 @@ const mapStateToProps = state => ({
   profile: state.firebase.profile,
 });
 
-export default connect(mapStateToProps, { logout })(withStyles(styles)(MenuListComposition));
+export default connect(mapStateToProps, {
+  logout,
+})(withStyles(styles)(MenuListComposition));

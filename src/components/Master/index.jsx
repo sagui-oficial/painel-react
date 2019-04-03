@@ -18,7 +18,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import { unstable_Box as Box } from '@material-ui/core/Box';
 
 // MATERIAL ICONS
 import MenuIcon from '@material-ui/icons/Menu';
@@ -46,6 +45,7 @@ const styles = theme => ({
   boxProfile: {
     display: 'flex',
     justifyContent: 'flex-end',
+    flexGrow: '1',
   },
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -224,9 +224,9 @@ class NavBar extends Component {
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Hidden>
-              <Box flexGrow={1} className={classes.boxProfile}>
+              <div className={classes.boxProfile}>
                 <Logout />
-              </Box>
+              </div>
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>
