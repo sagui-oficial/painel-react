@@ -77,6 +77,11 @@ const styles = theme => ({
       margin: 0,
     },
   },
+  avatar: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
 });
 
 class GuiasList extends Component {
