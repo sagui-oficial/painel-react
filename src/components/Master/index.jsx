@@ -18,6 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import { unstable_Box as Box } from '@material-ui/core/Box';
 
 // MATERIAL ICONS
 import MenuIcon from '@material-ui/icons/Menu';
@@ -25,6 +26,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 // LOCAL IMPORTS
 import logo from '../../assets/images/logo.svg';
 import dashboardRoutes from '../../routes/dashbordRoutes';
+import Logout from '../Logout';
 
 const drawerWidth = 240;
 
@@ -41,12 +43,17 @@ const styles = theme => ({
     display: 'block',
     fontSize: '0',
   },
+  boxProfile: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
   appBar: {
-    width: '100%',
+    width: `calc(100% - ${drawerWidth}px)`,
     boxShadow: 'none',
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     left: drawerWidth,
     [theme.breakpoints.down('sm')]: {
+      width: '100%',
       left: '0',
     },
   },
@@ -217,6 +224,9 @@ class NavBar extends Component {
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Hidden>
+              <Box flexGrow={1} className={classes.boxProfile}>
+                <Logout />
+              </Box>
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>
