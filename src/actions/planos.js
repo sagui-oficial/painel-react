@@ -1,68 +1,68 @@
 import { APIResquest } from '../utils/api';
 
-export const GET_GUIAS = 'GET_GUIAS';
-export const GET_GUIA_DETAILS = 'GET_GUIA_DETAILS';
-export const SAVE_GUIA = 'SAVE_GUIA';
-export const DELETE_GUIA = 'DELETE_GUIA';
-export const UPDATE_GUIA_STATUS = 'UPDATE_GUIA_STATUS';
+export const GET_PLANOS = 'GET_PLANOS';
+export const GET_PLANO_DETAILS = 'GET_PLANO_DETAILS';
+export const SAVE_PLANO = 'SAVE_PLANO';
+export const DELETE_PLANO = 'DELETE_PLANO';
+export const UPDATE_PLANO = 'UPDATE_PLANO';
 export const FETCH_ERROR = 'FETCH_ERROR';
 
-export function loadGuias() {
+export function loadPlanos() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/listargto',
+      uri: 'planos',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_GUIAS, payload: res.filter(item => item.Status !== 99),
+        type: GET_PLANOS, payload: res.filter(item => item.Status !== 99),
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function addGuia(data) {
+export function addPlano(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/criargto',
+      uri: 'planos',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res }))
+      .then(res => dispatch({ type: SAVE_PLANO, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function loadGuiaDetail(id) {
+export function loadPlanoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/obtergto`,
+      uri: `${id}/planos`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
+      .then(res => dispatch({ type: GET_PLANO_DETAILS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updateGuiaStatus(data, id) {
+export function updatePlano(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/atualizargto`,
+      uri: `${id}/planos`,
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA_STATUS, payload: res }))
+      .then(res => dispatch({ type: UPDATE_PLANO, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function deleteGuia(data, id) {
+export function deletePlano(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/deletargto`,
+      uri: `${id}/planos`,
       method: 'PATCH',
       data,
     })
-      .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
+      .then(() => dispatch({ type: DELETE_PLANO, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

@@ -1,6 +1,6 @@
 {
-  "short_name": "SAGUI",
-  "name": "Sistema de Administração de Guias Odontológicas",
+  "short_name": "Sagui",
+  "name": "Sistema Administração de Guias Odontológicas",
   "icons": [
     {
       "src": "favicon.ico",
@@ -16,5 +16,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#7c00dd",
-  "background_color": "#ffffff"
+  "background_color": "#7c00dd"
 }

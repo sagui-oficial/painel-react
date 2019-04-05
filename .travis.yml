@@ -4,33 +4,26 @@ node_js:
   - "8"
 
 cache:
+  yarn: true
   directories:
-    "node_modules"
+    - node_modules
 
-before_install:
-  - npm install
+before_deploy:
+  - yarn build
 
-before_script:
-  - npm run build
-  - rm -rf public
-  - mv build public
+deploy:
+  skip_cleanup: true
+  provider: firebase
+  token:
+    secure: $FIREBASE_TOKEN
 
 branches:
   only:
-  - master
-
-# deploy:
-#   provider: codedeploy
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key: $AWS_SECRET_KEY
-#   bucket: "S3 Bucket"
-#   application: "SaguiFE"
-#   deployment_group: SaguiPainelReact
-#   region: sa-east-1
+    - master
 
 notifications:
   email:
-    on_success: never # only if status change from fail to success
-    on_failure: always # if there is a fail
+    on_success: never
+    on_failure: always
     recipients:
       - contato@brunomacedo.com.br

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { Helmet } from 'react-helmet';
 
 // MATERIAL IMPORTS
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,6 +25,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 // LOCAL IMPORTS
 import logo from '../../assets/images/logo.svg';
 import dashboardRoutes from '../../routes/dashbordRoutes';
+import Logout from '../Logout';
 
 const drawerWidth = 240;
 
@@ -40,12 +42,18 @@ const styles = theme => ({
     display: 'block',
     fontSize: '0',
   },
+  boxProfile: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexGrow: '1',
+  },
   appBar: {
-    width: '100%',
+    width: `calc(100% - ${drawerWidth}px)`,
     boxShadow: 'none',
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     left: drawerWidth,
     [theme.breakpoints.down('sm')]: {
+      width: '100%',
       left: '0',
     },
   },
@@ -55,8 +63,6 @@ const styles = theme => ({
   toolbarContainer: {
     background: 'none',
     boxShadow: 'none',
-    // display: 'flex',
-    // justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -82,9 +88,9 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+    paddingBottom: '60px',
     position: 'relative',
-    overflow: 'hidden',
-    // height: '100vh',
+    overflow: 'auto',
   },
   mainContainer: {
     marginTop: theme.spacing.unit * 8,
@@ -145,10 +151,16 @@ class NavBar extends Component {
 
   render() {
     const { menu } = this.state;
-    const { classes, children } = this.props;
+    const { classes, children, title } = this.props;
 
     return (
       <div className={classes.root}>
+        <Helmet>
+          <title>
+            {title || 'Sagui'}
+          </title>
+        </Helmet>
+
         <CssBaseline />
 
         {/* DESKTOP SIDEBAR */}
@@ -165,12 +177,15 @@ class NavBar extends Component {
             }}
           >
             <div className={`${classes.toolbar} ${classes.toolbarLogo}`}>
-              <Link to="/guias" className={classes.linkLogo}>
+              <Link to="/" className={classes.linkLogo}>
                 <img src={logo} className={classes.logo} alt="logo" />
               </Link>
             </div>
             <Divider />
             <List>
+              <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
+                Navegação
+              </Typography>
               {dashboardRoutes.map(itemList => (
                 itemList.active && (
                   <ListItem
@@ -190,23 +205,6 @@ class NavBar extends Component {
               ))}
             </List>
             <Divider />
-            <List>
-              <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
-                Configurações
-              </Typography>
-              <ListItem button>
-                <ListItemIcon>
-                  <MenuIcon />
-                </ListItemIcon>
-                <ListItemText primary="Usuários" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <MenuIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dentistas" />
-              </ListItem>
-            </List>
           </SwipeableDrawer>
         </Hidden>
         <main className={classes.content}>
@@ -222,10 +220,13 @@ class NavBar extends Component {
                 </IconButton>
               </Hidden>
               <Hidden mdUp implementation="css">
-                <Link to="/guias" className={classes.linkLogo}>
+                <Link to="/" className={classes.linkLogo}>
                   <img src={logo} className={classes.logo} alt="logo" />
                 </Link>
               </Hidden>
+              <div className={classes.boxProfile}>
+                <Logout />
+              </div>
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>
@@ -240,6 +241,11 @@ class NavBar extends Component {
 NavBar.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   children: PropTypes.instanceOf(Object).isRequired,
+  title: PropTypes.string,
+};
+
+NavBar.defaultProps = {
+  title: String(),
 };
 
 export default withStyles(styles)(NavBar);

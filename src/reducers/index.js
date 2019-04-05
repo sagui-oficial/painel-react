@@ -1,8 +1,17 @@
 import { combineReducers } from 'redux';
+import { firestoreReducer } from 'redux-firestore';
+import { firebaseReducer } from 'react-redux-firebase';
+
 import guiasReducer from './guias';
-import searchReducer from './search';
+import pacientesReducer from './pacientes';
+import procedimentosReducer from './procedimentos';
+import planosReducer from './planos';
 
 export default combineReducers({
   guiasReducer,
-  searchReducer,
+  pacientesReducer,
+  procedimentosReducer,
+  planosReducer,
+  firestore: firestoreReducer,
+  firebase: firebaseReducer,
 });

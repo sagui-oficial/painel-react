@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 // LOCAL IMPORTS
+import Master from '../../../components/Master';
 import { loadGuiaDetail } from '../../../actions/guias';
 import { formatCurrency } from '../../../helpers';
 
-const styles = (/* theme */) => ({
+const styles = () => ({
   box: {
     padding: '20px',
     border: '1px solid #ccc',
@@ -20,80 +21,57 @@ class GuiaDetail extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      loadGuiaLocal: {},
-    };
-
     this.loadGuia = this.loadGuia.bind(this);
-    this.handleUpdateStateGuia = this.handleUpdateStateGuia.bind(this);
   }
 
   componentDidMount() {
     this.loadGuia();
   }
 
-  componentDidUpdate(prevProps) {
-    this.handleUpdateStateGuia(prevProps);
-  }
-
-  handleUpdateStateGuia(prevProps) {
-    const { loadGuiaData } = this.props;
-
-    if (prevProps.loadGuiaData !== loadGuiaData) {
-      this.setState({ loadGuiaLocal: loadGuiaData });
-    }
-  }
-
   async loadGuia() {
-    const { loadGuiaData, loadGuiaDetail: loadGuiaFunc, match } = this.props;
-
-    if (loadGuiaData.length === 0) {
-      await loadGuiaFunc(match.params.id);
-    } else {
-      this.setState({ loadGuiaLocal: loadGuiaData.find(item => item.id === match.params.id) });
-    }
+    const { loadGuiaDetail: loadGuiaFunc, match } = this.props;
+    await loadGuiaFunc(match.params.id);
   }
 
   render() {
-    const { classes } = this.props;
-    const { loadGuiaLocal } = this.state;
+    const { classes, loadGuiaData } = this.props;
 
     return (
-      <div>
-        {loadGuiaLocal && (
+      <Master>
+        {loadGuiaData && (
           <div className={classes.box}>
-            {loadGuiaLocal.publicID && (<p>{loadGuiaLocal.publicID}</p>)}
-            {loadGuiaLocal.paciente && (
+            {loadGuiaData.PublicID && (<p>{loadGuiaData.PublicID}</p>)}
+            {loadGuiaData.Paciente && (
               <Fragment>
-                <p>{loadGuiaLocal.paciente.nome && loadGuiaLocal.paciente.nome}</p>
-                <p>{loadGuiaLocal.paciente.cpf && loadGuiaLocal.paciente.cpf}</p>
-                <p>{loadGuiaLocal.paciente.email && loadGuiaLocal.paciente.email}</p>
-                <p>{loadGuiaLocal.paciente.telefone && loadGuiaLocal.paciente.telefone}</p>
+                <p>{loadGuiaData.Paciente.Nome && loadGuiaData.Paciente.Nome}</p>
+                <p>{loadGuiaData.Paciente.CPF && loadGuiaData.Paciente.CPF}</p>
+                <p>{loadGuiaData.Paciente.Email && loadGuiaData.Paciente.Email}</p>
+                <p>{loadGuiaData.Paciente.Telefone && loadGuiaData.Paciente.Telefone}</p>
               </Fragment>
             )}
 
-            {loadGuiaLocal.vencimento && (<p>{loadGuiaLocal.vencimento}</p>)}
+            {loadGuiaData.Vencimento && (<p>{loadGuiaData.Vencimento}</p>)}
 
             {
-              typeof loadGuiaLocal.status !== 'undefined' && (
+              typeof loadGuiaData.Status !== 'undefined' && (
                 <p>
-                  {loadGuiaLocal.status === 1 && ('Criada')}
-                  {loadGuiaLocal.status === 2 && ('Concluida')}
-                  {loadGuiaLocal.status === 99 && ('Deletada')}
+                  {loadGuiaData.Status === 1 && ('Criada')}
+                  {loadGuiaData.Status === 2 && ('Concluida')}
+                  {loadGuiaData.Status === 99 && ('Deletada')}
                 </p>
               )
             }
 
             {
-              loadGuiaLocal.procedimentos
-              && loadGuiaLocal.procedimentos.length > 0
-              && loadGuiaLocal.procedimentos.map(item => (
-                <p key={item.publicID}>{formatCurrency(item.valorprocedimento)}</p>
+              loadGuiaData.procedimentos
+              && loadGuiaData.procedimentos.length > 0
+              && loadGuiaData.procedimentos.map(item => (
+                <p key={item.PublicID}>{formatCurrency(item.valorprocedimento)}</p>
               ))
             }
           </div>
         )}
-      </div>
+      </Master>
     );
   }
 }
@@ -106,7 +84,7 @@ GuiaDetail.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loadGuiaData: state.guiasReducer.guias,
+  loadGuiaData: state.guiasReducer.guia,
   guiasError: state.guiasReducer.fetchError,
 });
 

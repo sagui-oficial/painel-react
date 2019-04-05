@@ -13,7 +13,6 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   Select,
-  FormControl,
   MenuItem,
   Grid,
 } from '@material-ui/core';
@@ -24,10 +23,8 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import { deleteGuia, updateGuiaStatus } from '../../../actions/guias';
-import {
-  formatDate, formatCurrency, orderByDate, matchItem,
-} from '../../../helpers';
+import { deletePaciente } from '../../../actions/pacientes';
+import { orderBy, matchItem } from '../../../helpers';
 
 const styles = theme => ({
   root: {
@@ -77,19 +74,14 @@ const styles = theme => ({
       margin: 0,
     },
   },
-  avatar: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
 });
 
-class GuiasList extends Component {
+class PacientesList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      allGuias: [],
+      allPacientes: [],
       search: '',
       order: 'asc',
       boxMessage: {
@@ -102,8 +94,7 @@ class GuiasList extends Component {
     this.onHandleSearch = this.onHandleSearch.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleDeleteGuia = this.onHandleDeleteGuia.bind(this);
-    this.onHandleStatusGuia = this.onHandleStatusGuia.bind(this);
+    this.onHandleDelete = this.onHandleDelete.bind(this);
     this.onHandleOrder = this.onHandleOrder.bind(this);
   }
 
@@ -113,9 +104,9 @@ class GuiasList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { guias, error } = this.props;
+    const { pacientes, error } = this.props;
 
-    if (prevProps.guias !== guias) {
+    if (prevProps.pacientes !== pacientes) {
       this.onLoad();
     }
 
@@ -125,10 +116,11 @@ class GuiasList extends Component {
   }
 
   onLoad() {
-    const { guias } = this.props;
+    const { pacientes } = this.props;
     const { order } = this.state;
+
     this.setState({
-      allGuias: orderByDate(guias, 'Vencimento', order),
+      allPacientes: orderBy(pacientes, 'Nome', order),
     });
   }
 
@@ -154,33 +146,20 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleDeleteGuia(postID) {
-    const { deleteGuia: propdeleteGuia } = this.props;
+  onHandleDelete(postID) {
+    const { deletePaciente: propdeletePaciente } = this.props;
 
-    propdeleteGuia({ Status: 99 }, postID);
+    propdeletePaciente({ Status: 99 }, postID);
     this.onHandleMessage('Item excluido.');
   }
 
-  onHandleStatusGuia(event, prevStatus, postID) {
-    const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
-    const { target } = event;
-
-    if (prevStatus !== target.value) {
-      this.onHandleMessage('Status atualizado.');
-
-      propUpdateGuiaStatus({
-        Status: target.value,
-      }, postID);
-    }
-  }
-
   onHandleSearch({ value, name }) {
-    const { guias } = this.props;
+    const { pacientes } = this.props;
 
     this.setState(prevState => ({
       [name]: value,
-      allGuias: orderByDate(guias, 'Vencimento', prevState.order).filter(item => (
-        matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
+      allPacientes: orderBy(pacientes, 'Nome', prevState.order).filter(item => (
+        matchItem(item.Nome, value) || matchItem(item.CPF, value)
       )),
     }));
   }
@@ -188,14 +167,14 @@ class GuiasList extends Component {
   onHandleOrder(order) {
     this.setState(prevState => ({
       order,
-      allGuias: orderByDate(prevState.allGuias, 'Vencimento', order),
+      allPacientes: orderBy(prevState.allPacientes, 'Nome', order),
     }));
   }
 
   render() {
     const { classes, error } = this.props;
     const {
-      allGuias, boxMessage, order, search,
+      allPacientes, boxMessage, order, search,
     } = this.state;
 
     return (
@@ -218,8 +197,8 @@ class GuiasList extends Component {
             value={order}
             onChange={e => this.onHandleOrder(e.target.value)}
           >
-            <MenuItem value="asc">Mais recentes</MenuItem>
-            <MenuItem value="desc">Mais antigos</MenuItem>
+            <MenuItem value="asc">A-Z</MenuItem>
+            <MenuItem value="desc">Z-A</MenuItem>
           </Select>
         </Grid>
 
@@ -227,70 +206,41 @@ class GuiasList extends Component {
           value={search}
           name="search"
           onChange={e => this.onHandleSearch(e.target)}
-          placeholder="Buscar guias"
+          placeholder="Buscar pacientes"
         />
 
         <List dense className={classes.root}>
-          {allGuias.length ? (
-            allGuias.map(item => (
+          {allPacientes.length ? (
+            allPacientes.map(item => (
               <ListItem
                 key={item.PublicID}
                 className={classes.listItem}
                 to={{
-                  pathname: `/guias/${item.PublicID}`,
+                  pathname: `/pacientes/${item.PublicID}`,
                   state: { ...item },
                 }}
                 component={Link}
                 button
               >
                 <ListItemAvatar>
-                  <Avatar aria-label={item.Paciente.Nome} className={classes.avatar}>
-                    {item.Paciente.Nome.substring(0, 1).toUpperCase()}
+                  <Avatar aria-label={item.Nome} className={classes.avatar}>
+                    {item.Nome.substring(0, 1).toUpperCase()}
                   </Avatar>
                 </ListItemAvatar>
                 <div className={classes.boxList}>
                   <p className={classes.smallItemText}>
-                    <strong>Número:</strong>
+                    <strong>CPF:</strong>
                     {' '}
-                    {item.Numero}
+                    {item.CPF}
                   </p>
-
                   <p>
-                    <strong>{item.Paciente.Nome}</strong>
-                  </p>
-
-                  <FormControl>
-                    <Select
-                      name={item.Numero}
-                      value={item.Status ? item.Status : 2}
-                      className={classes.selectBox}
-                      onClick={e => e.preventDefault()}
-                      onChange={e => this.onHandleStatusGuia(e, item.Status, item.PublicID)}
-                      disabled={!!error}
-                      displayEmpty
-                    >
-                      <MenuItem value={1}>Criada</MenuItem>
-                      <MenuItem value={2}>Concluida</MenuItem>
-                      {/* <MenuItem value={99}>Deletada</MenuItem> */}
-                    </Select>
-                  </FormControl>
-
-                  <p>
-                    {formatDate(item.Vencimento)}
-                    {' - '}
-                    {
-                      item.Procedimentos.length > 0 && (
-                        <strong>
-                          {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
-                        </strong>
-                      )
-                    }
+                    <strong>{item.Nome}</strong>
                   </p>
                 </div>
                 <ListItemSecondaryAction className={classes.iconDelete}>
                   <IconButton
                     disabled={!!error}
-                    onClick={() => this.onHandleDeleteGuia(item.PublicID)}
+                    onClick={() => this.onHandleDelete(item.PublicID)}
                     aria-label="Deletar"
                   >
                     <DeleteIcon />
@@ -299,7 +249,7 @@ class GuiasList extends Component {
               </ListItem>
             ))
           ) : (
-            <ListItem className={classes.listItem}>Nenhuma guia encontrada.</ListItem>
+            <ListItem className={classes.listItem}>Nenhum paciente encontrado.</ListItem>
           )
           }
         </List>
@@ -308,14 +258,13 @@ class GuiasList extends Component {
   }
 }
 
-GuiasList.propTypes = {
+PacientesList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  guias: PropTypes.instanceOf(Object).isRequired,
+  pacientes: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
-  deleteGuia: PropTypes.func.isRequired,
-  updateGuiaStatus: PropTypes.func.isRequired,
+  deletePaciente: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  deleteGuia, updateGuiaStatus,
-})(withStyles(styles)(withRouter(GuiasList)));
+  deletePaciente,
+})(withStyles(styles)(withRouter(PacientesList)));

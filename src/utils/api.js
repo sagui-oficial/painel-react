@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * API BACKEND
  */
-export const API = process.env.REACT_APP_PUBLIC_URL || 'http://localhost:5001/backoffice';
+export const API = process.env.REACT_APP_PUBLIC_URL || 'https://localhost:5001/backoffice';
 
 /**
  * Call to API from url

@@ -1,8 +1,10 @@
 <p align="center">
-  <img width="400" src="src/assets/images/logo.png" alt="Sagui">
+  <a href="https://sagui.app" target="_blank">
+    <img width="400" src="src/assets/images/logo.png" alt="Sagui">
+  </a>
 </p>
 
-# SAGUI PAINEL (DASHBOARD)
+# SAGUI ([DASHBOARD](https://sagui.app))
 
 [![Build Status](https://travis-ci.org/sagui-oficial/painel-react.svg?branch=master)](https://travis-ci.org/sagui-oficial/painel-react)
 

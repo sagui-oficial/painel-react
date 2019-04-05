@@ -1,15 +1,9 @@
-import React, { Fragment } from 'react';
-import NavBar from '../components/NavBar';
+import React from 'react';
 import MainRouters from '../routes';
-
 import withRoot from '../withRoot';
 
 const DashboardLayout = () => (
-  <Fragment>
-    <NavBar>
-      <MainRouters />
-    </NavBar>
-  </Fragment>
+  <MainRouters />
 );
 
 export default withRoot(DashboardLayout);

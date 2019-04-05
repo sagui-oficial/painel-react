@@ -1,68 +1,68 @@
 import { APIResquest } from '../utils/api';
 
-export const GET_GUIAS = 'GET_GUIAS';
-export const GET_GUIA_DETAILS = 'GET_GUIA_DETAILS';
-export const SAVE_GUIA = 'SAVE_GUIA';
-export const DELETE_GUIA = 'DELETE_GUIA';
-export const UPDATE_GUIA_STATUS = 'UPDATE_GUIA_STATUS';
+export const GET_PACIENTES = 'GET_PACIENTES';
+export const GET_PACIENTE_DETAILS = 'GET_PACIENTE_DETAILS';
+export const SAVE_PACIENTE = 'SAVE_PACIENTE';
+export const DELETE_PACIENTE = 'DELETE_PACIENTE';
+export const UPDATE_PACIENTE = 'UPDATE_PACIENTE';
 export const FETCH_ERROR = 'FETCH_ERROR';
 
-export function loadGuias() {
+export function loadPacientes() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/listargto',
+      uri: 'pacientes',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_GUIAS, payload: res.filter(item => item.Status !== 99),
+        type: GET_PACIENTES, payload: res.filter(item => item.Status !== 99),
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function addGuia(data) {
+export function addPaciente(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/criargto',
+      uri: 'pacientes',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res }))
+      .then(res => dispatch({ type: SAVE_PACIENTE, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function loadGuiaDetail(id) {
+export function loadPacienteDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/obtergto`,
+      uri: `${id}/pacientes`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
+      .then(res => dispatch({ type: GET_PACIENTE_DETAILS, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updateGuiaStatus(data, id) {
+export function updatePaciente(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/atualizargto`,
+      uri: `${id}/pacientes`,
       method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA_STATUS, payload: res }))
+      .then(res => dispatch({ type: UPDATE_PACIENTE, payload: res }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function deleteGuia(data, id) {
+export function deletePaciente(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/deletargto`,
+      uri: `${id}/pacientes`,
       method: 'PATCH',
       data,
     })
-      .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
+      .then(() => dispatch({ type: DELETE_PACIENTE, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

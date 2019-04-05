@@ -7,10 +7,16 @@ import LayersIcon from '@material-ui/icons/Layers';
 
 // PAGES
 import DashboardPage from '../views/Dashboard';
-import Guias from '../views/Guias/List';
+import Guias from '../views/Guias';
 import Pacientes from '../views/Pacientes';
-import Procedimentos from '../views/Procedimentos';
 import Planos from '../views/Planos';
+import Procedimentos from '../views/Procedimentos';
+
+// FORMS
+import GuiaForm from '../views/Guias/Form';
+import PacienteForm from '../views/Pacientes/Form';
+import PlanoForm from '../views/Planos/Form';
+import ProcedimentoForm from '../views/Procedimentos/Form';
 
 const dashboardRoutes = [
   {
@@ -28,6 +34,7 @@ const dashboardRoutes = [
     icon: LibraryBooksIcon,
     active: true,
     component: Guias,
+    editMode: GuiaForm,
   },
   {
     id: 3,
@@ -36,22 +43,25 @@ const dashboardRoutes = [
     icon: PersonIcon,
     active: true,
     component: Pacientes,
+    editMode: PacienteForm,
   },
   {
     id: 4,
-    path: '/procedimentos',
-    menuText: 'Procedimentos',
-    icon: ListAltIcon,
-    active: true,
-    component: Procedimentos,
-  },
-  {
-    id: 5,
     path: '/planos',
     menuText: 'Planos',
     icon: LayersIcon,
     active: true,
     component: Planos,
+    editMode: PlanoForm,
+  },
+  {
+    id: 5,
+    path: '/procedimentos',
+    menuText: 'Procedimentos',
+    icon: ListAltIcon,
+    active: true,
+    component: Procedimentos,
+    editMode: ProcedimentoForm,
   },
 ];
 

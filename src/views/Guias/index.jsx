@@ -13,8 +13,8 @@ import {
 
 // LOCAL IMPORTS
 import Master from '../../components/Master';
-import { loadPlanos } from '../../actions/planos';
-import PlanosList from './List';
+import { loadGuias } from '../../actions/guias';
+import GuiasList from './List';
 
 const styles = theme => ({
   divider: {
@@ -32,30 +32,30 @@ const styles = theme => ({
   },
 });
 
-class Planos extends Component {
+class Guias extends Component {
   constructor(props) {
     super(props);
     this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
-    const { loadPlanos: propLoadItems } = this.props;
-    propLoadItems();
+    const { loadGuias: propLoadGuias } = this.props;
+    propLoadGuias();
   }
 
   onHandleAddNew() {
     const { history } = this.props;
-    history.push('/planos/cadastrar');
+    history.push('/guias/cadastrar');
   }
 
   render() {
     const {
-      classes, error, planos, title,
+      classes, guiasError, guias, title,
     } = this.props;
 
     return (
       <Master title={title}>
-        {planos && (
+        {guias && (
           <Fragment>
             <Grid container alignItems="center">
               <Typography variant="h6" color="inherit" noWrap>
@@ -66,14 +66,14 @@ class Planos extends Component {
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
-                disabled={!!error}
+                disabled={!!guiasError}
                 onClick={this.onHandleAddNew}
               >
                 +Novo
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <PlanosList planos={planos} error={error} />
+            <GuiasList guias={guias} error={guiasError} />
           </Fragment>
         )}
       </Master>
@@ -81,24 +81,24 @@ class Planos extends Component {
   }
 }
 
-Planos.propTypes = {
+Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  planos: PropTypes.instanceOf(Object).isRequired,
+  guias: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  loadPlanos: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
+  loadGuias: PropTypes.func.isRequired,
+  guiasError: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
-Planos.defaultProps = {
+Guias.defaultProps = {
   title: String(),
 };
 
 const mapStateToProps = state => ({
-  planos: state.planosReducer.planos,
-  error: state.planosReducer.fetchError,
+  guias: state.guiasReducer.guias,
+  guiasError: state.guiasReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  loadPlanos,
-})(withStyles(styles)(Planos));
+  loadGuias,
+})(withStyles(styles)(Guias));
