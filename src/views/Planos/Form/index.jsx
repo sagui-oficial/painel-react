@@ -5,12 +5,20 @@ import uuidv1 from 'uuid/v1';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
+  IconButton,
   Button,
   Typography,
   Grid,
   Divider,
   TextField,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
 } from '@material-ui/core';
+
+import {
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
 
 import Select from 'react-select';
 
@@ -46,6 +54,16 @@ const styles = theme => ({
       width: '100%',
     },
   },
+  smallItemText: {
+    fontSize: '14px',
+    color: '#616161',
+  },
+  listProcess: {
+    marginBottom: '10px',
+    borderRadius: '3px',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
+    boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
+  },
 });
 
 class PlanoForm extends Component {
@@ -67,7 +85,7 @@ class PlanoForm extends Component {
         ListaProcedimentos: [],
       },
       isValidField: {
-        NomeFantasia: false,
+        RazaoSocial: false,
         CNPJ: false,
       },
       boxMessage: {
@@ -78,6 +96,7 @@ class PlanoForm extends Component {
 
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleAddProcedimento = this.onHandleAddProcedimento.bind(this);
+    this.onHandleDeleteProcedimento = this.onHandleDeleteProcedimento.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
     this.onHandleTargetProcedimentos = this.onHandleTargetProcedimentos.bind(this);
     this.onHandleSelectProcedimentos = this.onHandleSelectProcedimentos.bind(this);
@@ -161,8 +180,6 @@ class PlanoForm extends Component {
         [name]: value,
       },
     });
-
-    this.onHandleBlur({ value, name });
   }
 
   onHandleTargetProcedimentos(target) {
@@ -234,12 +251,29 @@ class PlanoForm extends Component {
     const { sendPlano, AdicionarProcedimentos } = this.state;
 
     this.setState({
+      selectedName: String(),
       sendPlano: {
         ...sendPlano,
         ListaProcedimentos: [
-          ...sendPlano.ListaProcedimentos,
           AdicionarProcedimentos,
+          ...sendPlano.ListaProcedimentos,
         ],
+      },
+      AdicionarProcedimentos: {
+        ValorProcedimento: '',
+      },
+    });
+  }
+
+  onHandleDeleteProcedimento(idProcedimento) {
+    const { sendPlano } = this.state;
+
+    this.setState({
+      sendPlano: {
+        ...sendPlano,
+        ListaProcedimentos: sendPlano.ListaProcedimentos.filter((item, index) => (
+          `${item.PublicID}-${index}` !== idProcedimento
+        )),
       },
     });
   }
@@ -335,13 +369,13 @@ class PlanoForm extends Component {
               <TextField
                 fullWidth
                 required
-                label="Nome fantasia"
-                name="NomeFantasia"
-                error={isValidField.NomeFantasia}
-                value={sendPlano.NomeFantasia}
+                label="Razão social"
+                name="RazaoSocial"
+                error={isValidField.RazaoSocial}
+                value={sendPlano.RazaoSocial}
                 onChange={e => this.onHandleTarget(e.target)}
                 onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o nome do plano."
+                helperText="Digite a razão social do plano."
                 margin="normal"
                 variant="outlined"
               />
@@ -352,11 +386,11 @@ class PlanoForm extends Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 fullWidth
-                label="Razão social"
-                name="RazaoSocial"
-                value={sendPlano.RazaoSocial}
+                label="Nome fantasia"
+                name="NomeFantasia"
+                value={sendPlano.NomeFantasia}
                 onChange={e => this.onHandleTarget(e.target)}
-                helperText="Digite a razão social do plano."
+                helperText="Digite o nome do plano."
                 margin="normal"
                 variant="outlined"
               />
@@ -370,7 +404,6 @@ class PlanoForm extends Component {
               Adicionar procedimentos
             </Typography>
             <Button
-              type="submit"
               variant="outlined"
               color="primary"
               size="medium"
@@ -426,25 +459,41 @@ class PlanoForm extends Component {
             </Grid>
           </Grid>
 
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={12}>
-              <ul>
-                {
-                  sendPlano && (
-                    ListaProcedimentos && (
-                      ListaProcedimentos.map(item => (
-                        <li key={item.PublicID}>
-                          {item.NomeProcedimento}
-                          {' - '}
-                          {formatCurrency(item.ValorProcedimento)}
-                        </li>
-                      ))
-                    )
-                  )
-                }
-              </ul>
-            </Grid>
-          </Grid>
+          <List dense>
+            {
+              sendPlano && (
+                ListaProcedimentos && (
+                  ListaProcedimentos.map((item, index) => {
+                    const itemId = `${item.PublicID}-${index}`;
+
+                    return (
+                      <ListItem
+                        key={itemId}
+                        className={classes.listProcess}
+                      >
+                        <div className={classes.boxList}>
+                          <p className={classes.smallItemText}>
+                            {item.NomeProcedimento}
+                            {' - '}
+                            {formatCurrency(item.ValorProcedimento)}
+                          </p>
+                        </div>
+                        <ListItemSecondaryAction className={classes.iconDelete}>
+                          <IconButton
+                            disabled={!!error}
+                            onClick={() => this.onHandleDeleteProcedimento(itemId)}
+                            aria-label="Deletar"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    );
+                  })
+                )
+              )
+            }
+          </List>
 
           <Button
             type="submit"

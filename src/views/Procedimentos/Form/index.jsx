@@ -147,8 +147,6 @@ class ProcedimentoForm extends Component {
         [name]: name === 'Codigo' ? value.toUpperCase() : value,
       },
     });
-
-    this.onHandleBlur({ value, name });
   }
 
   onHandleBlur({ value, name }) {
