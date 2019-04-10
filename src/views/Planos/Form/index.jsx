@@ -76,7 +76,9 @@ class PlanoForm extends Component {
       breadcrumb: [
         { label: 'Planos', url: '/planos' },
       ],
-      AdicionarProcedimentos: {},
+      AdicionarProcedimentos: {
+        ValorProcedimento: String(),
+      },
       sendPlano: {
         Status: 1,
         NomeFantasia: String(),
@@ -98,7 +100,7 @@ class PlanoForm extends Component {
     this.onHandleAddProcedimento = this.onHandleAddProcedimento.bind(this);
     this.onHandleDeleteProcedimento = this.onHandleDeleteProcedimento.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
-    this.onHandleTargetProcedimentos = this.onHandleTargetProcedimentos.bind(this);
+    this.onHandleTargetValorProcedimento = this.onHandleTargetValorProcedimento.bind(this);
     this.onHandleSelectProcedimentos = this.onHandleSelectProcedimentos.bind(this);
     this.onHandleBlur = this.onHandleBlur.bind(this);
     this.onHandleValidateFields = this.onHandleValidateFields.bind(this);
@@ -182,7 +184,7 @@ class PlanoForm extends Component {
     });
   }
 
-  onHandleTargetProcedimentos(target) {
+  onHandleTargetValorProcedimento(target) {
     const { AdicionarProcedimentos } = this.state;
     const { name, value } = target;
 
@@ -252,15 +254,15 @@ class PlanoForm extends Component {
 
     this.setState({
       selectedName: String(),
+      AdicionarProcedimentos: {
+        ValorProcedimento: String(),
+      },
       sendPlano: {
         ...sendPlano,
         ListaProcedimentos: [
           AdicionarProcedimentos,
           ...sendPlano.ListaProcedimentos,
         ],
-      },
-      AdicionarProcedimentos: {
-        ValorProcedimento: '',
       },
     });
   }
@@ -311,6 +313,7 @@ class PlanoForm extends Component {
     const {
       sendPlano, breadcrumb, selectedName,
       editing, boxMessage, isValidField,
+      AdicionarProcedimentos,
     } = this.state;
 
     const { ListaProcedimentos } = sendPlano;
@@ -446,8 +449,8 @@ class PlanoForm extends Component {
                 fullWidth
                 label="Valor"
                 name="ValorProcedimento"
-                value={sendPlano.ValorProcedimento}
-                onChange={e => this.onHandleTargetProcedimentos(e.target)}
+                value={AdicionarProcedimentos.ValorProcedimento}
+                onChange={e => this.onHandleTargetValorProcedimento(e.target)}
                 helperText="Apenas números"
                 placeholder="1.000,00"
                 margin="normal"
