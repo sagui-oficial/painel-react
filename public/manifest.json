@@ -1,6 +1,6 @@
 {
-  "short_name": "Sagui",
-  "name": "Sistema Administração de Guias Odontológicas",
+  "name": "Sagui",
+  "description": "Sistema Administração de Guias Odontológicas",
   "icons": [
     {
       "src": "favicon.ico",

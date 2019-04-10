@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import {
   withStyles, Grid, TextField, Button,
@@ -110,6 +111,11 @@ class Login extends Component {
 
     return (
       <div className={classes.container}>
+        <Helmet>
+          <title>
+            {'Sagui - Login'}
+          </title>
+        </Helmet>
         <form onSubmit={this.onHandleSubmit} className={classes.form}>
           <Grid container spacing={8} alignItems="center">
             <Grid item md sm xs style={{ textAlign: 'center' }}>
