@@ -69,6 +69,8 @@ class ProcedimentoForm extends Component {
       },
     };
 
+    this.baseState = this.state;
+
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
     this.onHandleBlur = this.onHandleBlur.bind(this);
@@ -76,6 +78,7 @@ class ProcedimentoForm extends Component {
     this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
+    this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -117,6 +120,12 @@ class ProcedimentoForm extends Component {
     });
   }
 
+  onHandleAddNew() {
+    const { history } = this.props;
+    history.push('/procedimentos/cadastrar');
+    this.setState(this.baseState);
+  }
+
   onHandleSendProcedimento(procedimento) {
     this.setState({
       sendProcedimento: procedimento,
@@ -144,18 +153,22 @@ class ProcedimentoForm extends Component {
     this.setState({
       sendProcedimento: {
         ...sendProcedimento,
-        [name]: name === 'Codigo' ? value.toUpperCase() : value,
+        [name]: name === 'Codigo' ? value.trim().toUpperCase() : value,
       },
     });
   }
 
   onHandleBlur({ value, name }) {
-    const { isValidField } = this.state;
+    const { isValidField, sendProcedimento } = this.state;
 
     this.setState({
       isValidField: {
         ...isValidField,
         [name]: value.trim().length === 0,
+      },
+      sendProcedimento: {
+        ...sendProcedimento,
+        [name]: name === 'Codigo' ? value.trim().toUpperCase() : value.trim(),
       },
     });
   }
@@ -194,10 +207,12 @@ class ProcedimentoForm extends Component {
       addProcedimento: propAddProcedimento,
       updateProcedimento: propUpdateProcedimento, history,
     } = this.props;
+
     if (editing) {
       await propUpdateProcedimento({
         ...sendProcedimento,
       }, sendProcedimento.id);
+
       this.onHandleMessage('Procedimento modificado.');
     } else {
       await propAddProcedimento({
@@ -245,6 +260,18 @@ class ProcedimentoForm extends Component {
           >
             Salvar
           </Button>
+          {editing && (
+            <Button
+              variant="outlined"
+              color="primary"
+              size="medium"
+              className={classes.addBtn}
+              disabled={!!error}
+              onClick={this.onHandleAddNew}
+            >
+              +Novo
+            </Button>
+          )}
         </Grid>
 
         <Divider className={classes.divider} />
