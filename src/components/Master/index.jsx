@@ -58,7 +58,10 @@ const styles = theme => ({
     },
   },
   activeListItem: {
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    '&:active, &:focus, &:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    },
   },
   toolbarContainer: {
     background: 'none',
