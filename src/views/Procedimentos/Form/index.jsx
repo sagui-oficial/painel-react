@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
 
@@ -48,6 +49,7 @@ class ProcedimentoForm extends Component {
     super(props);
 
     this.state = {
+      isBlocking: false,
       editing: false,
       breadcrumb: [
         { label: 'Procedimentos', url: '/procedimentos' },
@@ -151,6 +153,7 @@ class ProcedimentoForm extends Component {
     const { sendProcedimento } = this.state;
 
     this.setState({
+      isBlocking: true,
       sendProcedimento: {
         ...sendProcedimento,
         [name]: name === 'Codigo' ? value.trim().toUpperCase() : value,
@@ -187,6 +190,7 @@ class ProcedimentoForm extends Component {
     this.setState({
       ...isValidField,
       isValidField: setValidFields,
+      isBlocking: false,
     });
 
     const countAll = Object.keys(setValidFields).length;
@@ -234,6 +238,7 @@ class ProcedimentoForm extends Component {
     const {
       sendProcedimento, breadcrumb,
       editing, boxMessage, isValidField,
+      isBlocking,
     } = this.state;
 
     return (
@@ -242,6 +247,10 @@ class ProcedimentoForm extends Component {
           text={boxMessage.text}
           open={boxMessage.open}
           onHandleOnClose={this.onHandleOnClose}
+        />
+        <Prompt
+          when={isBlocking}
+          message="Você tem modificações que não foram salvas, deseja realmente sair?"
         />
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
