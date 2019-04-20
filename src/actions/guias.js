@@ -10,7 +10,7 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadGuias() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/listargto',
+      uri: 'guias',
       method: 'GET',
     })
       .then(res => dispatch({
@@ -23,7 +23,7 @@ export function loadGuias() {
 export function addGuia(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'gto/criargto',
+      uri: 'guias',
       method: 'POST',
       data,
     })
@@ -35,7 +35,7 @@ export function addGuia(data) {
 export function loadGuiaDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/obtergto`,
+      uri: `guias/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
@@ -46,8 +46,8 @@ export function loadGuiaDetail(id) {
 export function updateGuiaStatus(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/atualizargto`,
-      method: 'PATCH',
+      uri: `guias/${id}`,
+      method: 'PUT',
       data,
     })
       .then(res => dispatch({ type: UPDATE_GUIA_STATUS, payload: res }))
@@ -58,8 +58,8 @@ export function updateGuiaStatus(data, id) {
 export function deleteGuia(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `gto/${id}/deletargto`,
-      method: 'PATCH',
+      uri: `guias/${id}`,
+      method: 'DELETE',
       data,
     })
       .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
