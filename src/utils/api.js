@@ -19,7 +19,10 @@ export const APIResquest = (config) => {
       },
     };
 
-    if (config.method === 'POST' || config.method === 'PATCH') {
+    if (config.method === 'POST'
+      || config.method === 'PATCH'
+      || config.method === 'PUT'
+    ) {
       settings.data = JSON.stringify({ ...config.data });
     }
 
