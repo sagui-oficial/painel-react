@@ -35,7 +35,7 @@ export function addPlano(data) {
 export function loadPlanoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/planos`,
+      uri: `planos/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PLANO_DETAILS, payload: res }))
@@ -46,8 +46,8 @@ export function loadPlanoDetail(id) {
 export function updatePlano(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/planos`,
-      method: 'PATCH',
+      uri: `planos/${id}`,
+      method: 'PUT',
       data,
     })
       .then(res => dispatch({ type: UPDATE_PLANO, payload: res }))
@@ -58,8 +58,8 @@ export function updatePlano(data, id) {
 export function deletePlano(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/planos`,
-      method: 'PATCH',
+      uri: `planos/${id}`,
+      method: 'DELETE',
       data,
     })
       .then(() => dispatch({ type: DELETE_PLANO, payload: id }))

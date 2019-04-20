@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import uuidv1 from 'uuid/v1';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -89,11 +88,7 @@ class ProcedimentoForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { procedimento, error } = this.props;
-
-    if (prevProps.procedimento !== procedimento) {
-      this.onHandleSendProcedimento(procedimento);
-    }
+    const { error } = this.props;
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
@@ -128,23 +123,21 @@ class ProcedimentoForm extends Component {
     this.setState(this.baseState);
   }
 
-  onHandleSendProcedimento(procedimento) {
-    this.setState({
-      sendProcedimento: procedimento,
-    });
-  }
-
-  onHandlePageLoad() {
+  async onHandlePageLoad() {
     const {
       match,
       loadProcedimentoDetail: propLoadProcedimentoDetail,
     } = this.props;
 
+    const { sendProcedimento } = this.state;
+
     if (match.params.id) {
-      propLoadProcedimentoDetail(match.params.id);
+      await propLoadProcedimentoDetail(match.params.id);
+      const { procedimento } = this.props;
 
       this.setState({
         editing: true,
+        sendProcedimento: Object.keys(procedimento).length > 0 ? procedimento : sendProcedimento,
       });
     }
   }
@@ -204,7 +197,6 @@ class ProcedimentoForm extends Component {
   }
 
   async onHandleAdd() {
-    const PublicID = uuidv1();
     const { sendProcedimento, editing } = this.state;
 
     const {
@@ -213,18 +205,17 @@ class ProcedimentoForm extends Component {
     } = this.props;
 
     if (editing) {
+      const { procedimento: { PublicID } } = this.props;
       await propUpdateProcedimento({
         ...sendProcedimento,
-      }, sendProcedimento.id);
-
+      }, PublicID);
       this.onHandleMessage('Procedimento modificado.');
     } else {
       await propAddProcedimento({
         ...sendProcedimento,
-        id: PublicID,
-        PublicID,
       });
 
+      const { procedimento: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Procedimento adicionado.');
       history.push(`/procedimentos/${PublicID}`);
@@ -235,6 +226,7 @@ class ProcedimentoForm extends Component {
     const {
       classes, error, title, match,
     } = this.props;
+
     const {
       sendProcedimento, breadcrumb,
       editing, boxMessage, isValidField,

@@ -1,32 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import uuidv1 from 'uuid/v1';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
-  IconButton,
-  Button,
-  Typography,
-  Grid,
-  Divider,
-  TextField,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
+  IconButton, Button, Typography,
+  Grid, Divider, TextField,
+  List, ListItem, ListItemSecondaryAction,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
+import { Delete as DeleteIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
 import Master from '../../../components/Master';
-import {
-  addPlano, loadPlanoDetail,
-  updatePlano,
-} from '../../../actions/planos';
+import { addPlano, loadPlanoDetail, updatePlano } from '../../../actions/planos';
 import { formatCurrency } from '../../../helpers';
 import { loadProcedimentos } from '../../../actions/procedimentos';
 import { Control, Option } from '../../../components/AutoComplete';
@@ -71,8 +59,9 @@ class PlanoForm extends Component {
     super(props);
 
     this.state = {
-      selectedName: null,
+      isBlocking: false,
       editing: false,
+      selectedName: null,
       breadcrumb: [
         { label: 'Planos', url: '/planos' },
       ],
@@ -96,6 +85,8 @@ class PlanoForm extends Component {
       },
     };
 
+    this.baseState = this.state;
+
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleAddProcedimento = this.onHandleAddProcedimento.bind(this);
     this.onHandleDeleteProcedimento = this.onHandleDeleteProcedimento.bind(this);
@@ -107,6 +98,7 @@ class PlanoForm extends Component {
     this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
+    this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -118,11 +110,7 @@ class PlanoForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { plano, error } = this.props;
-
-    if (prevProps.plano !== plano) {
-      this.onHandleSendPlano(plano);
-    }
+    const { error } = this.props;
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
@@ -151,23 +139,26 @@ class PlanoForm extends Component {
     });
   }
 
-  onHandleSendPlano(plano) {
-    this.setState({
-      sendPlano: plano,
-    });
+  onHandleAddNew() {
+    const { history } = this.props;
+    history.push('/planos/cadastrar');
+    this.setState(this.baseState);
   }
 
-  onHandlePageLoad() {
+  async onHandlePageLoad() {
     const {
       match,
       loadPlanoDetail: propLoadPlanoDetail,
     } = this.props;
 
-    if (match.params.id) {
-      propLoadPlanoDetail(match.params.id);
+    const { sendPlano } = this.state;
 
+    if (match.params.id) {
+      await propLoadPlanoDetail(match.params.id);
+      const { plano } = this.props;
       this.setState({
         editing: true,
+        sendPlano: Object.keys(plano).length > 0 ? plano : sendPlano,
       });
     }
   }
@@ -177,6 +168,7 @@ class PlanoForm extends Component {
     const { name, value } = target;
 
     this.setState({
+      isBlocking: true,
       sendPlano: {
         ...sendPlano,
         [name]: value,
@@ -198,15 +190,17 @@ class PlanoForm extends Component {
 
   onHandleSelectProcedimentos(target) {
     const { AdicionarProcedimentos } = this.state;
-    const { name, value } = target;
+    const {
+      name, value, PublicID, Codigo,
+    } = target;
 
     this.setState({
       selectedName: target,
       AdicionarProcedimentos: {
         ...AdicionarProcedimentos,
         [name]: value,
-        PublicID: target.id,
-        Codigo: target.Codigo,
+        PublicID,
+        Codigo,
       },
     });
   }
@@ -236,6 +230,7 @@ class PlanoForm extends Component {
     this.setState({
       ...isValidField,
       isValidField: setValidFields,
+      isBlocking: false,
     });
 
     const countAll = Object.keys(setValidFields).length;
@@ -281,25 +276,25 @@ class PlanoForm extends Component {
   }
 
   async onHandleAdd() {
+    const { sendPlano, editing } = this.state;
+
     const {
       addPlano: propAddPlano,
       updatePlano: propUpdatePlano, history,
     } = this.props;
-    const { sendPlano, editing } = this.state;
-    const PublicID = uuidv1();
 
     if (editing) {
+      const { plano: { PublicID } } = this.props;
       await propUpdatePlano({
         ...sendPlano,
-      }, sendPlano.id);
+      }, PublicID);
       this.onHandleMessage('Plano modificado.');
     } else {
       await propAddPlano({
         ...sendPlano,
-        id: PublicID,
-        PublicID,
       });
 
+      const { plano: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Plano adicionado.');
       history.push(`/planos/${PublicID}`);
@@ -310,10 +305,11 @@ class PlanoForm extends Component {
     const {
       classes, error, procedimentos, title, match,
     } = this.props;
+
     const {
       sendPlano, breadcrumb, selectedName,
       editing, boxMessage, isValidField,
-      AdicionarProcedimentos,
+      AdicionarProcedimentos, isBlocking,
     } = this.state;
 
     const { ListaProcedimentos } = sendPlano;
@@ -324,6 +320,10 @@ class PlanoForm extends Component {
           text={boxMessage.text}
           open={boxMessage.open}
           onHandleOnClose={this.onHandleOnClose}
+        />
+        <Prompt
+          when={isBlocking}
+          message="Você tem modificações que não foram salvas, deseja realmente sair?"
         />
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
@@ -342,6 +342,18 @@ class PlanoForm extends Component {
           >
             Salvar
           </Button>
+          {editing && (
+            <Button
+              variant="outlined"
+              color="primary"
+              size="medium"
+              className={classes.addBtn}
+              disabled={!!error}
+              onClick={this.onHandleAddNew}
+            >
+              +Novo
+            </Button>
+          )}
         </Grid>
 
         <Divider className={classes.divider} />

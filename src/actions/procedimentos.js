@@ -35,7 +35,7 @@ export function addProcedimento(data) {
 export function loadProcedimentoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/procedimentos`,
+      uri: `procedimentos/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PROCEDIMENTO_DETAILS, payload: res }))
@@ -46,8 +46,8 @@ export function loadProcedimentoDetail(id) {
 export function updateProcedimento(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/procedimentos`,
-      method: 'PATCH',
+      uri: `procedimentos/${id}`,
+      method: 'PUT',
       data,
     })
       .then(res => dispatch({ type: UPDATE_PROCEDIMENTO, payload: res }))
@@ -58,8 +58,8 @@ export function updateProcedimento(data, id) {
 export function deleteProcedimento(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/procedimentos`,
-      method: 'PATCH',
+      uri: `procedimentos/${id}`,
+      method: 'DELETE',
       data,
     })
       .then(() => dispatch({ type: DELETE_PROCEDIMENTO, payload: id }))
