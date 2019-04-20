@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import uuidv1 from 'uuid/v1';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Button,
-  Typography,
-  Grid,
-  Divider,
-  TextField,
+  Button, Typography, Grid,
+  Divider, TextField,
 } from '@material-ui/core';
 
-import {
-  addPaciente, loadPacienteDetail,
-  updatePaciente,
-} from '../../../actions/pacientes';
+import { addPaciente, loadPacienteDetail, updatePaciente } from '../../../actions/pacientes';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Master from '../../../components/Master';
@@ -48,6 +42,7 @@ class PacienteForm extends Component {
     super(props);
 
     this.state = {
+      isBlocking: false,
       editing: false,
       breadcrumb: [
         { label: 'Pacientes', url: '/pacientes' },
@@ -62,17 +57,26 @@ class PacienteForm extends Component {
         Email: String(),
         Telefone: String(),
       },
+      isValidField: {
+        CPF: false,
+        Nome: false,
+      },
       boxMessage: {
         open: false,
         text: '',
       },
     };
 
+    this.baseState = this.state;
+
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
+    this.onHandleBlur = this.onHandleBlur.bind(this);
+    this.onHandleValidateFields = this.onHandleValidateFields.bind(this);
     this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
+    this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
   componentDidMount() {
@@ -81,14 +85,21 @@ class PacienteForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { paciente } = this.props;
+    const { error } = this.props;
 
-    if (prevProps.paciente !== paciente) {
-      this.onHandleSendPaciente(paciente);
+    if (prevProps.error !== error) {
+      this.onHandleMessage('Conectado.');
     }
   }
 
   onHandleMessage(text) {
+    const { error } = this.props;
+
+    if (error.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: error } });
+      return;
+    }
+
     if (typeof text !== 'undefined') {
       this.setState({ boxMessage: { open: true, text } });
     }
@@ -103,23 +114,27 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleSendPaciente(paciente) {
-    this.setState({
-      sendPaciente: paciente,
-    });
+  onHandleAddNew() {
+    const { history } = this.props;
+    history.push('/pacientes/cadastrar');
+    this.setState(this.baseState);
   }
 
-  onHandlePageLoad() {
+  async onHandlePageLoad() {
     const {
       match,
       loadPacienteDetail: propLoadPacienteDetail,
     } = this.props;
 
+    const { sendPaciente } = this.state;
+
     if (match.params.id) {
-      propLoadPacienteDetail(match.params.id);
+      await propLoadPacienteDetail(match.params.id);
+      const { paciente } = this.props;
 
       this.setState({
         editing: true,
+        sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
       });
     }
   }
@@ -128,6 +143,7 @@ class PacienteForm extends Component {
     const { sendPaciente } = this.state;
 
     this.setState({
+      isBlocking: true,
       sendPaciente: {
         ...sendPaciente,
         [name]: value,
@@ -135,26 +151,67 @@ class PacienteForm extends Component {
     });
   }
 
+  onHandleBlur({ value, name }) {
+    const { isValidField, sendPaciente } = this.state;
+
+    this.setState({
+      isValidField: {
+        ...isValidField,
+        [name]: value.trim().length === 0,
+      },
+      sendPaciente: {
+        ...sendPaciente,
+        [name]: value.trim(),
+      },
+    });
+  }
+
+  onHandleValidateFields(event) {
+    event.preventDefault();
+
+    const { isValidField, sendPaciente } = this.state;
+    const setValidFields = {};
+
+    Object.keys(isValidField).map((item) => {
+      setValidFields[item] = sendPaciente[item].trim().length === 0;
+      return setValidFields;
+    });
+
+    this.setState({
+      ...isValidField,
+      isValidField: setValidFields,
+      isBlocking: false,
+    });
+
+    const countAll = Object.keys(setValidFields).length;
+    const countTrues = Object.values(setValidFields).filter(item => item === false);
+
+    if (countAll === countTrues.length) {
+      this.onHandleAdd();
+    } else {
+      this.onHandleMessage('Preencha todos os campos.');
+    }
+  }
+
   async onHandleAdd() {
     const {
       addPaciente: propAddPaciente,
       updatePaciente: propUpdatePaciente, history,
     } = this.props;
+
     const { sendPaciente, editing } = this.state;
-    const PublicID = uuidv1();
 
     if (editing) {
+      const { paciente: { PublicID } } = this.props;
       await propUpdatePaciente({
         ...sendPaciente,
-      }, sendPaciente.id);
+      }, PublicID);
       this.onHandleMessage('Paciente modificado.');
     } else {
       await propAddPaciente({
         ...sendPaciente,
-        id: PublicID,
-        PublicID,
       });
-
+      const { paciente: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Paciente adicionado.');
       history.push(`/pacientes/${PublicID}`);
@@ -162,10 +219,14 @@ class PacienteForm extends Component {
   }
 
   render() {
-    const { classes, title, match } = this.props;
     const {
-      sendPaciente, breadcrumb,
-      editing, boxMessage,
+      classes, title,
+      match, error,
+    } = this.props;
+
+    const {
+      sendPaciente, breadcrumb, isValidField,
+      editing, boxMessage, isBlocking,
     } = this.state;
 
     return (
@@ -175,6 +236,10 @@ class PacienteForm extends Component {
           open={boxMessage.open}
           onHandleOnClose={this.onHandleOnClose}
         />
+        <Prompt
+          when={isBlocking}
+          message="Você tem modificações que não foram salvas, deseja realmente sair?"
+        />
         <Grid container alignItems="center">
           <Typography variant="h6" color="inherit" noWrap>
             {editing ? 'Editar' : 'Cadastrar'}
@@ -182,14 +247,28 @@ class PacienteForm extends Component {
             paciente
           </Typography>
           <Button
+            type="submit"
             variant="outlined"
             color="primary"
             size="medium"
             className={classes.addBtn}
-            onClick={this.onHandleAdd}
+            disabled={!!error}
+            onClick={this.onHandleValidateFields}
           >
             Salvar
           </Button>
+          {editing && (
+            <Button
+              variant="outlined"
+              color="primary"
+              size="medium"
+              className={classes.addBtn}
+              disabled={!!error}
+              onClick={this.onHandleAddNew}
+            >
+              +Novo
+            </Button>
+          )}
         </Grid>
 
         <Divider className={classes.divider} />
@@ -203,10 +282,10 @@ class PacienteForm extends Component {
                 fullWidth
                 label="CPF"
                 name="CPF"
+                error={isValidField.CPF}
                 value={sendPaciente.CPF}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o CPF"
                 margin="normal"
                 variant="outlined"
@@ -220,10 +299,10 @@ class PacienteForm extends Component {
                 fullWidth
                 label="Nome do paciente"
                 name="Nome"
+                error={isValidField.Nome}
                 value={sendPaciente.Nome}
-                onChange={e => (
-                  this.onHandleTarget(e.target)
-                )}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o nome do paciente."
                 margin="normal"
                 variant="outlined"
@@ -232,11 +311,13 @@ class PacienteForm extends Component {
           </Grid>
 
           <Button
+            type="submit"
             variant="outlined"
             color="primary"
             size="medium"
             className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleAdd}
+            onClick={this.onHandleValidateFields}
+            disabled={!!error}
           >
             Salvar
           </Button>
@@ -254,6 +335,7 @@ PacienteForm.propTypes = {
   addPaciente: PropTypes.func.isRequired,
   updatePaciente: PropTypes.func.isRequired,
   loadPacienteDetail: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
@@ -264,6 +346,7 @@ PacienteForm.defaultProps = {
 
 const mapStateToProps = state => ({
   paciente: state.pacientesReducer.paciente,
+  error: state.pacientesReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
