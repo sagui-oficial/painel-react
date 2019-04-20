@@ -35,7 +35,7 @@ export function addPaciente(data) {
 export function loadPacienteDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/pacientes`,
+      uri: `pacientes/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PACIENTE_DETAILS, payload: res }))
@@ -46,8 +46,8 @@ export function loadPacienteDetail(id) {
 export function updatePaciente(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/pacientes`,
-      method: 'PATCH',
+      uri: `pacientes/${id}`,
+      method: 'PUT',
       data,
     })
       .then(res => dispatch({ type: UPDATE_PACIENTE, payload: res }))
@@ -58,8 +58,8 @@ export function updatePaciente(data, id) {
 export function deletePaciente(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `${id}/pacientes`,
-      method: 'PATCH',
+      uri: `pacientes/${id}`,
+      method: 'DELETE',
       data,
     })
       .then(() => dispatch({ type: DELETE_PACIENTE, payload: id }))
