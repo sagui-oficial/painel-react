@@ -157,11 +157,16 @@ class ProcedimentoForm extends Component {
   onHandleBlur({ value, name }) {
     const { isValidField, sendProcedimento } = this.state;
 
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
+
     this.setState({
-      isValidField: {
-        ...isValidField,
-        [name]: value.trim().length === 0,
-      },
       sendProcedimento: {
         ...sendProcedimento,
         [name]: name === 'Codigo' ? value.trim().toUpperCase() : value.trim(),
@@ -331,6 +336,7 @@ class ProcedimentoForm extends Component {
                 rowsMax="10"
                 value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
                 onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 margin="normal"
                 variant="outlined"
               />
@@ -345,6 +351,7 @@ class ProcedimentoForm extends Component {
                 rowsMax="10"
                 value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
                 onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 margin="normal"
                 variant="outlined"
               />
