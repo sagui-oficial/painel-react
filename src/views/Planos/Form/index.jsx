@@ -65,6 +65,7 @@ class PlanoForm extends Component {
       breadcrumb: [
         { label: 'Planos', url: '/planos' },
       ],
+      AllProcedimentos: [],
       AdicionarProcedimentos: {
         ValorProcedimento: String(),
       },
@@ -89,6 +90,7 @@ class PlanoForm extends Component {
 
     this.onHandleAdd = this.onHandleAdd.bind(this);
     this.onHandleAddProcedimento = this.onHandleAddProcedimento.bind(this);
+    this.onHandleLoadProcedimentos = this.onHandleLoadProcedimentos.bind(this);
     this.onHandleDeleteProcedimento = this.onHandleDeleteProcedimento.bind(this);
     this.onHandleTarget = this.onHandleTarget.bind(this);
     this.onHandleTargetValorProcedimento = this.onHandleTargetValorProcedimento.bind(this);
@@ -102,11 +104,9 @@ class PlanoForm extends Component {
   }
 
   componentDidMount() {
-    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
     this.onHandlePageLoad();
     this.onHandleMessage();
-
-    propsLoadProcedimentos();
+    this.onHandleLoadProcedimentos();
   }
 
   componentDidUpdate(prevProps) {
@@ -115,6 +115,24 @@ class PlanoForm extends Component {
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
     }
+  }
+
+  async onHandleLoadProcedimentos() {
+    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
+    await propsLoadProcedimentos();
+
+    const { procedimentos } = this.props;
+    const { sendPlano } = this.state;
+    const { ListaProcedimentos } = sendPlano;
+
+    console.log(ListaProcedimentos);
+
+    this.setState({
+      AllProcedimentos: procedimentos.filter((item) => {
+        const UUID = item.PublicID;
+        return (item.PublicID !== UUID);
+      }),
+    });
   }
 
   onHandleMessage(text) {
@@ -163,9 +181,8 @@ class PlanoForm extends Component {
     }
   }
 
-  onHandleTarget(target) {
+  onHandleTarget({ name, value }) {
     const { sendPlano } = this.state;
-    const { name, value } = target;
 
     this.setState({
       isBlocking: true,
@@ -176,14 +193,13 @@ class PlanoForm extends Component {
     });
   }
 
-  onHandleTargetValorProcedimento(target) {
+  onHandleTargetValorProcedimento({ name, value }) {
     const { AdicionarProcedimentos } = this.state;
-    const { name, value } = target;
 
     this.setState({
       AdicionarProcedimentos: {
         ...AdicionarProcedimentos,
-        [name]: value,
+        [name]: value.trim(),
       },
     });
   }
@@ -206,12 +222,21 @@ class PlanoForm extends Component {
   }
 
   onHandleBlur({ value, name }) {
-    const { isValidField } = this.state;
+    const { sendPlano, isValidField } = this.state;
+
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
 
     this.setState({
-      isValidField: {
-        ...isValidField,
-        [name]: value.trim().length === 0,
+      sendPlano: {
+        ...sendPlano,
+        [name]: value.trim(),
       },
     });
   }
@@ -245,21 +270,33 @@ class PlanoForm extends Component {
 
   onHandleAddProcedimento(event) {
     event.preventDefault();
-    const { sendPlano, AdicionarProcedimentos } = this.state;
+    const {
+      sendPlano, AdicionarProcedimentos,
+      selectedName, AllProcedimentos,
+    } = this.state;
+    const { ValorProcedimento } = AdicionarProcedimentos;
 
-    this.setState({
-      selectedName: String(),
-      AdicionarProcedimentos: {
-        ValorProcedimento: String(),
-      },
-      sendPlano: {
-        ...sendPlano,
-        ListaProcedimentos: [
-          AdicionarProcedimentos,
-          ...sendPlano.ListaProcedimentos,
-        ],
-      },
-    });
+    if (
+      ValorProcedimento.trim().length > 0
+      && selectedName
+    ) {
+      this.setState({
+        selectedName: String(),
+        AllProcedimentos: AllProcedimentos.filter(item => (
+          item.PublicID !== AdicionarProcedimentos.PublicID
+        )),
+        AdicionarProcedimentos: {
+          ValorProcedimento: String(),
+        },
+        sendPlano: {
+          ...sendPlano,
+          ListaProcedimentos: [
+            AdicionarProcedimentos,
+            ...sendPlano.ListaProcedimentos,
+          ],
+        },
+      });
+    }
   }
 
   onHandleDeleteProcedimento(idProcedimento) {
@@ -268,8 +305,8 @@ class PlanoForm extends Component {
     this.setState({
       sendPlano: {
         ...sendPlano,
-        ListaProcedimentos: sendPlano.ListaProcedimentos.filter((item, index) => (
-          `${item.PublicID}-${index}` !== idProcedimento
+        ListaProcedimentos: sendPlano.ListaProcedimentos.filter(item => (
+          item.PublicID !== idProcedimento
         )),
       },
     });
@@ -303,13 +340,14 @@ class PlanoForm extends Component {
 
   render() {
     const {
-      classes, error, procedimentos, title, match,
+      classes, error, title, match,
     } = this.props;
 
     const {
       sendPlano, breadcrumb, selectedName,
       editing, boxMessage, isValidField,
       AdicionarProcedimentos, isBlocking,
+      AllProcedimentos,
     } = this.state;
 
     const { ListaProcedimentos } = sendPlano;
@@ -405,6 +443,7 @@ class PlanoForm extends Component {
                 name="NomeFantasia"
                 value={sendPlano.NomeFantasia}
                 onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o nome do plano."
                 margin="normal"
                 variant="outlined"
@@ -442,13 +481,20 @@ class PlanoForm extends Component {
             >
               <Select
                 label="Cadastrar procedimentos"
-                options={procedimentos.map(suggestion => ({
-                  name: 'NomeProcedimento',
-                  id: suggestion.PublicID,
-                  Codigo: suggestion.Codigo,
-                  value: suggestion.NomeProcedimento,
-                  label: suggestion.NomeProcedimento,
-                }))}
+                options={
+                  AllProcedimentos.map((suggestion) => {
+                    const NameProd = 'NomeProcedimento';
+                    return (
+                      {
+                        name: NameProd,
+                        PublicID: suggestion.PublicID,
+                        Codigo: suggestion.Codigo,
+                        value: suggestion.NomeProcedimento,
+                        label: suggestion.NomeProcedimento,
+                      }
+                    );
+                  })
+                }
                 components={{ Control, Option }}
                 value={selectedName}
                 onChange={this.onHandleSelectProcedimentos}
@@ -463,6 +509,7 @@ class PlanoForm extends Component {
                 name="ValorProcedimento"
                 value={AdicionarProcedimentos.ValorProcedimento}
                 onChange={e => this.onHandleTargetValorProcedimento(e.target)}
+                type="number"
                 helperText="Apenas números"
                 placeholder="1.000,00"
                 margin="normal"
@@ -478,33 +525,31 @@ class PlanoForm extends Component {
             {
               sendPlano && (
                 ListaProcedimentos && (
-                  ListaProcedimentos.map((item, index) => {
-                    const itemId = `${item.PublicID}-${index}`;
-
-                    return (
-                      <ListItem
-                        key={itemId}
-                        className={classes.listProcess}
-                      >
-                        <div className={classes.boxList}>
-                          <p className={classes.smallItemText}>
-                            {item.NomeProcedimento}
-                            {' - '}
-                            {formatCurrency(item.ValorProcedimento)}
-                          </p>
-                        </div>
-                        <ListItemSecondaryAction className={classes.iconDelete}>
-                          <IconButton
-                            disabled={!!error}
-                            onClick={() => this.onHandleDeleteProcedimento(itemId)}
-                            aria-label="Deletar"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    );
-                  })
+                  ListaProcedimentos.map(item => (
+                    <ListItem
+                      key={item.PublicID}
+                      className={classes.listProcess}
+                    >
+                      <div className={classes.boxList}>
+                        <p className={classes.smallItemText}>
+                          {item.Codigo}
+                          {' - '}
+                          {item.NomeProcedimento}
+                          {' - '}
+                          {formatCurrency(item.ValorProcedimento)}
+                        </p>
+                      </div>
+                      <ListItemSecondaryAction className={classes.iconDelete}>
+                        <IconButton
+                          disabled={!!error}
+                          onClick={() => this.onHandleDeleteProcedimento(item.PublicID)}
+                          aria-label="Deletar"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))
                 )
               )
             }
