@@ -8,8 +8,11 @@ import {
   Button, Typography, Grid,
   Divider, TextField,
 } from '@material-ui/core';
+import Select from 'react-select';
 
 import { addPaciente, loadPacienteDetail, updatePaciente } from '../../../actions/pacientes';
+import { loadPlanos } from '../../../actions/planos';
+import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Master from '../../../components/Master';
@@ -44,9 +47,11 @@ class PacienteForm extends Component {
     this.state = {
       isBlocking: false,
       editing: false,
+      selectedPlano: null,
       breadcrumb: [
         { label: 'Pacientes', url: '/pacientes' },
       ],
+      AllPlanos: [],
       sendPaciente: {
         Status: 1,
         Nome: String(),
@@ -77,10 +82,13 @@ class PacienteForm extends Component {
     this.onHandleMessage = this.onHandleMessage.bind(this);
     this.onHandleOnClose = this.onHandleOnClose.bind(this);
     this.onHandleAddNew = this.onHandleAddNew.bind(this);
+    this.onHandleLoadPlanos = this.onHandleLoadPlanos.bind(this);
+    this.onHandleSelectPlano = this.onHandleSelectPlano.bind(this);
   }
 
-  componentDidMount() {
-    this.onHandlePageLoad();
+  async componentDidMount() {
+    await this.onHandlePageLoad();
+    await this.onHandleLoadPlanos();
     this.onHandleMessage();
   }
 
@@ -139,6 +147,26 @@ class PacienteForm extends Component {
     }
   }
 
+  async onHandleLoadPlanos() {
+    const { loadPlanos: propsLoadPlanos } = this.props;
+    await propsLoadPlanos();
+
+    const { planos, paciente } = this.props;
+
+    const newPlanSelectItem = planos.find(item => (
+      item.PublicID === paciente.ListaPlanoOperadoraPaciente
+    ));
+
+    this.setState({
+      selectedPlano: {
+        PublicID: newPlanSelectItem.PublicID,
+        value: newPlanSelectItem.RazaoSocial,
+        label: newPlanSelectItem.RazaoSocial,
+      },
+      AllPlanos: planos,
+    });
+  }
+
   onHandleTarget({ value, name }) {
     const { sendPaciente } = this.state;
 
@@ -147,6 +175,18 @@ class PacienteForm extends Component {
       sendPaciente: {
         ...sendPaciente,
         [name]: value,
+      },
+    });
+  }
+
+  onHandleSelectPlano(target) {
+    const { sendPaciente } = this.state;
+
+    this.setState({
+      selectedPlano: target,
+      sendPaciente: {
+        ...sendPaciente,
+        ListaPlanoOperadoraPaciente: target.PublicID,
       },
     });
   }
@@ -227,6 +267,7 @@ class PacienteForm extends Component {
     const {
       sendPaciente, breadcrumb, isValidField,
       editing, boxMessage, isBlocking,
+      AllPlanos, selectedPlano,
     } = this.state;
 
     return (
@@ -310,6 +351,43 @@ class PacienteForm extends Component {
             </Grid>
           </Grid>
 
+          <br />
+
+          <Grid container alignItems="center">
+            <Typography variant="h6" color="inherit" noWrap>
+              Selecionar plano odontológico
+            </Typography>
+          </Grid>
+
+          <Grid container spacing={16}>
+            <Grid
+              item
+              xs={12}
+              sm={9}
+              style={{
+                position: 'relative',
+                zIndex: '2',
+              }}
+            >
+              <Select
+                label="Selecionar plano/convênio"
+                options={
+                  AllPlanos.map(suggestion => (
+                    {
+                      PublicID: suggestion.PublicID,
+                      value: suggestion.RazaoSocial,
+                      label: suggestion.RazaoSocial,
+                    }
+                  ))
+                }
+                components={{ Control, Option }}
+                value={selectedPlano}
+                onChange={this.onHandleSelectPlano}
+                placeholder="Selecione..."
+              />
+            </Grid>
+          </Grid>
+
           <Button
             type="submit"
             variant="outlined"
@@ -331,24 +409,28 @@ PacienteForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   paciente: PropTypes.instanceOf(Object),
+  planos: PropTypes.instanceOf(Object),
   match: PropTypes.instanceOf(Object).isRequired,
   addPaciente: PropTypes.func.isRequired,
   updatePaciente: PropTypes.func.isRequired,
   loadPacienteDetail: PropTypes.func.isRequired,
+  loadPlanos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
 PacienteForm.defaultProps = {
   paciente: {},
+  planos: {},
   title: String(),
 };
 
 const mapStateToProps = state => ({
   paciente: state.pacientesReducer.paciente,
+  planos: state.planosReducer.planos,
   error: state.pacientesReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  addPaciente, loadPacienteDetail, updatePaciente,
+  addPaciente, loadPacienteDetail, updatePaciente, loadPlanos,
 })(withStyles(styles)(PacienteForm));
