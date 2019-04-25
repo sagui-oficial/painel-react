@@ -121,16 +121,10 @@ class PlanoForm extends Component {
     const { loadProcedimentos: propsLoadProcedimentos } = this.props;
     await propsLoadProcedimentos();
 
-    /* const { procedimentos } = this.props;
-    const { sendPlano } = this.state;
-    const { ListaProcedimentos } = sendPlano;
-
+    const { procedimentos } = this.props;
     this.setState({
-      AllProcedimentos: procedimentos.filter((item) => {
-        const UUID = item.PublicID;
-        return (item.PublicID !== UUID);
-      }),
-    }); */
+      AllProcedimentos: procedimentos,
+    });
   }
 
   onHandleMessage(text) {
