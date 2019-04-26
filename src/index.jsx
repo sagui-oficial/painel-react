@@ -27,7 +27,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 if (env.REACT_APP_STAGE !== 'production') {
   store = createStore(reducers,
     composeEnhancers(
-      applyMiddleware(logger, thunk.withExtraArgument({ getFirebase, getFirestore })),
+      applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }), logger),
       reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
       reduxFirestore(firebaseConfig),
     ));

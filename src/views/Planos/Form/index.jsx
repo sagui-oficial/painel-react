@@ -103,10 +103,10 @@ class PlanoForm extends Component {
     this.onHandleAddNew = this.onHandleAddNew.bind(this);
   }
 
-  componentDidMount() {
-    this.onHandlePageLoad();
+  async componentDidMount() {
+    await this.onHandlePageLoad();
+    await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
-    this.onHandleLoadProcedimentos();
   }
 
   componentDidUpdate(prevProps) {
@@ -122,9 +122,16 @@ class PlanoForm extends Component {
     await propsLoadProcedimentos();
 
     const { procedimentos } = this.props;
-    this.setState({
-      AllProcedimentos: procedimentos,
-    });
+
+    this.setState(prevState => ({
+      AllProcedimentos: procedimentos.filter((item) => {
+        const result = prevState.sendPlano.ListaProcedimentos.find(itemList => (
+          item.PublicID === itemList.PublicID
+        ));
+        if (result) return false;
+        return true;
+      }),
+    }));
   }
 
   onHandleMessage(text) {
@@ -291,17 +298,18 @@ class PlanoForm extends Component {
     }
   }
 
-  onHandleDeleteProcedimento(idProcedimento) {
+  onHandleDeleteProcedimento(itemProcedimento) {
     const { sendPlano } = this.state;
 
-    this.setState({
+    this.setState(prevState => ({
+      AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
       sendPlano: {
         ...sendPlano,
         ListaProcedimentos: sendPlano.ListaProcedimentos.filter(item => (
-          item.PublicID !== idProcedimento
+          item.PublicID !== itemProcedimento.PublicID
         )),
       },
-    });
+    }));
   }
 
   async onHandleAdd() {
@@ -534,7 +542,7 @@ class PlanoForm extends Component {
                       <ListItemSecondaryAction className={classes.iconDelete}>
                         <IconButton
                           disabled={!!error}
-                          onClick={() => this.onHandleDeleteProcedimento(item.PublicID)}
+                          onClick={() => this.onHandleDeleteProcedimento(item)}
                           aria-label="Deletar"
                         >
                           <DeleteIcon />
