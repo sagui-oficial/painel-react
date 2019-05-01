@@ -31,8 +31,8 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   logo: {
-    maxWidth: '120px',
     width: '100%',
+    maxWidth: '120px',
   },
   root: {
     display: 'flex',
@@ -93,7 +93,6 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
     paddingBottom: '60px',
     position: 'relative',
-    overflow: 'auto',
   },
   mainContainer: {
     marginTop: theme.spacing.unit * 8,
