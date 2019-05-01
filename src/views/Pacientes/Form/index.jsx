@@ -157,12 +157,17 @@ class PacienteForm extends Component {
       item.PublicID === paciente.ListaPlanoOperadoraPaciente
     ));
 
+    if (typeof newPlanSelectItem !== 'undefined') {
+      this.setState({
+        selectedPlano: {
+          PublicID: newPlanSelectItem.PublicID,
+          value: newPlanSelectItem.RazaoSocial,
+          label: newPlanSelectItem.RazaoSocial,
+        },
+      });
+    }
+
     this.setState({
-      selectedPlano: {
-        PublicID: newPlanSelectItem.PublicID,
-        value: newPlanSelectItem.RazaoSocial,
-        label: newPlanSelectItem.RazaoSocial,
-      },
       AllPlanos: planos,
     });
   }
