@@ -356,6 +356,34 @@ class PacienteForm extends Component {
                 variant="outlined"
               />
             </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                fullWidth
+                label="Telefone"
+                name="Telefone"
+                value={sendPaciente.Telefone}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="(11) 9000-0000"
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="E-mail"
+                name="Email"
+                value={sendPaciente.Email}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="email@email.com.br"
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
           </Grid>
 
           <br />
