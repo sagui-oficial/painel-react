@@ -61,10 +61,12 @@ class PacienteForm extends Component {
         CPF: String(),
         Email: String(),
         Telefone: String(),
+        Carterinha: String(),
       },
       isValidField: {
         CPF: false,
         Nome: false,
+        Carterinha: false,
       },
       boxMessage: {
         open: false,
@@ -337,9 +339,7 @@ class PacienteForm extends Component {
                 variant="outlined"
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={16}>
             <Grid item xs={12} sm={12}>
               <TextField
                 fullWidth
@@ -389,6 +389,21 @@ class PacienteForm extends Component {
                 value={selectedPlano}
                 onChange={this.onHandleSelectPlano}
                 placeholder="Selecione..."
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label="Carterinha"
+                name="Carterinha"
+                error={isValidField.Carterinha}
+                value={sendPaciente.Carterinha}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="Digite a carterinha"
+                margin="normal"
+                variant="outlined"
               />
             </Grid>
           </Grid>
