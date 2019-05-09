@@ -328,6 +328,7 @@ class PacienteForm extends Component {
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
+                required
                 label="CPF"
                 name="CPF"
                 error={isValidField.CPF}
@@ -343,6 +344,7 @@ class PacienteForm extends Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 fullWidth
+                required
                 label="Nome do paciente"
                 name="Nome"
                 error={isValidField.Nome}
@@ -395,6 +397,7 @@ class PacienteForm extends Component {
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
+                required
                 label="Carterinha"
                 name="Carterinha"
                 error={isValidField.Carterinha}
