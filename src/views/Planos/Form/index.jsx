@@ -332,11 +332,12 @@ class PlanoForm extends Component {
         ...sendPlano,
       });
 
-      const { plano: { PublicID } } = this.props;
+      // const { plano: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Plano adicionado.');
-      history.push(`/planos/${PublicID}`);
+      // history.push(`/planos/${PublicID}`);
     }
+    history.push('/planos');
   }
 
   render() {
