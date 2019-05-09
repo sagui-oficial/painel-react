@@ -77,6 +77,7 @@ class PlanoForm extends Component {
         ListaProcedimentos: [],
       },
       isValidField: {
+        NomeFantasia: false,
         RazaoSocial: false,
         CNPJ: false,
       },
@@ -439,8 +440,10 @@ class PlanoForm extends Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 fullWidth
+                required
                 label="Nome fantasia"
                 name="NomeFantasia"
+                error={isValidField.NomeFantasia}
                 value={sendPlano.NomeFantasia}
                 onChange={e => this.onHandleTarget(e.target)}
                 onBlur={e => this.onHandleBlur(e.target)}

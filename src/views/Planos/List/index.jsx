@@ -120,7 +120,7 @@ class PlanosList extends Component {
     const { order } = this.state;
 
     this.setState({
-      allPlanos: orderBy(planos, 'RazaoSocial', order),
+      allPlanos: orderBy(planos, 'NomeFantasia', order),
     });
   }
 
@@ -158,8 +158,8 @@ class PlanosList extends Component {
 
     this.setState(prevState => ({
       [name]: value,
-      allPlanos: orderBy(planos, 'RazaoSocial', prevState.order).filter(item => (
-        matchItem(item.RazaoSocial, value) || matchItem(item.CNPJ, value)
+      allPlanos: orderBy(planos, 'NomeFantasia', prevState.order).filter(item => (
+        matchItem(item.NomeFantasia, value) || matchItem(item.CNPJ, value)
       )),
     }));
   }
@@ -167,7 +167,7 @@ class PlanosList extends Component {
   onHandleOrder(order) {
     this.setState(prevState => ({
       order,
-      allPlanos: orderBy(prevState.allPlanos, 'RazaoSocial', order),
+      allPlanos: orderBy(prevState.allPlanos, 'NomeFantasia', order),
     }));
   }
 
@@ -223,8 +223,8 @@ class PlanosList extends Component {
                 button
               >
                 <ListItemAvatar>
-                  <Avatar aria-label={item.RazaoSocial} className={classes.avatar}>
-                    {item.RazaoSocial.substring(0, 1).toUpperCase()}
+                  <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
+                    {item.NomeFantasia.substring(0, 1).toUpperCase()}
                   </Avatar>
                 </ListItemAvatar>
                 <div className={classes.boxList}>
@@ -234,7 +234,7 @@ class PlanosList extends Component {
                     {item.CNPJ}
                   </p>
                   <p>
-                    <strong>{item.RazaoSocial}</strong>
+                    <strong>{item.NomeFantasia}</strong>
                   </p>
                 </div>
                 <ListItemSecondaryAction className={classes.iconDelete}>
