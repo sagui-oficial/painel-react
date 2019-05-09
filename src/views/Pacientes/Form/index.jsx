@@ -61,10 +61,12 @@ class PacienteForm extends Component {
         CPF: String(),
         Email: String(),
         Telefone: String(),
+        Carterinha: String(),
       },
       isValidField: {
         CPF: false,
         Nome: false,
+        Carterinha: false,
       },
       boxMessage: {
         open: false,
@@ -161,8 +163,8 @@ class PacienteForm extends Component {
       this.setState({
         selectedPlano: {
           PublicID: newPlanSelectItem.PublicID,
-          value: newPlanSelectItem.RazaoSocial,
-          label: newPlanSelectItem.RazaoSocial,
+          value: newPlanSelectItem.NomeFantasia,
+          label: newPlanSelectItem.NomeFantasia,
         },
       });
     }
@@ -326,6 +328,7 @@ class PacienteForm extends Component {
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
+                required
                 label="CPF"
                 name="CPF"
                 error={isValidField.CPF}
@@ -337,12 +340,11 @@ class PacienteForm extends Component {
                 variant="outlined"
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={16}>
             <Grid item xs={12} sm={12}>
               <TextField
                 fullWidth
+                required
                 label="Nome do paciente"
                 name="Nome"
                 error={isValidField.Nome}
@@ -350,6 +352,34 @@ class PacienteForm extends Component {
                 onChange={e => this.onHandleTarget(e.target)}
                 onBlur={e => this.onHandleBlur(e.target)}
                 helperText="Digite o nome do paciente."
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                fullWidth
+                label="Telefone"
+                name="Telefone"
+                value={sendPaciente.Telefone}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="(11) 9000-0000"
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="E-mail"
+                name="Email"
+                value={sendPaciente.Email}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="email@email.com.br"
                 margin="normal"
                 variant="outlined"
               />
@@ -380,8 +410,8 @@ class PacienteForm extends Component {
                   AllPlanos.map(suggestion => (
                     {
                       PublicID: suggestion.PublicID,
-                      value: suggestion.RazaoSocial,
-                      label: suggestion.RazaoSocial,
+                      value: suggestion.NomeFantasia,
+                      label: suggestion.NomeFantasia,
                     }
                   ))
                 }
@@ -389,6 +419,22 @@ class PacienteForm extends Component {
                 value={selectedPlano}
                 onChange={this.onHandleSelectPlano}
                 placeholder="Selecione..."
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                required
+                label="Carterinha"
+                name="Carterinha"
+                error={isValidField.Carterinha}
+                value={sendPaciente.Carterinha}
+                onChange={e => this.onHandleTarget(e.target)}
+                onBlur={e => this.onHandleBlur(e.target)}
+                helperText="Digite a carterinha"
+                margin="normal"
+                variant="outlined"
               />
             </Grid>
           </Grid>
