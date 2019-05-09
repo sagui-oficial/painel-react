@@ -163,8 +163,8 @@ class PacienteForm extends Component {
       this.setState({
         selectedPlano: {
           PublicID: newPlanSelectItem.PublicID,
-          value: newPlanSelectItem.RazaoSocial,
-          label: newPlanSelectItem.RazaoSocial,
+          value: newPlanSelectItem.NomeFantasia,
+          label: newPlanSelectItem.NomeFantasia,
         },
       });
     }
@@ -382,8 +382,8 @@ class PacienteForm extends Component {
                   AllPlanos.map(suggestion => (
                     {
                       PublicID: suggestion.PublicID,
-                      value: suggestion.RazaoSocial,
-                      label: suggestion.RazaoSocial,
+                      value: suggestion.NomeFantasia,
+                      label: suggestion.NomeFantasia,
                     }
                   ))
                 }
