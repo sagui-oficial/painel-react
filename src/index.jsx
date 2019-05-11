@@ -20,30 +20,26 @@ import DashboardLayout from './layouts/Dashboard';
 import './assets/styles/default.sass';
 // import * as serviceWorker from './serviceWorker';
 
+let store;
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const store = createStore(reducers,
-  composeEnhancers(
-    applyMiddleware(
-      thunk.withExtraArgument({
-        getFirebase,
-        getFirestore,
-      }),
-      env.REACT_APP_STAGE !== 'production' ? logger : null,
-    ),
-    reactReduxFirebase(
-      firebaseConfig,
-      {
-        userProfile: 'users',
-        useFirestoreForProfile: true,
-        attachAuthIsReady: true,
-      },
-    ),
-    reduxFirestore(firebaseConfig),
-  ));
-
+if (env.REACT_APP_STAGE !== 'production') {
+  store = createStore(reducers,
+    composeEnhancers(
+      applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }), logger),
+      reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
+      reduxFirestore(firebaseConfig),
+    ));
+} else {
+  store = createStore(reducers,
+    compose(
+      applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
+      reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
+      reduxFirestore(firebaseConfig),
+    ));
+}
 
 store.firebaseAuthIsReady.then(() => {
   ReactDOM.render(
