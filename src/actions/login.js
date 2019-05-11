@@ -17,6 +17,7 @@ export function logout() {
   return async (dispatch, getState, { getFirebase }) => {
     const firebase = await getFirebase();
 
+    firebase.logout();
     firebase.auth().signOut().then(() => {
       dispatch({ type: 'LOGOUT' });
     });
