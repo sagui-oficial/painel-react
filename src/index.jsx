@@ -24,12 +24,17 @@ import './assets/styles/default.sass';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
+const middlewares = [];
+if (env.REACT_APP_STAGE === 'development') {
+  middlewares.push(logger);
+}
+
 const store = createStore(
   reducers,
   composeEnhancers(
     applyMiddleware(
       thunk.withExtraArgument({ getFirebase, getFirestore }),
-      env.REACT_APP_STAGE !== 'production' ? logger : null,
+      ...middlewares,
     ),
     reactReduxFirebase(firebaseConfig, { userProfile: 'users', useFirestoreForProfile: true, attachAuthIsReady: true }),
     reduxFirestore(firebaseConfig),
