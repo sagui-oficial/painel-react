@@ -19,10 +19,7 @@ export const APIResquest = (config) => {
       },
     };
 
-    if (config.method === 'POST'
-      || config.method === 'PATCH'
-      || config.method === 'PUT'
-    ) {
+    if (/(POST|PUT|PATCH)/gi.test(config.method)) {
       settings.data = JSON.stringify({ ...config.data });
     }
 
