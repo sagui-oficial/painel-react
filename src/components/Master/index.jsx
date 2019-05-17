@@ -36,7 +36,6 @@ const styles = theme => ({
   },
   root: {
     display: 'flex',
-    touchAction: 'none',
   },
   linkLogo: {
     display: 'block',
@@ -93,6 +92,10 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
     paddingBottom: '60px',
     position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      flexGrow: 'unset',
+    },
   },
   mainContainer: {
     marginTop: theme.spacing.unit * 8,
@@ -174,6 +177,7 @@ class NavBar extends Component {
             open={menu.open}
             onClose={this.handleDrawerToggle}
             onOpen={this.handleDrawerToggle}
+            disableSwipeToOpen
             classes={{
               paper: classes.drawerPaper,
             }}
