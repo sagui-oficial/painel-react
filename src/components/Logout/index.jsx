@@ -30,11 +30,11 @@ const styles = theme => ({
 class MenuListComposition extends Component {
   state = {
     open: false,
-  };
+  }
 
   handleToggle = () => {
     this.setState(state => ({ open: !state.open }));
-  };
+  }
 
   handleClose = (event) => {
     if (this.anchorEl.contains(event.target)) {
@@ -42,7 +42,7 @@ class MenuListComposition extends Component {
     }
 
     this.setState({ open: false });
-  };
+  }
 
   render() {
     const { classes, logout: propLogout, profile } = this.props;

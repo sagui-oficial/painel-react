@@ -33,17 +33,12 @@ const styles = theme => ({
 });
 
 class Procedimentos extends Component {
-  constructor(props) {
-    super(props);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
-  }
-
   componentDidMount() {
     const { loadProcedimentos: propLoadItems } = this.props;
     propLoadItems();
   }
 
-  onHandleAddNew() {
+  onHandleAddNew = () => {
     const { history } = this.props;
     history.push('/procedimentos/cadastrar');
   }

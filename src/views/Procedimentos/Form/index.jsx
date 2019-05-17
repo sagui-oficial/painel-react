@@ -44,43 +44,30 @@ const styles = theme => ({
 });
 
 class ProcedimentoForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isBlocking: false,
-      editing: false,
-      breadcrumb: [
-        { label: 'Procedimentos', url: '/procedimentos' },
-      ],
-      sendProcedimento: {
-        Status: 1,
-        Codigo: String(),
-        NomeProcedimento: String(),
-        Exigencias: String(),
-        Anotacoes: String(),
-      },
-      isValidField: {
-        Codigo: false,
-        NomeProcedimento: false,
-      },
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.baseState = this.state;
-
-    this.onHandleAdd = this.onHandleAdd.bind(this);
-    this.onHandleTarget = this.onHandleTarget.bind(this);
-    this.onHandleBlur = this.onHandleBlur.bind(this);
-    this.onHandleValidateFields = this.onHandleValidateFields.bind(this);
-    this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
+  state = {
+    isBlocking: false,
+    editing: false,
+    breadcrumb: [
+      { label: 'Procedimentos', url: '/procedimentos' },
+    ],
+    sendProcedimento: {
+      Status: 1,
+      Codigo: String(),
+      NomeProcedimento: String(),
+      Exigencias: String(),
+      Anotacoes: String(),
+    },
+    isValidField: {
+      Codigo: false,
+      NomeProcedimento: false,
+    },
+    boxMessage: {
+      open: false,
+      text: '',
+    },
   }
+
+  baseState = this.state
 
   componentDidMount() {
     this.onHandlePageLoad();
@@ -95,35 +82,7 @@ class ProcedimentoForm extends Component {
     }
   }
 
-  onHandleMessage(text) {
-    const { error } = this.props;
-
-    if (error.indexOf('Error') > -1) {
-      this.setState({ boxMessage: { open: true, text: error } });
-      return;
-    }
-
-    if (typeof text !== 'undefined') {
-      this.setState({ boxMessage: { open: true, text } });
-    }
-  }
-
-  onHandleOnClose() {
-    const { boxMessage } = this.state;
-    const { text } = boxMessage;
-
-    this.setState({
-      boxMessage: { open: false, text },
-    });
-  }
-
-  onHandleAddNew() {
-    const { history } = this.props;
-    history.push('/procedimentos/cadastrar');
-    this.setState(this.baseState);
-  }
-
-  async onHandlePageLoad() {
+  onHandlePageLoad = async () => {
     const {
       match,
       loadProcedimentoDetail: propLoadProcedimentoDetail,
@@ -142,7 +101,56 @@ class ProcedimentoForm extends Component {
     }
   }
 
-  onHandleTarget({ value, name }) {
+  onHandleAdd = async () => {
+    const { sendProcedimento, editing } = this.state;
+
+    const {
+      addProcedimento: propAddProcedimento,
+      updateProcedimento: propUpdateProcedimento, history,
+    } = this.props;
+
+    if (editing) {
+      const { procedimento: { PublicID } } = this.props;
+      await propUpdateProcedimento({
+        ...sendProcedimento,
+      }, PublicID);
+      this.onHandleMessage('Procedimento modificado.');
+    } else {
+      await propAddProcedimento({
+        ...sendProcedimento,
+      });
+
+      // const { procedimento: { PublicID } } = this.props;
+      this.setState({ editing: true });
+      this.onHandleMessage('Procedimento adicionado.');
+      // history.push(`/procedimentos/${PublicID}`);
+    }
+    history.push('/procedimentos');
+  }
+
+  onHandleMessage = (text) => {
+    const { error } = this.props;
+
+    if (error.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: error } });
+      return;
+    }
+
+    if (typeof text !== 'undefined') {
+      this.setState({ boxMessage: { open: true, text } });
+    }
+  }
+
+  onHandleOnClose = () => {
+    const { boxMessage } = this.state;
+    const { text } = boxMessage;
+
+    this.setState({
+      boxMessage: { open: false, text },
+    });
+  }
+
+  onHandleTarget = ({ value, name }) => {
     const { sendProcedimento } = this.state;
 
     this.setState({
@@ -154,7 +162,7 @@ class ProcedimentoForm extends Component {
     });
   }
 
-  onHandleBlur({ value, name }) {
+  onHandleBlur = ({ value, name }) => {
     const { isValidField, sendProcedimento } = this.state;
 
     if (typeof isValidField[name] !== 'undefined') {
@@ -174,7 +182,7 @@ class ProcedimentoForm extends Component {
     });
   }
 
-  onHandleValidateFields(event) {
+  onHandleValidateFields = (event) => {
     event.preventDefault();
 
     const { isValidField, sendProcedimento } = this.state;
@@ -198,32 +206,6 @@ class ProcedimentoForm extends Component {
       this.onHandleAdd();
     } else {
       this.onHandleMessage('Preencha todos os campos.');
-    }
-  }
-
-  async onHandleAdd() {
-    const { sendProcedimento, editing } = this.state;
-
-    const {
-      addProcedimento: propAddProcedimento,
-      updateProcedimento: propUpdateProcedimento, history,
-    } = this.props;
-
-    if (editing) {
-      const { procedimento: { PublicID } } = this.props;
-      await propUpdateProcedimento({
-        ...sendProcedimento,
-      }, PublicID);
-      this.onHandleMessage('Procedimento modificado.');
-    } else {
-      await propAddProcedimento({
-        ...sendProcedimento,
-      });
-
-      const { procedimento: { PublicID } } = this.props;
-      this.setState({ editing: true });
-      this.onHandleMessage('Procedimento adicionado.');
-      history.push(`/procedimentos/${PublicID}`);
     }
   }
 
@@ -266,29 +248,13 @@ class ProcedimentoForm extends Component {
           >
             Salvar
           </Button>
-          {editing && (
-            <Button
-              variant="outlined"
-              color="primary"
-              size="medium"
-              className={classes.addBtn}
-              disabled={!!error}
-              onClick={this.onHandleAddNew}
-            >
-              +Novo
-            </Button>
-          )}
         </Grid>
 
         <Divider className={classes.divider} />
 
         <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
-        <form
-          noValidate
-          autoComplete="off"
-          className={classes.form}
-        >
+        <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={16}>
             <Grid item xs={12} sm={4}>
               <TextField

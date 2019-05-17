@@ -41,52 +41,37 @@ const styles = theme => ({
 });
 
 class PacienteForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isBlocking: false,
-      editing: false,
-      selectedPlano: null,
-      breadcrumb: [
-        { label: 'Pacientes', url: '/pacientes' },
-      ],
-      AllPlanos: [],
-      sendPaciente: {
-        Status: 1,
-        Nome: String(),
-        ListaPlanoOperadoraPaciente: String(),
-        Funcao: String(),
-        Anotacoes: String(),
-        CPF: String(),
-        Email: String(),
-        Telefone: String(),
-        Carterinha: String(),
-      },
-      isValidField: {
-        CPF: false,
-        Nome: false,
-        Carterinha: false,
-      },
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.baseState = this.state;
-
-    this.onHandleAdd = this.onHandleAdd.bind(this);
-    this.onHandleTarget = this.onHandleTarget.bind(this);
-    this.onHandleBlur = this.onHandleBlur.bind(this);
-    this.onHandleValidateFields = this.onHandleValidateFields.bind(this);
-    this.onHandlePageLoad = this.onHandlePageLoad.bind(this);
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
-    this.onHandleLoadPlanos = this.onHandleLoadPlanos.bind(this);
-    this.onHandleSelectPlano = this.onHandleSelectPlano.bind(this);
+  state = {
+    isBlocking: false,
+    editing: false,
+    selectedPlano: null,
+    breadcrumb: [
+      { label: 'Pacientes', url: '/pacientes' },
+    ],
+    AllPlanos: [],
+    sendPaciente: {
+      Status: 1,
+      Nome: String(),
+      ListaPlanoOperadoraPaciente: String(),
+      Funcao: String(),
+      Anotacoes: String(),
+      CPF: String(),
+      Email: String(),
+      Telefone: String(),
+      Carterinha: String(),
+    },
+    isValidField: {
+      CPF: false,
+      Nome: false,
+      Carterinha: false,
+    },
+    boxMessage: {
+      open: false,
+      text: '',
+    },
   }
+
+  baseState = this.state
 
   async componentDidMount() {
     await this.onHandlePageLoad();
@@ -102,35 +87,7 @@ class PacienteForm extends Component {
     }
   }
 
-  onHandleMessage(text) {
-    const { error } = this.props;
-
-    if (error.indexOf('Error') > -1) {
-      this.setState({ boxMessage: { open: true, text: error } });
-      return;
-    }
-
-    if (typeof text !== 'undefined') {
-      this.setState({ boxMessage: { open: true, text } });
-    }
-  }
-
-  onHandleOnClose() {
-    const { boxMessage } = this.state;
-    const { text } = boxMessage;
-
-    this.setState({
-      boxMessage: { open: false, text },
-    });
-  }
-
-  onHandleAddNew() {
-    const { history } = this.props;
-    history.push('/pacientes/cadastrar');
-    this.setState(this.baseState);
-  }
-
-  async onHandlePageLoad() {
+  onHandlePageLoad = async () => {
     const {
       match,
       loadPacienteDetail: propLoadPacienteDetail,
@@ -149,7 +106,7 @@ class PacienteForm extends Component {
     }
   }
 
-  async onHandleLoadPlanos() {
+  onHandleLoadPlanos = async () => {
     const { loadPlanos: propsLoadPlanos } = this.props;
     await propsLoadPlanos();
 
@@ -174,7 +131,55 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleTarget({ value, name }) {
+  onHandleAdd = async () => {
+    const {
+      addPaciente: propAddPaciente,
+      updatePaciente: propUpdatePaciente, history,
+    } = this.props;
+
+    const { sendPaciente, editing } = this.state;
+
+    if (editing) {
+      const { paciente: { PublicID } } = this.props;
+      await propUpdatePaciente({
+        ...sendPaciente,
+      }, PublicID);
+      this.onHandleMessage('Paciente modificado.');
+    } else {
+      await propAddPaciente({
+        ...sendPaciente,
+      });
+      // const { paciente: { PublicID } } = this.props;
+      this.setState({ editing: true });
+      this.onHandleMessage('Paciente adicionado.');
+      // history.push(`/pacientes/${PublicID}`);
+    }
+    history.push('/pacientes');
+  }
+
+  onHandleMessage = (text) => {
+    const { error } = this.props;
+
+    if (error.indexOf('Error') > -1) {
+      this.setState({ boxMessage: { open: true, text: error } });
+      return;
+    }
+
+    if (typeof text !== 'undefined') {
+      this.setState({ boxMessage: { open: true, text } });
+    }
+  }
+
+  onHandleOnClose = () => {
+    const { boxMessage } = this.state;
+    const { text } = boxMessage;
+
+    this.setState({
+      boxMessage: { open: false, text },
+    });
+  }
+
+  onHandleTarget = ({ value, name }) => {
     const { sendPaciente } = this.state;
 
     this.setState({
@@ -186,7 +191,7 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleSelectPlano(target) {
+  onHandleSelectPlano = (target) => {
     const { sendPaciente } = this.state;
 
     this.setState({
@@ -198,14 +203,19 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleBlur({ value, name }) {
+  onHandleBlur = ({ value, name }) => {
     const { isValidField, sendPaciente } = this.state;
 
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
+
     this.setState({
-      isValidField: {
-        ...isValidField,
-        [name]: value.trim().length === 0,
-      },
       sendPaciente: {
         ...sendPaciente,
         [name]: value.trim(),
@@ -213,7 +223,7 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleValidateFields(event) {
+  onHandleValidateFields = (event) => {
     event.preventDefault();
 
     const { isValidField, sendPaciente } = this.state;
@@ -237,31 +247,6 @@ class PacienteForm extends Component {
       this.onHandleAdd();
     } else {
       this.onHandleMessage('Preencha todos os campos.');
-    }
-  }
-
-  async onHandleAdd() {
-    const {
-      addPaciente: propAddPaciente,
-      updatePaciente: propUpdatePaciente, history,
-    } = this.props;
-
-    const { sendPaciente, editing } = this.state;
-
-    if (editing) {
-      const { paciente: { PublicID } } = this.props;
-      await propUpdatePaciente({
-        ...sendPaciente,
-      }, PublicID);
-      this.onHandleMessage('Paciente modificado.');
-    } else {
-      await propAddPaciente({
-        ...sendPaciente,
-      });
-      const { paciente: { PublicID } } = this.props;
-      this.setState({ editing: true });
-      this.onHandleMessage('Paciente adicionado.');
-      history.push(`/pacientes/${PublicID}`);
     }
   }
 
@@ -305,18 +290,6 @@ class PacienteForm extends Component {
           >
             Salvar
           </Button>
-          {editing && (
-            <Button
-              variant="outlined"
-              color="primary"
-              size="medium"
-              className={classes.addBtn}
-              disabled={!!error}
-              onClick={this.onHandleAddNew}
-            >
-              +Novo
-            </Button>
-          )}
         </Grid>
 
         <Divider className={classes.divider} />

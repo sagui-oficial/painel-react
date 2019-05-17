@@ -55,12 +55,11 @@ export function updateGuiaStatus(data, id) {
   };
 }
 
-export function deleteGuia(data, id) {
+export function deleteGuia(id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `guias/${id}`,
       method: 'DELETE',
-      data,
     })
       .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));

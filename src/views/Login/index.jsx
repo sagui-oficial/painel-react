@@ -56,22 +56,21 @@ const styles = theme => ({
 });
 
 class Login extends Component {
+  state = {
+    username: String(),
+    password: String(),
+    errorMessage: String(),
+    loading: false,
+  }
+
+  baseState = this.state
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      username: String(),
-      password: String(),
-      errorMessage: String(),
-      loading: false,
-    };
-
-    this.baseState = this.state;
-    this.onHandleChange = this.onHandleChange.bind(this);
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
   }
 
-  onHandleChange({ name, value }) {
+  onHandleChange = ({ name, value }) => {
     this.setState({
       [name]: value,
       errorMessage: '',

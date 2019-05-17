@@ -33,17 +33,12 @@ const styles = theme => ({
 });
 
 class Planos extends Component {
-  constructor(props) {
-    super(props);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
-  }
-
   componentDidMount() {
     const { loadPlanos: propLoadItems } = this.props;
     propLoadItems();
   }
 
-  onHandleAddNew() {
+  onHandleAddNew = () => {
     const { history } = this.props;
     history.push('/planos/cadastrar');
   }

@@ -4,23 +4,16 @@ import { connect } from 'react-redux';
 import { signup } from '../../actions/login';
 
 class SignUp extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      fullname: String(),
-      username: String(),
-      password: String(),
-      loading: false,
-    };
-
-    this.baseState = this.state;
-
-    this.onHandleChange = this.onHandleChange.bind(this);
-    this.onHandleSubmit = this.onHandleSubmit.bind(this);
+  state = {
+    fullname: String(),
+    username: String(),
+    password: String(),
+    loading: false,
   }
 
-  async onHandleSubmit(e) {
+  baseState = this.state
+
+  onHandleSubmit = async (e) => {
     e.preventDefault();
 
     const { fullname, username, password } = this.state;
@@ -35,11 +28,10 @@ class SignUp extends Component {
     console.warn(type, message);
 
     this.setState({ loading: false });
-
     this.resetForm();
   }
 
-  onHandleChange({ name, value }) {
+  onHandleChange = ({ name, value }) => {
     this.setState({ [name]: value });
   }
 
