@@ -120,11 +120,12 @@ class ProcedimentoForm extends Component {
         ...sendProcedimento,
       });
 
-      const { procedimento: { PublicID } } = this.props;
+      // const { procedimento: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Procedimento adicionado.');
-      history.push(`/procedimentos/${PublicID}`);
+      // history.push(`/procedimentos/${PublicID}`);
     }
+    history.push('/procedimentos');
   }
 
   onHandleMessage = (text) => {

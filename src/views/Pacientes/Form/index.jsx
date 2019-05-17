@@ -149,11 +149,12 @@ class PacienteForm extends Component {
       await propAddPaciente({
         ...sendPaciente,
       });
-      const { paciente: { PublicID } } = this.props;
+      // const { paciente: { PublicID } } = this.props;
       this.setState({ editing: true });
       this.onHandleMessage('Paciente adicionado.');
-      history.push(`/pacientes/${PublicID}`);
+      // history.push(`/pacientes/${PublicID}`);
     }
+    history.push('/pacientes');
   }
 
   onHandleMessage = (text) => {
