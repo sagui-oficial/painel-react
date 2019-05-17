@@ -55,12 +55,11 @@ export function updateProcedimento(data, id) {
   };
 }
 
-export function deleteProcedimento(data, id) {
+export function deleteProcedimento(id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `procedimentos/${id}`,
       method: 'DELETE',
-      data,
     })
       .then(() => dispatch({ type: DELETE_PROCEDIMENTO, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));

@@ -55,12 +55,11 @@ export function updatePlano(data, id) {
   };
 }
 
-export function deletePlano(data, id) {
+export function deletePlano(id) {
   return async (dispatch) => {
     await APIResquest({
       uri: `planos/${id}`,
       method: 'DELETE',
-      data,
     })
       .then(() => dispatch({ type: DELETE_PLANO, payload: id }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
