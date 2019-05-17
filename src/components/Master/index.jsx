@@ -5,24 +5,23 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Helmet } from 'react-helmet';
 
-// MATERIAL IMPORTS
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Hidden from '@material-ui/core/Hidden';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import {
+  CssBaseline,
+  Hidden,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Divider,
+  List,
+  ListItemIcon,
+  ListItemText,
+  ListItem,
+  SwipeableDrawer,
+} from '@material-ui/core';
 
-// MATERIAL ICONS
 import MenuIcon from '@material-ui/icons/Menu';
 
-// LOCAL IMPORTS
 import logo from '../../assets/images/logo.svg';
 import dashboardRoutes from '../../routes/dashbordRoutes';
 import Logout from '../Logout';
@@ -106,17 +105,11 @@ const styles = theme => ({
 });
 
 class NavBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      menu: {
-        type: 'permanent',
-        open: false,
-      },
-    };
-
-    this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
-    this.resizeFunction = this.resizeFunction.bind(this);
+  state = {
+    menu: {
+      type: 'permanent',
+      open: false,
+    },
   }
 
   componentDidMount() {
@@ -127,7 +120,7 @@ class NavBar extends Component {
     window.removeEventListener('resize', this.resizeFunction);
   }
 
-  handleDrawerToggle() {
+  handleDrawerToggle = () => {
     const { menu } = this.state;
     this.setState({
       menu: {
@@ -136,7 +129,7 @@ class NavBar extends Component {
     });
   }
 
-  resizeFunction() {
+  resizeFunction = () => {
     if (window.innerWidth >= 960) {
       this.setState({
         menu: {
