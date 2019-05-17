@@ -26,7 +26,7 @@ const dashboardRoutes = [
     path: '/dashboard',
     menuText: 'Dashboard',
     icon: DashboardIcon,
-    active: true,
+    active: false,
     component: DashboardPage,
   },
   {
@@ -34,7 +34,7 @@ const dashboardRoutes = [
     path: '/lotes',
     menuText: 'Lotes',
     icon: Book,
-    active: true,
+    active: false,
     component: Lotes,
     editMode: null,
   },
