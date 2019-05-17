@@ -33,17 +33,12 @@ const styles = theme => ({
 });
 
 class Pacientes extends Component {
-  constructor(props) {
-    super(props);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
-  }
-
   componentDidMount() {
     const { loadPacientes: propLoadItems } = this.props;
     propLoadItems();
   }
 
-  onHandleAddNew() {
+  onHandleAddNew = () => {
     const { history } = this.props;
     history.push('/pacientes/cadastrar');
   }

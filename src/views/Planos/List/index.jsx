@@ -40,6 +40,7 @@ const styles = theme => ({
     marginBottom: '15px',
     paddingTop: '20px',
     paddingBottom: '20px',
+    paddingRight: '50px',
     alignItems: 'start',
     borderRadius: '6px',
     border: '1px solid rgba(0, 0, 0, 0.12)',
@@ -77,25 +78,14 @@ const styles = theme => ({
 });
 
 class PlanosList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      allPlanos: [],
-      search: '',
-      order: 'asc',
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.onLoad = this.onLoad.bind(this);
-    this.onHandleSearch = this.onHandleSearch.bind(this);
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleDelete = this.onHandleDelete.bind(this);
-    this.onHandleOrder = this.onHandleOrder.bind(this);
+  state = {
+    allPlanos: [],
+    search: '',
+    order: 'asc',
+    boxMessage: {
+      open: false,
+      text: '',
+    },
   }
 
   componentDidMount() {
@@ -115,7 +105,7 @@ class PlanosList extends Component {
     }
   }
 
-  onLoad() {
+  onLoad = () => {
     const { planos } = this.props;
     const { order } = this.state;
 
@@ -124,7 +114,7 @@ class PlanosList extends Component {
     });
   }
 
-  onHandleMessage(text) {
+  onHandleMessage = (text) => {
     const { error } = this.props;
 
     if (error.indexOf('Error') > -1) {
@@ -137,7 +127,7 @@ class PlanosList extends Component {
     }
   }
 
-  onHandleOnClose() {
+  onHandleOnClose = () => {
     const { boxMessage } = this.state;
     const { text } = boxMessage;
 
@@ -146,14 +136,14 @@ class PlanosList extends Component {
     });
   }
 
-  onHandleDelete(postID) {
+  onHandleDelete = (postID) => {
     const { deletePlano: propdeletePlano } = this.props;
 
-    propdeletePlano({ Status: 99 }, postID);
+    propdeletePlano(postID);
     this.onHandleMessage('Item excluido.');
   }
 
-  onHandleSearch({ value, name }) {
+  onHandleSearch = ({ value, name }) => {
     const { planos } = this.props;
 
     this.setState(prevState => ({
@@ -164,7 +154,7 @@ class PlanosList extends Component {
     }));
   }
 
-  onHandleOrder(order) {
+  onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
       allPlanos: orderBy(prevState.allPlanos, 'NomeFantasia', order),

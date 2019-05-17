@@ -40,6 +40,7 @@ const styles = theme => ({
     marginBottom: '15px',
     paddingTop: '20px',
     paddingBottom: '20px',
+    paddingRight: '50px',
     alignItems: 'start',
     borderRadius: '6px',
     border: '1px solid rgba(0, 0, 0, 0.12)',
@@ -77,26 +78,15 @@ const styles = theme => ({
 });
 
 class ProcedimentosList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      allProcedimentos: [],
-      search: '',
-      order: 'asc',
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.onLoad = this.onLoad.bind(this);
-    this.onHandleSearch = this.onHandleSearch.bind(this);
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleDelete = this.onHandleDelete.bind(this);
-    this.onHandleOrder = this.onHandleOrder.bind(this);
-  }
+  state = {
+    allProcedimentos: [],
+    search: '',
+    order: 'asc',
+    boxMessage: {
+      open: false,
+      text: '',
+    },
+  };
 
   componentDidMount() {
     this.onLoad();
@@ -115,7 +105,7 @@ class ProcedimentosList extends Component {
     }
   }
 
-  onLoad() {
+  onLoad = () => {
     const { procedimentos } = this.props;
     const { order } = this.state;
 
@@ -124,7 +114,7 @@ class ProcedimentosList extends Component {
     });
   }
 
-  onHandleMessage(text) {
+  onHandleMessage = (text) => {
     const { error } = this.props;
 
     if (error.indexOf('Error') > -1) {
@@ -137,7 +127,7 @@ class ProcedimentosList extends Component {
     }
   }
 
-  onHandleOnClose() {
+  onHandleOnClose = () => {
     const { boxMessage } = this.state;
     const { text } = boxMessage;
 
@@ -146,14 +136,14 @@ class ProcedimentosList extends Component {
     });
   }
 
-  onHandleDelete(postID) {
+  onHandleDelete = (postID) => {
     const { deleteProcedimento: propdeleteProcedimento } = this.props;
 
-    propdeleteProcedimento({ Status: 99 }, postID);
+    propdeleteProcedimento(postID);
     this.onHandleMessage('Item excluido.');
   }
 
-  onHandleSearch({ value, name }) {
+  onHandleSearch = ({ value, name }) => {
     const { procedimentos } = this.props;
 
     this.setState(prevState => ({
@@ -164,7 +154,7 @@ class ProcedimentosList extends Component {
     }));
   }
 
-  onHandleOrder(order) {
+  onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
       allProcedimentos: orderBy(prevState.allProcedimentos, 'NomeProcedimento', order),

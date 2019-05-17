@@ -43,6 +43,7 @@ const styles = theme => ({
     marginBottom: '15px',
     paddingTop: '20px',
     paddingBottom: '20px',
+    paddingRight: '50px',
     alignItems: 'start',
     borderRadius: '6px',
     border: '1px solid rgba(0, 0, 0, 0.12)',
@@ -85,26 +86,14 @@ const styles = theme => ({
 });
 
 class GuiasList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      allGuias: [],
-      search: '',
-      order: 'asc',
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.onLoad = this.onLoad.bind(this);
-    this.onHandleSearch = this.onHandleSearch.bind(this);
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
-    this.onHandleDeleteGuia = this.onHandleDeleteGuia.bind(this);
-    this.onHandleStatusGuia = this.onHandleStatusGuia.bind(this);
-    this.onHandleOrder = this.onHandleOrder.bind(this);
+  state = {
+    allGuias: [],
+    search: '',
+    order: 'asc',
+    boxMessage: {
+      open: false,
+      text: '',
+    },
   }
 
   componentDidMount() {
@@ -124,7 +113,7 @@ class GuiasList extends Component {
     }
   }
 
-  onLoad() {
+  onLoad = () => {
     const { guias } = this.props;
     const { order } = this.state;
     this.setState({
@@ -132,7 +121,7 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleMessage(text) {
+  onHandleMessage = (text) => {
     const { error } = this.props;
 
     if (error.indexOf('Error') > -1) {
@@ -145,7 +134,7 @@ class GuiasList extends Component {
     }
   }
 
-  onHandleOnClose() {
+  onHandleOnClose = () => {
     const { boxMessage } = this.state;
     const { text } = boxMessage;
 
@@ -154,14 +143,14 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleDeleteGuia(postID) {
+  onHandleDeleteGuia = (postID) => {
     const { deleteGuia: propdeleteGuia } = this.props;
 
     propdeleteGuia({ Status: 99 }, postID);
     this.onHandleMessage('Item excluido.');
   }
 
-  onHandleStatusGuia(event, prevStatus, postID) {
+  onHandleStatusGuia = (event, prevStatus, postID) => {
     const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
     const { target } = event;
 
@@ -174,7 +163,7 @@ class GuiasList extends Component {
     }
   }
 
-  onHandleSearch({ value, name }) {
+  onHandleSearch = ({ value, name }) => {
     const { guias } = this.props;
 
     this.setState(prevState => ({
@@ -185,7 +174,7 @@ class GuiasList extends Component {
     }));
   }
 
-  onHandleOrder(order) {
+  onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
       allGuias: orderByDate(prevState.allGuias, 'Vencimento', order),

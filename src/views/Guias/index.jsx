@@ -33,17 +33,12 @@ const styles = theme => ({
 });
 
 class Guias extends Component {
-  constructor(props) {
-    super(props);
-    this.onHandleAddNew = this.onHandleAddNew.bind(this);
-  }
-
   componentDidMount() {
     const { loadGuias: propLoadGuias } = this.props;
     propLoadGuias();
   }
 
-  onHandleAddNew() {
+  onHandleAddNew = () => {
     const { history } = this.props;
     history.push('/guias/cadastrar');
   }

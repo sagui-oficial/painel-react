@@ -48,54 +48,47 @@ const styles = theme => ({
 });
 
 class GuiaForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isBlocking: false,
-      editing: false,
-      selectedName: null,
-      breadcrumb: [
-        { label: 'Guias', url: '/guias' },
-      ],
-      listStatus: [
-        { label: 'Criada', value: 1 },
-        { label: 'Concluída', value: 2 },
-      ],
-      valorTotal: 0,
-      AllGuias: [],
-      sendGuia: {
-        Status: 1,
-        Numero: String(),
-        Solicitacao: convertDatePicker(new Date()),
-        Vencimento: convertDatePicker(new Date()),
-        PlanoOperadora: {
-          id: Number(),
-          PublicID: String(),
-          NomeFantasia: String(),
-        },
-        Paciente: {
-          Nome: String(),
-          CPF: String(),
-          ListaPlanoOperadoraPaciente: Number(),
-        },
+  state = {
+    isBlocking: false,
+    editing: false,
+    selectedName: null,
+    breadcrumb: [
+      { label: 'Guias', url: '/guias' },
+    ],
+    listStatus: [
+      { label: 'Criada', value: 1 },
+      { label: 'Concluída', value: 2 },
+    ],
+    valorTotal: 0,
+    AllGuias: [],
+    sendGuia: {
+      Status: 1,
+      Numero: String(),
+      Solicitacao: convertDatePicker(new Date()),
+      Vencimento: convertDatePicker(new Date()),
+      PlanoOperadora: {
+        id: Number(),
+        PublicID: String(),
+        NomeFantasia: String(),
       },
-      isValidField: {
-        Numero: false,
-        Nome: false,
-        PlanoOperadora: false,
+      Paciente: {
+        Nome: String(),
+        CPF: String(),
+        ListaPlanoOperadoraPaciente: Number(),
       },
-      boxMessage: {
-        open: false,
-        text: '',
-      },
-    };
-
-    this.baseState = this.state;
-
-    this.onHandleMessage = this.onHandleMessage.bind(this);
-    this.onHandleOnClose = this.onHandleOnClose.bind(this);
+    },
+    isValidField: {
+      Numero: false,
+      Nome: false,
+      PlanoOperadora: false,
+    },
+    boxMessage: {
+      open: false,
+      text: '',
+    },
   }
+
+  baseState = this.state
 
   componentDidMount() {
     this.onHandleMessage();
@@ -109,7 +102,7 @@ class GuiaForm extends Component {
     }
   }
 
-  onHandleMessage(text) {
+  onHandleMessage = (text) => {
     const { error } = this.props;
 
     if (error.indexOf('Error') > -1) {
@@ -122,7 +115,7 @@ class GuiaForm extends Component {
     }
   }
 
-  onHandleOnClose() {
+  onHandleOnClose = () => {
     const { boxMessage } = this.state;
     const { text } = boxMessage;
 
@@ -173,18 +166,6 @@ class GuiaForm extends Component {
           >
             Salvar
           </Button>
-          {editing && (
-            <Button
-              variant="outlined"
-              color="primary"
-              size="medium"
-              className={classes.addBtn}
-              disabled={!!error}
-              onClick={this.onHandleAddNew}
-            >
-              +Novo
-            </Button>
-          )}
         </Grid>
 
         <Divider className={classes.divider} />
@@ -388,7 +369,6 @@ class GuiaForm extends Component {
     );
   }
 }
-
 
 GuiaForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
