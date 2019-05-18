@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -15,6 +15,7 @@ import { loadPlanos } from '../../../actions/planos';
 import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
+import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
 
 const styles = theme => ({
@@ -44,6 +45,7 @@ class PacienteForm extends Component {
   state = {
     isBlocking: false,
     editing: false,
+    loading: true,
     selectedPlano: null,
     breadcrumb: [
       { label: 'Pacientes', url: '/pacientes' },
@@ -104,6 +106,8 @@ class PacienteForm extends Component {
         sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
       });
     }
+
+    this.setState({ loading: false });
   }
 
   onHandleLoadPlanos = async () => {
@@ -259,171 +263,177 @@ class PacienteForm extends Component {
     const {
       sendPaciente, breadcrumb, isValidField,
       editing, boxMessage, isBlocking,
-      AllPlanos, selectedPlano,
+      AllPlanos, selectedPlano, loading,
     } = this.state;
 
     return (
       <Master title={`${title} paciente`}>
-        <Message
-          text={boxMessage.text}
-          open={boxMessage.open}
-          onHandleOnClose={this.onHandleOnClose}
-        />
-        <Prompt
-          when={isBlocking}
-          message="Você tem modificações que não foram salvas, deseja realmente sair?"
-        />
-        <Grid container alignItems="center">
-          <Typography variant="h6" color="inherit" noWrap>
-            {editing ? 'Editar' : 'Cadastrar'}
-            {' '}
-            paciente
-          </Typography>
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className={classes.addBtn}
-            disabled={!!error}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </Grid>
-
-        <Divider className={classes.divider} />
-
-        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
-
-        <form className={classes.form} noValidate autoComplete="off">
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                required
-                label="CPF"
-                name="CPF"
-                error={isValidField.CPF}
-                value={sendPaciente.CPF}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o CPF"
-                margin="normal"
+        {!loading ? (
+          <Fragment>
+            <Message
+              text={boxMessage.text}
+              open={boxMessage.open}
+              onHandleOnClose={this.onHandleOnClose}
+            />
+            <Prompt
+              when={isBlocking}
+              message="Você tem modificações que não foram salvas, deseja realmente sair?"
+            />
+            <Grid container alignItems="center">
+              <Typography variant="h6" color="inherit" noWrap>
+                {editing ? 'Editar' : 'Cadastrar'}
+                {' '}
+                paciente
+              </Typography>
+              <Button
+                type="submit"
                 variant="outlined"
-              />
+                color="primary"
+                size="medium"
+                className={classes.addBtn}
+                disabled={!!error}
+                onClick={this.onHandleValidateFields}
+              >
+                Salvar
+              </Button>
             </Grid>
 
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                required
-                label="Nome do paciente"
-                name="Nome"
-                error={isValidField.Nome}
-                value={sendPaciente.Nome}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o nome do paciente."
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
+            <Divider className={classes.divider} />
 
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                label="Telefone"
-                name="Telefone"
-                value={sendPaciente.Telefone}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="(11) 9000-0000"
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
+            <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="E-mail"
-                name="Email"
-                value={sendPaciente.Email}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="email@email.com.br"
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
+            <form className={classes.form} noValidate autoComplete="off">
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="CPF"
+                    name="CPF"
+                    error={isValidField.CPF}
+                    value={sendPaciente.CPF}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o CPF"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
 
-          <br />
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Nome do paciente"
+                    name="Nome"
+                    error={isValidField.Nome}
+                    value={sendPaciente.Nome}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o nome do paciente."
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
 
-          <Grid container alignItems="center">
-            <Typography variant="h6" color="inherit" noWrap>
-              Selecionar plano odontológico
-            </Typography>
-          </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    label="Telefone"
+                    name="Telefone"
+                    value={sendPaciente.Telefone}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="(11) 9000-0000"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
 
-          <Grid container spacing={16}>
-            <Grid
-              item
-              xs={12}
-              sm={9}
-              style={{
-                position: 'relative',
-                zIndex: '2',
-              }}
-            >
-              <Select
-                label="Selecionar plano/convênio"
-                options={
-                  AllPlanos.map(suggestion => (
-                    {
-                      PublicID: suggestion.PublicID,
-                      value: suggestion.NomeFantasia,
-                      label: suggestion.NomeFantasia,
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="E-mail"
+                    name="Email"
+                    value={sendPaciente.Email}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="email@email.com.br"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <br />
+
+              <Grid container alignItems="center">
+                <Typography variant="h6" color="inherit" noWrap>
+                  Selecionar plano odontológico
+                </Typography>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={9}
+                  style={{
+                    position: 'relative',
+                    zIndex: '2',
+                  }}
+                >
+                  <Select
+                    label="Selecionar plano/convênio"
+                    options={
+                      AllPlanos.map(suggestion => (
+                        {
+                          PublicID: suggestion.PublicID,
+                          value: suggestion.NomeFantasia,
+                          label: suggestion.NomeFantasia,
+                        }
+                      ))
                     }
-                  ))
-                }
-                components={{ Control, Option }}
-                value={selectedPlano}
-                onChange={this.onHandleSelectPlano}
-                placeholder="Selecione..."
-              />
-            </Grid>
+                    components={{ Control, Option }}
+                    value={selectedPlano}
+                    onChange={this.onHandleSelectPlano}
+                    placeholder="Selecione..."
+                  />
+                </Grid>
 
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                required
-                label="Carterinha"
-                name="Carterinha"
-                error={isValidField.Carterinha}
-                value={sendPaciente.Carterinha}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite a carterinha"
-                margin="normal"
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Carterinha"
+                    name="Carterinha"
+                    error={isValidField.Carterinha}
+                    value={sendPaciente.Carterinha}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite a carterinha"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Button
+                type="submit"
                 variant="outlined"
-              />
-            </Grid>
-          </Grid>
-
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleValidateFields}
-            disabled={!!error}
-          >
-            Salvar
-          </Button>
-        </form>
+                color="primary"
+                size="medium"
+                className={`${classes.addBtn} footerBtn`}
+                onClick={this.onHandleValidateFields}
+                disabled={!!error}
+              >
+                Salvar
+              </Button>
+            </form>
+          </Fragment>
+        ) : (
+          <Loading />
+        )}
       </Master>
     );
   }

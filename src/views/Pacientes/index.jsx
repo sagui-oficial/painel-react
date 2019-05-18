@@ -15,6 +15,7 @@ import {
 import Master from '../../components/Master';
 import { loadPacientes } from '../../actions/pacientes';
 import PacientesList from './List';
+import Loading from '../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -33,9 +34,14 @@ const styles = theme => ({
 });
 
 class Pacientes extends Component {
-  componentDidMount() {
+  state = {
+    loading: true,
+  }
+
+  async componentDidMount() {
     const { loadPacientes: propLoadItems } = this.props;
-    propLoadItems();
+    await propLoadItems();
+    await this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {
@@ -47,6 +53,8 @@ class Pacientes extends Component {
     const {
       classes, error, pacientes, title,
     } = this.props;
+
+    const { loading } = this.state;
 
     return (
       <Master title={title}>
@@ -68,7 +76,11 @@ class Pacientes extends Component {
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <PacientesList pacientes={pacientes} error={error} />
+            {!loading ? (
+              <PacientesList pacientes={pacientes} error={error} />
+            ) : (
+              <Loading />
+            )}
           </Fragment>
         )}
       </Master>

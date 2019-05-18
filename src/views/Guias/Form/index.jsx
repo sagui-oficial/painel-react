@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -15,14 +15,13 @@ import {
 
 import Select from 'react-select';
 
+import { loadPacientes } from '../../../actions/pacientes';
 import Message from '../../../components/Message';
+import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
 import { convertDatePicker, formatCurrency } from '../../../helpers';
-
-/* CONNECT */
-import { loadPacientes } from '../../../actions/pacientes';
 
 const styles = theme => ({
   divider: {
@@ -51,6 +50,7 @@ class GuiaForm extends Component {
   state = {
     isBlocking: false,
     editing: false,
+    loading: false,
     selectedName: null,
     breadcrumb: [
       { label: 'Guias', url: '/guias' },
@@ -135,236 +135,242 @@ class GuiaForm extends Component {
       boxMessage, isBlocking,
       sendGuia, listStatus,
       valorTotal, selectedName,
-      isValidField,
+      isValidField, loading,
     } = this.state;
 
     return (
       <Master title={`${title} guia`}>
-        <Message
-          text={boxMessage.text}
-          open={boxMessage.open}
-          onHandleOnClose={this.onHandleOnClose}
-        />
-        <Prompt
-          when={isBlocking}
-          message="Você tem modificações que não foram salvas, deseja realmente sair?"
-        />
-        <Grid container alignItems="center">
-          <Typography variant="h6" color="inherit" noWrap>
-            {editing ? 'Editar' : 'Cadastrar'}
-            {' '}
-            guia
-          </Typography>
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className={classes.addBtn}
-            disabled={!!error}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </Grid>
-
-        <Divider className={classes.divider} />
-
-        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
-
-        <form className={classes.form} noValidate autoComplete="off">
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                required
-                label="Número da guia"
-                name="Numero"
-                error={isValidField.Numero}
-                value={sendGuia.Numero}
-                onChange={e => this.onHandleTarget(e.target)}
-                // onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o número da guia"
-                margin="normal"
+        {!loading ? (
+          <Fragment>
+            <Message
+              text={boxMessage.text}
+              open={boxMessage.open}
+              onHandleOnClose={this.onHandleOnClose}
+            />
+            <Prompt
+              when={isBlocking}
+              message="Você tem modificações que não foram salvas, deseja realmente sair?"
+            />
+            <Grid container alignItems="center">
+              <Typography variant="h6" color="inherit" noWrap>
+                {editing ? 'Editar' : 'Cadastrar'}
+                {' '}
+                guia
+              </Typography>
+              <Button
+                type="submit"
                 variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                select
-                value={sendGuia.Status}
-                onChange={e => this.onHandleTarget(e.target)}
-                label="Status"
-                name="Status"
-                margin="normal"
-                variant="outlined"
+                color="primary"
+                size="medium"
+                className={classes.addBtn}
+                disabled={!!error}
+                onClick={this.onHandleValidateFields}
               >
-                {listStatus.map(option => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </TextField>
+                Salvar
+              </Button>
             </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                value={formatCurrency(valorTotal)}
-                label="Valor total"
-                margin="normal"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
 
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Data de solicitação"
-                name="Solicitacao"
-                type="date"
-                onChange={e => this.onHandleTarget(e.target)}
-                defaultValue={sendGuia.Solicitacao}
-                helperText="23/02/2019"
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Data de vencimento"
-                name="Vencimento"
-                type="date"
-                onChange={e => this.onHandleTarget(e.target)}
-                defaultValue={sendGuia.Vencimento}
-                helperText="23/02/2019"
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
+            <Divider className={classes.divider} />
 
-          <br />
+            <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
-          <Typography variant="h6" color="inherit" noWrap>
-            Informação sobre o paciente
-          </Typography>
+            <form className={classes.form} noValidate autoComplete="off">
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Número da guia"
+                    name="Numero"
+                    error={isValidField.Numero}
+                    value={sendGuia.Numero}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    // onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o número da guia"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    select
+                    value={sendGuia.Status}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    label="Status"
+                    name="Status"
+                    margin="normal"
+                    variant="outlined"
+                  >
+                    {listStatus.map(option => (
+                      <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    value={formatCurrency(valorTotal)}
+                    label="Valor total"
+                    margin="normal"
+                    variant="outlined"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </Grid>
 
-          <Grid container spacing={16}>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              style={{
-                position: 'relative',
-                zIndex: '2',
-              }}
-            >
-              <Select
-                label="Nome do paciente"
-                options={pacientes.map(suggestion => ({
-                  id: suggestion.PublicID,
-                  value: suggestion.Nome,
-                  label: suggestion.Nome,
-                }))}
-                components={{ Control, Option }}
-                value={selectedName}
-                onChange={this.onHandleTargetPacienteNome}
-                placeholder="Selecione..."
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                disabled
-                label="CPF"
-                name="CPF"
-                value={sendGuia.Paciente.CPF}
-                onChange={this.onHandleTargetPaciente}
-                margin="normal"
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Data de solicitação"
+                    name="Solicitacao"
+                    type="date"
+                    onChange={e => this.onHandleTarget(e.target)}
+                    defaultValue={sendGuia.Solicitacao}
+                    helperText="23/02/2019"
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Data de vencimento"
+                    name="Vencimento"
+                    type="date"
+                    onChange={e => this.onHandleTarget(e.target)}
+                    defaultValue={sendGuia.Vencimento}
+                    helperText="23/02/2019"
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <br />
+
+              <Typography variant="h6" color="inherit" noWrap>
+                Informação sobre o paciente
+              </Typography>
+
+              <Grid container spacing={16}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  style={{
+                    position: 'relative',
+                    zIndex: '2',
+                  }}
+                >
+                  <Select
+                    label="Nome do paciente"
+                    options={pacientes.map(suggestion => ({
+                      id: suggestion.PublicID,
+                      value: suggestion.Nome,
+                      label: suggestion.Nome,
+                    }))}
+                    components={{ Control, Option }}
+                    value={selectedName}
+                    onChange={this.onHandleTargetPacienteNome}
+                    placeholder="Selecione..."
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    disabled
+                    label="CPF"
+                    name="CPF"
+                    value={sendGuia.Paciente.CPF}
+                    onChange={this.onHandleTargetPaciente}
+                    margin="normal"
+                    variant="outlined"
+                    helperText="020.000.009-92"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    disabled
+                    label="Telefone"
+                    name="Telefone"
+                    margin="normal"
+                    variant="outlined"
+                    helperText="(11) 9000-0000"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    disabled
+                    label="E-mail"
+                    name="Email"
+                    margin="normal"
+                    variant="outlined"
+                    helperText="email@email.com.br"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    disabled
+                    label="Plano/Operadora"
+                    name="NomeFantasia"
+                    value={sendGuia.PlanoOperadora.NomeFantasia}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <br />
+
+              <Typography variant="h6" color="inherit" noWrap>
+                Adicionar procedimentos
+              </Typography>
+
+              <Button
+                type="submit"
                 variant="outlined"
-                helperText="020.000.009-92"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                disabled
-                label="Telefone"
-                name="Telefone"
-                margin="normal"
-                variant="outlined"
-                helperText="(11) 9000-0000"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                disabled
-                label="E-mail"
-                name="Email"
-                margin="normal"
-                variant="outlined"
-                helperText="email@email.com.br"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                disabled
-                label="Plano/Operadora"
-                name="NomeFantasia"
-                value={sendGuia.PlanoOperadora.NomeFantasia}
-                onChange={e => this.onHandleTarget(e.target)}
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
-
-          <br />
-
-          <Typography variant="h6" color="inherit" noWrap>
-            Adicionar procedimentos
-          </Typography>
-
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleValidateFields}
-            disabled={!!error}
-          >
-            Salvar
-          </Button>
-        </form>
+                color="primary"
+                size="medium"
+                className={`${classes.addBtn} footerBtn`}
+                onClick={this.onHandleValidateFields}
+                disabled={!!error}
+              >
+                Salvar
+              </Button>
+            </form>
+          </Fragment>
+        ) : (
+          <Loading />
+        )}
       </Master>
     );
   }
