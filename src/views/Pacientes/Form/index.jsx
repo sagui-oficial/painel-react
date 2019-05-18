@@ -148,15 +148,13 @@ class PacienteForm extends Component {
       await propUpdatePaciente({
         ...sendPaciente,
       }, PublicID);
-      this.onHandleMessage('Paciente modificado.');
+      await this.onHandleMessage('Paciente modificado.');
     } else {
       await propAddPaciente({
         ...sendPaciente,
       });
-      // const { paciente: { PublicID } } = this.props;
-      this.setState({ editing: true });
-      this.onHandleMessage('Paciente adicionado.');
-      // history.push(`/pacientes/${PublicID}`);
+      await this.setState({ editing: true });
+      await this.onHandleMessage('Paciente adicionado.');
     }
     history.push('/pacientes');
   }
@@ -234,7 +232,9 @@ class PacienteForm extends Component {
     const setValidFields = {};
 
     Object.keys(isValidField).map((item) => {
-      setValidFields[item] = sendPaciente[item].trim().length === 0;
+      if (typeof sendPaciente[item] === 'string') {
+        setValidFields[item] = sendPaciente[item].trim().length === 0;
+      }
       return setValidFields;
     });
 

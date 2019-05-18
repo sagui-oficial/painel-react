@@ -136,11 +136,10 @@ class PacientesList extends Component {
     });
   }
 
-  onHandleDelete = (postID) => {
+  onHandleDelete = async (postID) => {
     const { deletePaciente: propdeletePaciente } = this.props;
-
-    propdeletePaciente(postID);
-    this.onHandleMessage('Item excluido.');
+    await propdeletePaciente(postID);
+    await this.onHandleMessage('Item excluido.');
   }
 
   onHandleSearch = ({ value, name }) => {

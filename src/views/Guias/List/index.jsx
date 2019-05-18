@@ -143,21 +143,19 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleDeleteGuia = (postID) => {
+  onHandleDeleteGuia = async (postID) => {
     const { deleteGuia: propdeleteGuia } = this.props;
-
-    propdeleteGuia({ Status: 99 }, postID);
-    this.onHandleMessage('Item excluido.');
+    await propdeleteGuia({ Status: 99 }, postID);
+    await this.onHandleMessage('Item excluido.');
   }
 
-  onHandleStatusGuia = (event, prevStatus, postID) => {
+  onHandleStatusGuia = async (event, prevStatus, postID) => {
     const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
     const { target } = event;
 
     if (prevStatus !== target.value) {
-      this.onHandleMessage('Status atualizado.');
-
-      propUpdateGuiaStatus({
+      await this.onHandleMessage('Status atualizado.');
+      await propUpdateGuiaStatus({
         Status: target.value,
       }, postID);
     }

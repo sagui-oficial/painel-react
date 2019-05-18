@@ -136,11 +136,10 @@ class ProcedimentosList extends Component {
     });
   }
 
-  onHandleDelete = (postID) => {
+  onHandleDelete = async (postID) => {
     const { deleteProcedimento: propdeleteProcedimento } = this.props;
-
-    propdeleteProcedimento(postID);
-    this.onHandleMessage('Item excluido.');
+    await propdeleteProcedimento(postID);
+    await this.onHandleMessage('Item excluido.');
   }
 
   onHandleSearch = ({ value, name }) => {
