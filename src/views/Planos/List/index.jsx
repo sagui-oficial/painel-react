@@ -23,6 +23,7 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
+import Loading from '../../../components/Loading';
 import { deletePlano } from '../../../actions/planos';
 import { orderBy, matchItem } from '../../../helpers';
 
@@ -79,6 +80,7 @@ const styles = theme => ({
 
 class PlanosList extends Component {
   state = {
+    loading: false,
     allPlanos: [],
     search: '',
     order: 'asc',
@@ -136,11 +138,12 @@ class PlanosList extends Component {
     });
   }
 
-  onHandleDelete = (postID) => {
+  onHandleDelete = async (postID) => {
     const { deletePlano: propdeletePlano } = this.props;
-
-    propdeletePlano(postID);
-    this.onHandleMessage('Item excluido.');
+    this.setState({ loading: true });
+    await propdeletePlano(postID);
+    await this.onHandleMessage('Item excluido.');
+    await this.setState({ loading: false });
   }
 
   onHandleSearch = ({ value, name }) => {
@@ -164,7 +167,11 @@ class PlanosList extends Component {
   render() {
     const { classes, error } = this.props;
     const {
-      allPlanos, boxMessage, order, search,
+      allPlanos,
+      boxMessage,
+      order,
+      search,
+      loading,
     } = this.state;
 
     return (
@@ -174,7 +181,6 @@ class PlanosList extends Component {
           open={boxMessage.open}
           onHandleOnClose={this.onHandleOnClose}
         />
-
         <Grid
           container
           direction="row"
@@ -202,41 +208,45 @@ class PlanosList extends Component {
         <List dense className={classes.root}>
           {allPlanos.length ? (
             allPlanos.map(item => (
-              <ListItem
-                key={item.PublicID}
-                className={classes.listItem}
-                to={{
-                  pathname: `/planos/${item.PublicID}`,
-                  state: { ...item },
-                }}
-                component={Link}
-                button
-              >
-                <ListItemAvatar>
-                  <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
-                    {item.NomeFantasia.substring(0, 1).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <div className={classes.boxList}>
-                  <p className={classes.smallItemText}>
-                    <strong>CNPJ:</strong>
-                    {' '}
-                    {item.CNPJ}
-                  </p>
-                  <p>
-                    <strong>{item.NomeFantasia}</strong>
-                  </p>
-                </div>
-                <ListItemSecondaryAction className={classes.iconDelete}>
-                  <IconButton
-                    disabled={!!error}
-                    onClick={() => this.onHandleDelete(item.PublicID)}
-                    aria-label="Deletar"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+              !loading ? (
+                <ListItem
+                  key={item.PublicID}
+                  className={classes.listItem}
+                  to={{
+                    pathname: `/planos/${item.PublicID}`,
+                    state: { ...item },
+                  }}
+                  component={Link}
+                  button
+                >
+                  <ListItemAvatar>
+                    <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
+                      {item.NomeFantasia.substring(0, 1).toUpperCase()}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <div className={classes.boxList}>
+                    <p className={classes.smallItemText}>
+                      <strong>CNPJ:</strong>
+                      {' '}
+                      {item.CNPJ}
+                    </p>
+                    <p>
+                      <strong>{item.NomeFantasia}</strong>
+                    </p>
+                  </div>
+                  <ListItemSecondaryAction className={classes.iconDelete}>
+                    <IconButton
+                      disabled={!!error}
+                      onClick={() => this.onHandleDelete(item.PublicID)}
+                      aria-label="Deletar"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ) : (
+                <Loading key={item.PublicID} />
+              )
             ))
           ) : (
             <ListItem className={classes.listItem}>Nenhum plano encontrado.</ListItem>

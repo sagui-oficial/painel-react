@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -26,6 +26,7 @@ import { loadProcedimentos } from '../../../actions/procedimentos';
 import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
+import Loading from '../../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -65,6 +66,7 @@ class PlanoForm extends Component {
   state = {
     isBlocking: false,
     editing: false,
+    loading: true,
     selectedName: null,
     breadcrumb: [
       { label: 'Planos', url: '/planos' },
@@ -140,6 +142,8 @@ class PlanoForm extends Component {
         sendPlano: Object.keys(plano).length > 0 ? plano : sendPlano,
       });
     }
+
+    this.setState({ loading: false });
   }
 
   onHandleAdd = async () => {
@@ -332,216 +336,222 @@ class PlanoForm extends Component {
       sendPlano, breadcrumb, selectedName,
       editing, boxMessage, isValidField,
       AdicionarProcedimentos, isBlocking,
-      AllProcedimentos,
+      AllProcedimentos, loading,
     } = this.state;
 
     const { ListaProcedimentos } = sendPlano;
 
     return (
       <Master title={`${title} plano`}>
-        <Message
-          text={boxMessage.text}
-          open={boxMessage.open}
-          onHandleOnClose={this.onHandleOnClose}
-        />
-        <Prompt
-          when={isBlocking}
-          message="Você tem modificações que não foram salvas, deseja realmente sair?"
-        />
-        <Grid container alignItems="center">
-          <Typography variant="h6" color="inherit" noWrap>
-            {editing ? 'Editar' : 'Cadastrar'}
-            {' '}
-            plano
-          </Typography>
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            disabled={!!error}
-            className={classes.addBtn}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </Grid>
-
-        <Divider className={classes.divider} />
-
-        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
-
-        <form className={classes.form} noValidate autoComplete="off">
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                required
-                label="CNPJ"
-                name="CNPJ"
-                error={isValidField.CNPJ}
-                value={sendPlano.CNPJ}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o CNPJ"
-                margin="normal"
+        {!loading ? (
+          <Fragment>
+            <Message
+              text={boxMessage.text}
+              open={boxMessage.open}
+              onHandleOnClose={this.onHandleOnClose}
+            />
+            <Prompt
+              when={isBlocking}
+              message="Você tem modificações que não foram salvas, deseja realmente sair?"
+            />
+            <Grid container alignItems="center">
+              <Typography variant="h6" color="inherit" noWrap>
+                {editing ? 'Editar' : 'Cadastrar'}
+                {' '}
+                plano
+              </Typography>
+              <Button
+                type="submit"
                 variant="outlined"
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                required
-                label="Razão social"
-                name="RazaoSocial"
-                error={isValidField.RazaoSocial}
-                value={sendPlano.RazaoSocial}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite a razão social do plano."
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                required
-                label="Nome fantasia"
-                name="NomeFantasia"
-                error={isValidField.NomeFantasia}
-                value={sendPlano.NomeFantasia}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o nome do plano."
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-
-          <br />
-
-          <Grid container alignItems="center">
-            <Typography variant="h6" color="inherit" noWrap>
-              Adicionar procedimentos
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="medium"
-              disabled={!!error}
-              className={classes.addBtn}
-              onClick={this.onHandleAddProcedimento}
-            >
-              +Adicionar
-            </Button>
-          </Grid>
-
-          <Grid container spacing={16}>
-            <Grid
-              item
-              xs={12}
-              sm={9}
-              style={{
-                position: 'relative',
-                zIndex: '2',
-              }}
-            >
-              <Select
-                label="Cadastrar procedimentos"
-                options={
-                  AllProcedimentos.map((suggestion) => {
-                    const NameProd = 'NomeProcedimento';
-                    return (
-                      {
-                        name: NameProd,
-                        PublicID: suggestion.PublicID,
-                        Codigo: suggestion.Codigo,
-                        value: suggestion.NomeProcedimento,
-                        label: suggestion.NomeProcedimento,
-                      }
-                    );
-                  })
-                }
-                components={{ Control, Option }}
-                value={selectedName}
-                onChange={this.onHandleSelectProcedimentos}
-                placeholder="Selecione..."
-              />
+                color="primary"
+                size="medium"
+                disabled={!!error}
+                className={classes.addBtn}
+                onClick={this.onHandleValidateFields}
+              >
+                Salvar
+              </Button>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                label="Valor"
-                name="ValorProcedimento"
-                value={AdicionarProcedimentos.ValorProcedimento}
-                onChange={e => this.onHandleTargetValorProcedimento(e.target)}
-                type="number"
-                helperText="Apenas números"
-                placeholder="1.000,00"
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
+            <Divider className={classes.divider} />
 
-          <List dense>
-            {
-              sendPlano && (
-                ListaProcedimentos && (
-                  ListaProcedimentos.map(item => (
-                    <ListItem
-                      key={item.PublicID}
-                      className={classes.listProcess}
-                    >
-                      <div className={classes.boxList}>
-                        <p className={classes.smallItemText}>
-                          {item.Codigo}
-                          {' - '}
-                          {item.NomeProcedimento}
-                          {' - '}
-                          {formatCurrency(item.ValorProcedimento)}
-                        </p>
-                      </div>
-                      <ListItemSecondaryAction className={classes.iconDelete}>
-                        <IconButton
-                          disabled={!!error}
-                          onClick={() => this.onHandleDeleteProcedimento(item)}
-                          aria-label="Deletar"
+            <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
+
+            <form className={classes.form} noValidate autoComplete="off">
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="CNPJ"
+                    name="CNPJ"
+                    error={isValidField.CNPJ}
+                    value={sendPlano.CNPJ}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o CNPJ"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Razão social"
+                    name="RazaoSocial"
+                    error={isValidField.RazaoSocial}
+                    value={sendPlano.RazaoSocial}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite a razão social do plano."
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Nome fantasia"
+                    name="NomeFantasia"
+                    error={isValidField.NomeFantasia}
+                    value={sendPlano.NomeFantasia}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o nome do plano."
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <br />
+
+              <Grid container alignItems="center">
+                <Typography variant="h6" color="inherit" noWrap>
+                  Adicionar procedimentos
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  disabled={!!error}
+                  className={classes.addBtn}
+                  onClick={this.onHandleAddProcedimento}
+                >
+                  +Adicionar
+                </Button>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={9}
+                  style={{
+                    position: 'relative',
+                    zIndex: '2',
+                  }}
+                >
+                  <Select
+                    label="Cadastrar procedimentos"
+                    options={
+                      AllProcedimentos.map((suggestion) => {
+                        const NameProd = 'NomeProcedimento';
+                        return (
+                          {
+                            name: NameProd,
+                            PublicID: suggestion.PublicID,
+                            Codigo: suggestion.Codigo,
+                            value: suggestion.NomeProcedimento,
+                            label: suggestion.NomeProcedimento,
+                          }
+                        );
+                      })
+                    }
+                    components={{ Control, Option }}
+                    value={selectedName}
+                    onChange={this.onHandleSelectProcedimentos}
+                    placeholder="Selecione..."
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    label="Valor"
+                    name="ValorProcedimento"
+                    value={AdicionarProcedimentos.ValorProcedimento}
+                    onChange={e => this.onHandleTargetValorProcedimento(e.target)}
+                    type="number"
+                    helperText="Apenas números"
+                    placeholder="1.000,00"
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <List dense>
+                {
+                  sendPlano && (
+                    ListaProcedimentos && (
+                      ListaProcedimentos.map(item => (
+                        <ListItem
+                          key={item.PublicID}
+                          className={classes.listProcess}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))
-                )
-              )
-            }
-          </List>
+                          <div className={classes.boxList}>
+                            <p className={classes.smallItemText}>
+                              {item.Codigo}
+                              {' - '}
+                              {item.NomeProcedimento}
+                              {' - '}
+                              {formatCurrency(item.ValorProcedimento)}
+                            </p>
+                          </div>
+                          <ListItemSecondaryAction className={classes.iconDelete}>
+                            <IconButton
+                              disabled={!!error}
+                              onClick={() => this.onHandleDeleteProcedimento(item)}
+                              aria-label="Deletar"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      ))
+                    )
+                  )
+                }
+              </List>
 
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            disabled={!!error}
-            className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </form>
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                size="medium"
+                disabled={!!error}
+                className={`${classes.addBtn} footerBtn`}
+                onClick={this.onHandleValidateFields}
+              >
+                Salvar
+              </Button>
+            </form>
+          </Fragment>
+        ) : (
+          <Loading />
+        )}
       </Master>
     );
   }

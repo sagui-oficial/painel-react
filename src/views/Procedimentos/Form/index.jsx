@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -19,6 +19,7 @@ import {
 import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
+import Loading from '../../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -47,6 +48,7 @@ class ProcedimentoForm extends Component {
   state = {
     isBlocking: false,
     editing: false,
+    loading: true,
     breadcrumb: [
       { label: 'Procedimentos', url: '/procedimentos' },
     ],
@@ -69,8 +71,8 @@ class ProcedimentoForm extends Component {
 
   baseState = this.state
 
-  componentDidMount() {
-    this.onHandlePageLoad();
+  async componentDidMount() {
+    await this.onHandlePageLoad();
     this.onHandleMessage();
   }
 
@@ -99,6 +101,8 @@ class ProcedimentoForm extends Component {
         sendProcedimento: Object.keys(procedimento).length > 0 ? procedimento : sendProcedimento,
       });
     }
+
+    this.setState({ loading: false });
   }
 
   onHandleAdd = async () => {
@@ -217,125 +221,131 @@ class ProcedimentoForm extends Component {
     const {
       sendProcedimento, breadcrumb,
       editing, boxMessage, isValidField,
-      isBlocking,
+      isBlocking, loading,
     } = this.state;
 
     return (
       <Master title={`${title} procedimento`}>
-        <Message
-          text={boxMessage.text}
-          open={boxMessage.open}
-          onHandleOnClose={this.onHandleOnClose}
-        />
-        <Prompt
-          when={isBlocking}
-          message="Você tem modificações que não foram salvas, deseja realmente sair?"
-        />
-        <Grid container alignItems="center">
-          <Typography variant="h6" color="inherit" noWrap>
-            {editing ? 'Editar' : 'Cadastrar'}
-            {' '}
-            procedimento
-          </Typography>
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            disabled={!!error}
-            className={classes.addBtn}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </Grid>
-
-        <Divider className={classes.divider} />
-
-        <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
-
-        <form className={classes.form} noValidate autoComplete="off">
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Código"
-                name="Codigo"
-                required
-                error={isValidField.Codigo}
-                value={sendProcedimento.Codigo}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o código"
-                margin="normal"
+        {!loading ? (
+          <Fragment>
+            <Message
+              text={boxMessage.text}
+              open={boxMessage.open}
+              onHandleOnClose={this.onHandleOnClose}
+            />
+            <Prompt
+              when={isBlocking}
+              message="Você tem modificações que não foram salvas, deseja realmente sair?"
+            />
+            <Grid container alignItems="center">
+              <Typography variant="h6" color="inherit" noWrap>
+                {editing ? 'Editar' : 'Cadastrar'}
+                {' '}
+                procedimento
+              </Typography>
+              <Button
+                type="submit"
                 variant="outlined"
-              />
+                color="primary"
+                size="medium"
+                disabled={!!error}
+                className={classes.addBtn}
+                onClick={this.onHandleValidateFields}
+              >
+                Salvar
+              </Button>
             </Grid>
-          </Grid>
 
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                label="Nome do procedimento"
-                name="NomeProcedimento"
-                required
-                error={isValidField.NomeProcedimento}
-                value={sendProcedimento.NomeProcedimento}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                helperText="Digite o nome do procedimento."
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
+            <Divider className={classes.divider} />
 
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Exigências"
-                name="Exigencias"
-                multiline
-                rows="4"
-                rowsMax="10"
-                value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Anotações"
-                name="Anotacoes"
-                multiline
-                rows="4"
-                rowsMax="10"
-                value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
-                onChange={e => this.onHandleTarget(e.target)}
-                onBlur={e => this.onHandleBlur(e.target)}
-                margin="normal"
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
+            <Breadcrumb breadcrumb={[...breadcrumb, { label: title, url: match.params.id }]} />
 
-          <Button
-            type="submit"
-            variant="outlined"
-            color="primary"
-            size="medium"
-            disabled={!!error}
-            className={`${classes.addBtn} footerBtn`}
-            onClick={this.onHandleValidateFields}
-          >
-            Salvar
-          </Button>
-        </form>
+            <form className={classes.form} noValidate autoComplete="off">
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Código"
+                    name="Codigo"
+                    required
+                    error={isValidField.Codigo}
+                    value={sendProcedimento.Codigo}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o código"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    label="Nome do procedimento"
+                    name="NomeProcedimento"
+                    required
+                    error={isValidField.NomeProcedimento}
+                    value={sendProcedimento.NomeProcedimento}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o nome do procedimento."
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Exigências"
+                    name="Exigencias"
+                    multiline
+                    rows="4"
+                    rowsMax="10"
+                    value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Anotações"
+                    name="Anotacoes"
+                    multiline
+                    rows="4"
+                    rowsMax="10"
+                    value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                size="medium"
+                disabled={!!error}
+                className={`${classes.addBtn} footerBtn`}
+                onClick={this.onHandleValidateFields}
+              >
+                Salvar
+              </Button>
+            </form>
+          </Fragment>
+        ) : (
+          <Loading />
+        )}
       </Master>
     );
   }

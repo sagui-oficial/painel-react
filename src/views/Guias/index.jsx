@@ -15,6 +15,7 @@ import {
 import Master from '../../components/Master';
 import { loadGuias } from '../../actions/guias';
 import GuiasList from './List';
+import Loading from '../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -33,9 +34,14 @@ const styles = theme => ({
 });
 
 class Guias extends Component {
-  componentDidMount() {
+  state = {
+    loading: true,
+  }
+
+  async componentDidMount() {
     const { loadGuias: propLoadGuias } = this.props;
-    propLoadGuias();
+    await propLoadGuias();
+    await this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {
@@ -45,8 +51,10 @@ class Guias extends Component {
 
   render() {
     const {
-      classes, guiasError, guias, title,
+      classes, error, guias, title,
     } = this.props;
+
+    const { loading } = this.state;
 
     return (
       <Master title={title}>
@@ -61,14 +69,18 @@ class Guias extends Component {
                 color="primary"
                 size="medium"
                 className={classes.addBtn}
-                disabled={!!guiasError}
+                disabled={!!error}
                 onClick={this.onHandleAddNew}
               >
                 +Novo
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <GuiasList guias={guias} error={guiasError} />
+            {!loading ? (
+              <GuiasList guias={guias} error={error} />
+            ) : (
+              <Loading />
+            )}
           </Fragment>
         )}
       </Master>
@@ -81,7 +93,7 @@ Guias.propTypes = {
   guias: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   loadGuias: PropTypes.func.isRequired,
-  guiasError: PropTypes.string.isRequired,
+  error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
@@ -91,7 +103,7 @@ Guias.defaultProps = {
 
 const mapStateToProps = state => ({
   guias: state.guiasReducer.guias,
-  guiasError: state.guiasReducer.fetchError,
+  error: state.guiasReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {

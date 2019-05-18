@@ -15,6 +15,7 @@ import {
 import Master from '../../components/Master';
 import { loadProcedimentos } from '../../actions/procedimentos';
 import ProcedimentosList from './List';
+import Loading from '../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -33,9 +34,14 @@ const styles = theme => ({
 });
 
 class Procedimentos extends Component {
-  componentDidMount() {
+  state = {
+    loading: true,
+  }
+
+  async componentDidMount() {
     const { loadProcedimentos: propLoadItems } = this.props;
-    propLoadItems();
+    await propLoadItems();
+    await this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {
@@ -47,6 +53,8 @@ class Procedimentos extends Component {
     const {
       classes, error, procedimentos, title,
     } = this.props;
+
+    const { loading } = this.state;
 
     return (
       <Master title={title}>
@@ -68,7 +76,11 @@ class Procedimentos extends Component {
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <ProcedimentosList procedimentos={procedimentos} error={error} />
+            {!loading ? (
+              <ProcedimentosList procedimentos={procedimentos} error={error} />
+            ) : (
+              <Loading />
+            )}
           </Fragment>
         )}
       </Master>

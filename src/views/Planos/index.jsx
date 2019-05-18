@@ -15,6 +15,7 @@ import {
 import Master from '../../components/Master';
 import { loadPlanos } from '../../actions/planos';
 import PlanosList from './List';
+import Loading from '../../components/Loading';
 
 const styles = theme => ({
   divider: {
@@ -33,9 +34,14 @@ const styles = theme => ({
 });
 
 class Planos extends Component {
-  componentDidMount() {
+  state = {
+    loading: true,
+  }
+
+  async componentDidMount() {
     const { loadPlanos: propLoadItems } = this.props;
-    propLoadItems();
+    await propLoadItems();
+    await this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {
@@ -47,6 +53,8 @@ class Planos extends Component {
     const {
       classes, error, planos, title,
     } = this.props;
+
+    const { loading } = this.state;
 
     return (
       <Master title={title}>
@@ -68,7 +76,11 @@ class Planos extends Component {
               </Button>
             </Grid>
             <Divider className={classes.divider} />
-            <PlanosList planos={planos} error={error} />
+            {!loading ? (
+              <PlanosList planos={planos} error={error} />
+            ) : (
+              <Loading />
+            )}
           </Fragment>
         )}
       </Master>
