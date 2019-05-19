@@ -138,11 +138,11 @@ class PlanosList extends Component {
     });
   }
 
-  onHandleDelete = async (postID) => {
+  onHandleDelete = async ({ PublicID, NomeFantasia }) => {
     const { deletePlano: propdeletePlano } = this.props;
     this.setState({ loading: true });
-    await propdeletePlano(postID);
-    await this.onHandleMessage('Item excluido.');
+    await propdeletePlano(PublicID);
+    await this.onHandleMessage(`${NomeFantasia} excluído.`);
     await this.setState({ loading: false });
   }
 
@@ -237,7 +237,7 @@ class PlanosList extends Component {
                   <ListItemSecondaryAction className={classes.iconDelete}>
                     <IconButton
                       disabled={!!error}
-                      onClick={() => this.onHandleDelete(item.PublicID)}
+                      onClick={() => this.onHandleDelete(item)}
                       aria-label="Deletar"
                     >
                       <DeleteIcon />

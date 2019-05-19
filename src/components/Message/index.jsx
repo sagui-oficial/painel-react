@@ -16,17 +16,20 @@ const styles = theme => ({
 
 const Message = (props) => {
   const {
+    open,
+    text,
     classes,
-    open = false,
-    text = '',
     onHandleOnClose,
   } = props;
 
   return (
     <Snackbar
       open={open}
-      message={<span id="message-id">{text}</span>}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      message={<div id="message-id">{text}</div>}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
       autoHideDuration={6000}
       onClose={onHandleOnClose}
       onExited={onHandleOnClose}
@@ -49,8 +52,13 @@ const Message = (props) => {
 Message.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   onHandleOnClose: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired,
-  open: PropTypes.bool.isRequired,
+  text: PropTypes.string,
+  open: PropTypes.bool,
+};
+
+Message.defaultProps = {
+  text: String(),
+  open: false,
 };
 
 export default withStyles(styles)(Message);

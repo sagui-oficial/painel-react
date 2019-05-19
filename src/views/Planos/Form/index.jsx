@@ -159,16 +159,14 @@ class PlanoForm extends Component {
       await propUpdatePlano({
         ...sendPlano,
       }, PublicID);
-      this.onHandleMessage('Plano modificado.');
+      await this.onHandleMessage('Plano modificado.');
     } else {
       await propAddPlano({
         ...sendPlano,
       });
 
-      // const { plano: { PublicID } } = this.props;
-      this.setState({ editing: true });
-      this.onHandleMessage('Plano adicionado.');
-      // history.push(`/planos/${PublicID}`);
+      await this.setState({ editing: true });
+      await this.onHandleMessage('Plano adicionado.');
     }
     history.push('/planos');
   }
@@ -262,7 +260,9 @@ class PlanoForm extends Component {
     const setValidFields = {};
 
     Object.keys(isValidField).map((item) => {
-      setValidFields[item] = sendPlano[item].trim().length === 0;
+      if (typeof sendPlano[item] === 'string') {
+        setValidFields[item] = sendPlano[item].trim().length === 0;
+      }
       return setValidFields;
     });
 

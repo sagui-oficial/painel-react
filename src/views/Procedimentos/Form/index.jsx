@@ -54,6 +54,7 @@ class ProcedimentoForm extends Component {
     ],
     sendProcedimento: {
       Status: 1,
+      ValorProcedimento: 1,
       Codigo: String(),
       NomeProcedimento: String(),
       Exigencias: String(),
@@ -62,6 +63,8 @@ class ProcedimentoForm extends Component {
     isValidField: {
       Codigo: false,
       NomeProcedimento: false,
+      Exigencias: false,
+      Anotacoes: false,
     },
     boxMessage: {
       open: false,
@@ -107,7 +110,6 @@ class ProcedimentoForm extends Component {
 
   onHandleAdd = async () => {
     const { sendProcedimento, editing } = this.state;
-
     const {
       addProcedimento: propAddProcedimento,
       updateProcedimento: propUpdateProcedimento, history,
@@ -118,16 +120,14 @@ class ProcedimentoForm extends Component {
       await propUpdateProcedimento({
         ...sendProcedimento,
       }, PublicID);
-      this.onHandleMessage('Procedimento modificado.');
+      await this.onHandleMessage('Procedimento modificado.');
     } else {
       await propAddProcedimento({
         ...sendProcedimento,
       });
 
-      // const { procedimento: { PublicID } } = this.props;
-      this.setState({ editing: true });
-      this.onHandleMessage('Procedimento adicionado.');
-      // history.push(`/procedimentos/${PublicID}`);
+      await this.setState({ editing: true });
+      await this.onHandleMessage('Procedimento adicionado.');
     }
     history.push('/procedimentos');
   }
@@ -193,7 +193,9 @@ class ProcedimentoForm extends Component {
     const setValidFields = {};
 
     Object.keys(isValidField).map((item) => {
-      setValidFields[item] = sendProcedimento[item].trim().length === 0;
+      if (typeof sendProcedimento[item] === 'string') {
+        setValidFields[item] = sendProcedimento[item].trim().length === 0;
+      }
       return setValidFields;
     });
 
@@ -306,6 +308,8 @@ class ProcedimentoForm extends Component {
                     multiline
                     rows="4"
                     rowsMax="10"
+                    required
+                    error={isValidField.Exigencias}
                     value={sendProcedimento.Exigencias && sendProcedimento.Exigencias.replace(/\n/gim, ' ')}
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
@@ -321,6 +325,8 @@ class ProcedimentoForm extends Component {
                     multiline
                     rows="4"
                     rowsMax="10"
+                    required
+                    error={isValidField.Anotacoes}
                     value={sendProcedimento.Anotacoes && sendProcedimento.Anotacoes.replace(/\n/gim, ' ')}
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
