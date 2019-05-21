@@ -1,31 +1,23 @@
 import React, { Component, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  IconButton,
-  Avatar,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Select,
   MenuItem,
   Grid,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import Loading from '../../../components/Loading';
 import { deletePlano } from '../../../actions/planos';
 import { orderBy, matchItem } from '../../../helpers';
+import ListBox from './ListBox';
 
 const styles = theme => ({
   root: {
@@ -80,7 +72,6 @@ const styles = theme => ({
 
 class PlanosList extends Component {
   state = {
-    loading: false,
     allPlanos: [],
     search: '',
     order: 'asc',
@@ -140,10 +131,8 @@ class PlanosList extends Component {
 
   onHandleDelete = async ({ PublicID, NomeFantasia }) => {
     const { deletePlano: propdeletePlano } = this.props;
-    this.setState({ loading: true });
     await propdeletePlano(PublicID);
     await this.onHandleMessage(`${NomeFantasia} excluído.`);
-    await this.setState({ loading: false });
   }
 
   onHandleSearch = ({ value, name }) => {
@@ -171,7 +160,6 @@ class PlanosList extends Component {
       boxMessage,
       order,
       search,
-      loading,
     } = this.state;
 
     return (
@@ -208,45 +196,12 @@ class PlanosList extends Component {
         <List dense className={classes.root}>
           {allPlanos.length ? (
             allPlanos.map(item => (
-              !loading ? (
-                <ListItem
-                  key={item.PublicID}
-                  className={classes.listItem}
-                  to={{
-                    pathname: `/planos/${item.PublicID}`,
-                    state: { ...item },
-                  }}
-                  component={Link}
-                  button
-                >
-                  <ListItemAvatar>
-                    <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
-                      {item.NomeFantasia.substring(0, 1).toUpperCase()}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <div className={classes.boxList}>
-                    <p className={classes.smallItemText}>
-                      <strong>CNPJ:</strong>
-                      {' '}
-                      {item.CNPJ}
-                    </p>
-                    <p>
-                      <strong>{item.NomeFantasia}</strong>
-                    </p>
-                  </div>
-                  <ListItemSecondaryAction className={classes.iconDelete}>
-                    <IconButton
-                      disabled={!!error}
-                      onClick={() => this.onHandleDelete(item)}
-                      aria-label="Deletar"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ) : (
-                <Loading key={item.PublicID} />
-              )
+              <ListBox
+                key={item.PublicID}
+                item={item}
+                error={error}
+                onHandleDelete={this.onHandleDelete}
+              />
             ))
           ) : (
             <ListItem className={classes.listItem}>Nenhum plano encontrado.</ListItem>

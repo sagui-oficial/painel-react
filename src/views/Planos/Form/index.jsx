@@ -148,7 +148,6 @@ class PlanoForm extends Component {
 
   onHandleAdd = async () => {
     const { sendPlano, editing } = this.state;
-
     const {
       addPlano: propAddPlano,
       updatePlano: propUpdatePlano, history,
@@ -164,7 +163,6 @@ class PlanoForm extends Component {
       await propAddPlano({
         ...sendPlano,
       });
-
       await this.setState({ editing: true });
       await this.onHandleMessage('Plano adicionado.');
     }
