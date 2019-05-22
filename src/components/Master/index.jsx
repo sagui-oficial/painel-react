@@ -239,7 +239,7 @@ class NavBar extends Component {
 
 NavBar.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  children: PropTypes.instanceOf(Object).isRequired,
+  children: PropTypes.node.isRequired,
   title: PropTypes.string,
 };
 
