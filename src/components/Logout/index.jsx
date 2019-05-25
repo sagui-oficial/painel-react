@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -91,8 +90,6 @@ class MenuListComposition extends Component {
                     <CardActions>
                       <Button
                         onClick={propLogout}
-                        component={NavLink}
-                        to="/"
                         size="small"
                         color="default"
                       >
