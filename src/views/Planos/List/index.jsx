@@ -155,15 +155,15 @@ class PlanosList extends Component {
         />
 
         <ListBox
-          listItemsObject={allPlanos}
           error={error}
+          listItemsObject={allPlanos}
+          onHandleDelete={this.onHandleDelete}
           setBox={{
             to: 'planos',
             label: 'CNPJ',
             pretitle: 'CNPJ',
             title: 'NomeFantasia',
           }}
-          onHandleDelete={this.onHandleDelete}
         />
       </Fragment>
     );

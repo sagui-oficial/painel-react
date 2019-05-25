@@ -153,15 +153,15 @@ class ProcedimentosList extends Component {
         />
 
         <ListBox
-          listItemsObject={allProcedimentos}
           error={error}
+          listItemsObject={allProcedimentos}
+          onHandleDelete={this.onHandleDelete}
           setBox={{
             to: 'procedimentos',
             label: 'Código',
             pretitle: 'Codigo',
             title: 'NomeProcedimento',
           }}
-          onHandleDelete={this.onHandleDelete}
         />
       </Fragment>
     );

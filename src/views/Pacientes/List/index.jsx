@@ -153,15 +153,15 @@ class PacientesList extends Component {
         />
 
         <ListBox
-          listItemsObject={allPacientes}
           error={error}
+          listItemsObject={allPacientes}
+          onHandleDelete={this.onHandleDelete}
           setBox={{
             to: 'pacientes',
             label: 'CPF',
             pretitle: 'CPF',
             title: 'Nome',
           }}
-          onHandleDelete={this.onHandleDelete}
         />
       </Fragment>
     );
