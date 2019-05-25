@@ -3,14 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
-
-import {
-  List,
-  ListItem,
-  Select,
-  MenuItem,
-  Grid,
-} from '@material-ui/core';
+import { Select, MenuItem, Grid } from '@material-ui/core';
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
@@ -18,35 +11,10 @@ import ListBox from '../../../components/ListBox';
 import { deleteProcedimento } from '../../../actions/procedimentos';
 import { orderBy, matchItem } from '../../../helpers';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
+const styles = () => ({
   topBottomSpace: {
     marginTop: '5px',
     marginBottom: '15px',
-  },
-  listItem: {
-    marginBottom: '15px',
-    paddingTop: '20px',
-    paddingBottom: '20px',
-    paddingRight: '50px',
-    alignItems: 'start',
-    borderRadius: '6px',
-    border: '1px solid rgba(0, 0, 0, 0.12)',
-    boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
-  },
-  iconDelete: {
-    top: '7px',
-    right: '7px',
-    transform: 'none',
-  },
-  smallItemText: {
-    fontSize: '14px',
-    color: '#616161',
-    paddingBottom: '7px',
   },
   selectBox: {
     fontSize: '14px',
@@ -59,12 +27,6 @@ const styles = theme => ({
     },
     '&:before, &:after': {
       border: 0,
-    },
-  },
-  boxList: {
-    paddingLeft: theme.spacing.unit * 1.8,
-    '& p': {
-      margin: 0,
     },
   },
 });
@@ -190,27 +152,17 @@ class ProcedimentosList extends Component {
           placeholder="Buscar procedimentos"
         />
 
-        <List dense className={classes.root}>
-          {allProcedimentos.length ? (
-            allProcedimentos.map(item => (
-              <ListBox
-                key={item.PublicID}
-                item={item}
-                error={error}
-                setBox={{
-                  to: 'procedimentos',
-                  label: 'Código',
-                  pretitle: item.Codigo,
-                  title: item.NomeProcedimento,
-                }}
-                onHandleDelete={this.onHandleDelete}
-              />
-            ))
-          ) : (
-            <ListItem className={classes.listItem}>Nenhum procedimento encontrado.</ListItem>
-          )
-          }
-        </List>
+        <ListBox
+          listItemsObject={allProcedimentos}
+          error={error}
+          setBox={{
+            to: 'procedimentos',
+            label: 'Código',
+            pretitle: 'Codigo',
+            title: 'NomeProcedimento',
+          }}
+          onHandleDelete={this.onHandleDelete}
+        />
       </Fragment>
     );
   }

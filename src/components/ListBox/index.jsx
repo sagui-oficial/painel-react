@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Avatar,
+  List,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
@@ -22,10 +23,6 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
-  },
-  topBottomSpace: {
-    marginTop: '5px',
-    marginBottom: '15px',
   },
   listItem: {
     marginBottom: '15px',
@@ -46,19 +43,6 @@ const styles = theme => ({
     fontSize: '14px',
     color: '#616161',
     paddingBottom: '7px',
-  },
-  selectBox: {
-    fontSize: '14px',
-    '& [role="button"]': {
-      paddingLeft: 0,
-      background: 'none',
-    },
-    '&:hover:before, &:focus:before': {
-      border: '0 !important',
-    },
-    '&:before, &:after': {
-      border: 0,
-    },
   },
   boxList: {
     paddingLeft: theme.spacing.unit * 1.8,
@@ -92,7 +76,7 @@ class ListBox extends Component {
 
   render() {
     const {
-      item, classes, error, setBox,
+      listItemsObject, classes, error, setBox,
     } = this.props;
     const { loading } = this.state;
 
@@ -101,47 +85,58 @@ class ListBox extends Component {
     }
 
     return (
-      <ListItem
-        className={classes.listItem}
-        ref={(el) => { this.ListBox = el; }}
-        to={{
-          pathname: `/${setBox.to}/${item.PublicID}`,
-          state: { ...item },
-        }}
-        component={Link}
-        button
-      >
-        <ListItemAvatar>
-          <Avatar aria-label={setBox.title} className={classes.avatar}>
-            {setBox.title.substring(0, 1).toUpperCase()}
-          </Avatar>
-        </ListItemAvatar>
-        <div className={classes.boxList}>
-          <p className={classes.smallItemText}>
-            <strong>{`${setBox.label}: `}</strong>
-            {setBox.pretitle}
-          </p>
-          <p>
-            <strong>{setBox.title}</strong>
-          </p>
-        </div>
-        <ListItemSecondaryAction className={classes.iconDelete}>
-          <IconButton
-            disabled={!!error}
-            onClick={() => this.onHandleDelete(item)}
-            aria-label="Deletar"
-          >
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+      <List dense className={classes.root}>
+        {listItemsObject.length ? (
+          listItemsObject.map(item => (
+            <ListItem
+              key={item.PublicID}
+              className={classes.listItem}
+              ref={(el) => { this.ListBox = el; }}
+              to={{
+                pathname: `/${setBox.to}/${item.PublicID}`,
+                state: { ...item },
+              }}
+              component={Link}
+              button
+            >
+              <ListItemAvatar>
+                <Avatar aria-label={item[setBox.title]} className={classes.avatar}>
+                  {item[setBox.title].substring(0, 1).toUpperCase()}
+                </Avatar>
+              </ListItemAvatar>
+              <div className={classes.boxList}>
+                <p className={classes.smallItemText}>
+                  <strong>{`${setBox.label}: `}</strong>
+                  {item[setBox.pretitle]}
+                </p>
+                <p>
+                  <strong>{item[setBox.title]}</strong>
+                </p>
+              </div>
+              <ListItemSecondaryAction className={classes.iconDelete}>
+                <IconButton
+                  disabled={!!error}
+                  onClick={() => this.onHandleDelete(item)}
+                  aria-label="Deletar"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))
+        ) : (
+          <ListItem className={classes.listItem}>Nenhum item encontrado.</ListItem>
+        )
+        }
+      </List>
+
     );
   }
 }
 
 ListBox.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  item: PropTypes.instanceOf(Object).isRequired,
+  listItemsObject: PropTypes.instanceOf(Object).isRequired,
   setBox: PropTypes.instanceOf(Object).isRequired,
   onHandleDelete: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
