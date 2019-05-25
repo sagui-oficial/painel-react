@@ -40,8 +40,21 @@ const MainRouters = ({ auth }) => (
         ],
       ])}
 
-      <PrivateRoute exact path="/signup" component={SignUp} auth={auth} />
-      <Route exact path="/" render={() => <Login homeRoute={activeRouters[0].path} />} />
+      <PrivateRoute
+        exact
+        path="/signup"
+        component={SignUp}
+        title="Criar novo usuário"
+        auth={auth}
+      />
+
+      <Route
+        exact
+        path="/"
+        render={() => (
+          <Login homeRoute={activeRouters[0].path} />
+        )}
+      />
     </Switch>
   </BrowserRouter>
 );

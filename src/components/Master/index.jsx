@@ -1,5 +1,6 @@
 /* global window */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -21,6 +22,7 @@ import {
 } from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
+import AddToPhotos from '@material-ui/icons/AddToPhotos';
 
 import logo from '../../assets/images/logo.svg';
 import dashboardRoutes from '../../routes/dashbordRoutes';
@@ -149,7 +151,11 @@ class NavBar extends Component {
 
   render() {
     const { menu } = this.state;
-    const { classes, children, title } = this.props;
+    const {
+      classes, children, title, profile,
+    } = this.props;
+
+    const { type: typeAccount } = profile;
 
     return (
       <div className={classes.root}>
@@ -204,6 +210,25 @@ class NavBar extends Component {
               ))}
             </List>
             <Divider />
+            {typeAccount === 'admin' && (
+              <List>
+                <Typography className={classes.menuTitle} variant="overline" color="textSecondary">
+                  Configurações
+                </Typography>
+                <ListItem
+                  button
+                  to="/signup"
+                  onClick={this.resizeFunction}
+                  activeClassName={classes.activeListItem}
+                  component={NavLink}
+                >
+                  <ListItemIcon>
+                    <AddToPhotos />
+                  </ListItemIcon>
+                  <ListItemText primary="Novo usuário" />
+                </ListItem>
+              </List>
+            )}
           </SwipeableDrawer>
         </Hidden>
         <main className={classes.content}>
@@ -239,6 +264,7 @@ class NavBar extends Component {
 
 NavBar.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
+  profile: PropTypes.instanceOf(Object).isRequired,
   children: PropTypes.node,
   title: PropTypes.string,
 };
@@ -248,4 +274,8 @@ NavBar.defaultProps = {
   children: null,
 };
 
-export default withStyles(styles)(NavBar);
+const mapStateToProps = state => ({
+  profile: state.firebase.profile,
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(NavBar));

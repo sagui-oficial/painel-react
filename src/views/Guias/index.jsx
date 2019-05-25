@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-// MATERIAL IMPORTS
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -11,7 +10,6 @@ import {
   Divider,
 } from '@material-ui/core';
 
-// LOCAL IMPORTS
 import Master from '../../components/Master';
 import { loadGuias } from '../../actions/guias';
 import GuiasList from './List';
@@ -38,10 +36,14 @@ class Guias extends Component {
     loading: true,
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.loadItems();
+  }
+
+  loadItems = async () => {
     const { loadGuias: propLoadGuias } = this.props;
     await propLoadGuias();
-    await this.setState({ loading: false });
+    this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {
