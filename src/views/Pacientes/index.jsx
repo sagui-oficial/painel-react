@@ -38,10 +38,14 @@ class Pacientes extends Component {
     loading: true,
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.loadItems();
+  }
+
+  loadItems = async () => {
     const { loadPacientes: propLoadItems } = this.props;
     await propLoadItems();
-    await this.setState({ loading: false });
+    this.setState({ loading: false });
   }
 
   onHandleAddNew = () => {

@@ -65,11 +65,6 @@ class Login extends Component {
 
   baseState = this.state
 
-  constructor(props) {
-    super(props);
-    this.onHandleSubmit = this.onHandleSubmit.bind(this);
-  }
-
   onHandleChange = ({ name, value }) => {
     this.setState({
       [name]: value,
@@ -77,14 +72,13 @@ class Login extends Component {
     });
   }
 
-  async onHandleSubmit(e) {
+  onHandleSubmit = async (e) => {
     e.preventDefault();
 
     this.setState({ loading: true });
 
     const { username, password } = this.state;
     const { loginSubmit: propLoginSubmit } = this.props;
-
     const { type, message } = await propLoginSubmit(username, password);
 
     if (type === 'error') {
