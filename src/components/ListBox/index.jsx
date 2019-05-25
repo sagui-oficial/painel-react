@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -15,7 +15,7 @@ import {
   Delete as DeleteIcon,
 } from '@material-ui/icons';
 
-import Loading from '../../../components/Loading';
+import Loading from '../Loading';
 
 const styles = theme => ({
   root: {
@@ -92,7 +92,7 @@ class ListBox extends Component {
 
   render() {
     const {
-      item, classes, error,
+      item, classes, error, setBox,
     } = this.props;
     const { loading } = this.state;
 
@@ -105,25 +105,24 @@ class ListBox extends Component {
         className={classes.listItem}
         ref={(el) => { this.ListBox = el; }}
         to={{
-          pathname: `/planos/${item.PublicID}`,
+          pathname: `/${setBox.to}/${item.PublicID}`,
           state: { ...item },
         }}
         component={Link}
         button
       >
         <ListItemAvatar>
-          <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
-            {item.NomeFantasia.substring(0, 1).toUpperCase()}
+          <Avatar aria-label={setBox.title} className={classes.avatar}>
+            {setBox.title.substring(0, 1).toUpperCase()}
           </Avatar>
         </ListItemAvatar>
         <div className={classes.boxList}>
           <p className={classes.smallItemText}>
-            <strong>CNPJ:</strong>
-            {' '}
-            {item.CNPJ}
+            <strong>{`${setBox.label}: `}</strong>
+            {setBox.pretitle}
           </p>
           <p>
-            <strong>{item.NomeFantasia}</strong>
+            <strong>{setBox.title}</strong>
           </p>
         </div>
         <ListItemSecondaryAction className={classes.iconDelete}>
@@ -143,8 +142,9 @@ class ListBox extends Component {
 ListBox.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   item: PropTypes.instanceOf(Object).isRequired,
+  setBox: PropTypes.instanceOf(Object).isRequired,
   onHandleDelete: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(ListBox);
+export default withStyles(styles)(withRouter(ListBox));

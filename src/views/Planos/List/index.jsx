@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -15,9 +14,9 @@ import {
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
+import ListBox from '../../../components/ListBox';
 import { deletePlano } from '../../../actions/planos';
 import { orderBy, matchItem } from '../../../helpers';
-import ListBox from './ListBox';
 
 const styles = theme => ({
   root: {
@@ -200,6 +199,12 @@ class PlanosList extends Component {
                 key={item.PublicID}
                 item={item}
                 error={error}
+                setBox={{
+                  to: 'planos',
+                  label: 'CNPJ',
+                  pretitle: item.CNPJ,
+                  title: item.NomeFantasia,
+                }}
                 onHandleDelete={this.onHandleDelete}
               />
             ))
@@ -222,4 +227,4 @@ PlanosList.propTypes = {
 
 export default connect(null, {
   deletePlano,
-})(withStyles(styles)(withRouter(PlanosList)));
+})(withStyles(styles)(PlanosList));

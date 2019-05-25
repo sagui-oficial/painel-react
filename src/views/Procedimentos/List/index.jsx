@@ -1,28 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  IconButton,
-  Avatar,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Select,
   MenuItem,
   Grid,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
+import ListBox from '../../../components/ListBox';
 import { deleteProcedimento } from '../../../actions/procedimentos';
 import { orderBy, matchItem } from '../../../helpers';
 
@@ -136,9 +128,9 @@ class ProcedimentosList extends Component {
     });
   }
 
-  onHandleDelete = async (postID) => {
+  onHandleDelete = async ({ PublicID }) => {
     const { deleteProcedimento: propdeleteProcedimento } = this.props;
-    await propdeleteProcedimento(postID);
+    await propdeleteProcedimento(PublicID);
     await this.onHandleMessage('Item excluido.');
   }
 
@@ -201,41 +193,18 @@ class ProcedimentosList extends Component {
         <List dense className={classes.root}>
           {allProcedimentos.length ? (
             allProcedimentos.map(item => (
-              <ListItem
+              <ListBox
                 key={item.PublicID}
-                className={classes.listItem}
-                to={{
-                  pathname: `/procedimentos/${item.PublicID}`,
-                  state: { ...item },
+                item={item}
+                error={error}
+                setBox={{
+                  to: 'procedimentos',
+                  label: 'Código',
+                  pretitle: item.Codigo,
+                  title: item.NomeProcedimento,
                 }}
-                component={Link}
-                button
-              >
-                <ListItemAvatar>
-                  <Avatar aria-label={item.NomeProcedimento} className={classes.avatar}>
-                    {item.NomeProcedimento.substring(0, 1).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <div className={classes.boxList}>
-                  <p className={classes.smallItemText}>
-                    <strong>Código:</strong>
-                    {' '}
-                    {item.Codigo}
-                  </p>
-                  <p>
-                    <strong>{item.NomeProcedimento}</strong>
-                  </p>
-                </div>
-                <ListItemSecondaryAction className={classes.iconDelete}>
-                  <IconButton
-                    disabled={!!error}
-                    onClick={() => this.onHandleDelete(item.PublicID)}
-                    aria-label="Deletar"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+                onHandleDelete={this.onHandleDelete}
+              />
             ))
           ) : (
             <ListItem className={classes.listItem}>Nenhum procedimento encontrado.</ListItem>
@@ -256,4 +225,4 @@ ProcedimentosList.propTypes = {
 
 export default connect(null, {
   deleteProcedimento,
-})(withStyles(styles)(withRouter(ProcedimentosList)));
+})(withStyles(styles)(ProcedimentosList));

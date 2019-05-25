@@ -1,30 +1,22 @@
 import React, { Component, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  IconButton,
-  Avatar,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Select,
   MenuItem,
   Grid,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
 import { deletePaciente } from '../../../actions/pacientes';
 import { orderBy, matchItem } from '../../../helpers';
+import ListBox from '../../../components/ListBox';
 
 const styles = theme => ({
   root: {
@@ -136,9 +128,9 @@ class PacientesList extends Component {
     });
   }
 
-  onHandleDelete = async (postID) => {
+  onHandleDelete = async ({ PublicID }) => {
     const { deletePaciente: propdeletePaciente } = this.props;
-    await propdeletePaciente(postID);
+    await propdeletePaciente(PublicID);
     await this.onHandleMessage('Item excluido.');
   }
 
@@ -201,41 +193,18 @@ class PacientesList extends Component {
         <List dense className={classes.root}>
           {allPacientes.length ? (
             allPacientes.map(item => (
-              <ListItem
+              <ListBox
                 key={item.PublicID}
-                className={classes.listItem}
-                to={{
-                  pathname: `/pacientes/${item.PublicID}`,
-                  state: { ...item },
+                item={item}
+                error={error}
+                setBox={{
+                  to: 'pacientes',
+                  label: 'CPF',
+                  pretitle: item.CPF,
+                  title: item.Nome,
                 }}
-                component={Link}
-                button
-              >
-                <ListItemAvatar>
-                  <Avatar aria-label={item.Nome} className={classes.avatar}>
-                    {item.Nome.substring(0, 1).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <div className={classes.boxList}>
-                  <p className={classes.smallItemText}>
-                    <strong>CPF:</strong>
-                    {' '}
-                    {item.CPF}
-                  </p>
-                  <p>
-                    <strong>{item.Nome}</strong>
-                  </p>
-                </div>
-                <ListItemSecondaryAction className={classes.iconDelete}>
-                  <IconButton
-                    disabled={!!error}
-                    onClick={() => this.onHandleDelete(item.PublicID)}
-                    aria-label="Deletar"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+                onHandleDelete={this.onHandleDelete}
+              />
             ))
           ) : (
             <ListItem className={classes.listItem}>Nenhum paciente encontrado.</ListItem>
@@ -256,4 +225,4 @@ PacientesList.propTypes = {
 
 export default connect(null, {
   deletePaciente,
-})(withStyles(styles)(withRouter(PacientesList)));
+})(withStyles(styles)(PacientesList));
