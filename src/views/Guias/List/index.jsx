@@ -1,29 +1,21 @@
 import React, { Component, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  IconButton,
-  Avatar,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Select,
   FormControl,
   MenuItem,
   Grid,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
+import RefList from '../../../components/ListBox/RefList';
 import { deleteGuia, updateGuiaStatus } from '../../../actions/guias';
 import {
   formatDate, formatCurrency, orderByDate, matchItem,
@@ -49,16 +41,6 @@ const styles = theme => ({
     border: '1px solid rgba(0, 0, 0, 0.12)',
     boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
   },
-  iconDelete: {
-    top: '7px',
-    right: '7px',
-    transform: 'none',
-  },
-  smallItemText: {
-    fontSize: '14px',
-    color: '#616161',
-    paddingBottom: '7px',
-  },
   selectBox: {
     fontSize: '14px',
     '& [role="button"]': {
@@ -70,17 +52,6 @@ const styles = theme => ({
     },
     '&:before, &:after': {
       border: 0,
-    },
-  },
-  boxList: {
-    paddingLeft: theme.spacing.unit * 1.8,
-    '& p': {
-      margin: 0,
-    },
-  },
-  avatar: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
     },
   },
 });
@@ -143,12 +114,6 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleDeleteGuia = async ({ PublicID }) => {
-    const { deleteGuia: propdeleteGuia } = this.props;
-    await propdeleteGuia({ Status: 99 }, PublicID);
-    await this.onHandleMessage('Item excluido.');
-    this.setState({ search: '' });
-  }
 
   onHandleStatusGuia = async (event, { Status, PublicID }) => {
     const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
@@ -162,9 +127,15 @@ class GuiasList extends Component {
     }
   }
 
+  onHandleDelete = async ({ PublicID }) => {
+    const { deleteGuia: propdeleteGuia } = this.props;
+    await propdeleteGuia(PublicID);
+    await this.onHandleMessage('Item excluido.');
+    this.setState({ search: '' });
+  }
+
   onHandleSearch = ({ value, name }) => {
     const { guias } = this.props;
-
     this.setState(prevState => ({
       [name]: value,
       allGuias: orderByDate(guias, 'Vencimento', prevState.order).filter(item => (
@@ -221,70 +192,46 @@ class GuiasList extends Component {
         <List dense className={classes.root}>
           {allGuias.length ? (
             allGuias.map(item => (
-              <ListItem
+              <RefList
                 key={item.PublicID}
-                className={classes.listItem}
-                to={{
-                  pathname: `/guias/${item.PublicID}`,
-                  state: { ...item },
+                item={item}
+                error={error}
+                onHandleDelete={this.onHandleDelete}
+                setBox={{
+                  to: 'guias',
+                  label: 'Numero',
+                  pretitle: item.Numero,
+                  title: item.Paciente.Nome,
                 }}
-                component={Link}
-                button
               >
-                <ListItemAvatar>
-                  <Avatar aria-label={item.Paciente.Nome} className={classes.avatar}>
-                    {item.Paciente.Nome.substring(0, 1).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <div className={classes.boxList}>
-                  <p className={classes.smallItemText}>
-                    <strong>Número:</strong>
-                    {' '}
-                    {item.Numero}
-                  </p>
-
-                  <p>
-                    <strong>{item.Paciente.Nome}</strong>
-                  </p>
-
-                  <FormControl>
-                    <Select
-                      name={item.Numero}
-                      value={item.Status ? item.Status : 2}
-                      className={classes.selectBox}
-                      onClick={e => e.preventDefault()}
-                      onChange={e => this.onHandleStatusGuia(e, item)}
-                      disabled={!!error}
-                      displayEmpty
-                    >
-                      <MenuItem value={1}>Criada</MenuItem>
-                      <MenuItem value={2}>Concluida</MenuItem>
-                      {/* <MenuItem value={99}>Deletada</MenuItem> */}
-                    </Select>
-                  </FormControl>
-
-                  <p>
-                    {formatDate(item.Vencimento)}
-                    {' - '}
-                    {
-                      item.Procedimentos.length > 0 && (
-                        <strong>
-                          {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
-                        </strong>
-                      )
-                    }
-                  </p>
-                </div>
-                <ListItemSecondaryAction className={classes.iconDelete}>
-                  <IconButton
+                <FormControl>
+                  <Select
+                    name={item.Numero}
+                    value={item.Status ? item.Status : 2}
+                    className={classes.selectBox}
+                    onClick={e => e.preventDefault()}
+                    onChange={e => this.onHandleStatusGuia(e, item)}
                     disabled={!!error}
-                    onClick={() => this.onHandleDeleteGuia(item)}
-                    aria-label="Deletar"
+                    displayEmpty
                   >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+                    <MenuItem value={1}>Criada</MenuItem>
+                    <MenuItem value={2}>Concluida</MenuItem>
+                    {/* <MenuItem value={99}>Deletada</MenuItem> */}
+                  </Select>
+                </FormControl>
+
+                <p>
+                  {formatDate(item.Vencimento)}
+                  {' - '}
+                  {
+                    item.Procedimentos.length > 0 && (
+                      <strong>
+                        {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
+                      </strong>
+                    )
+                  }
+                </p>
+              </RefList>
             ))
           ) : (
             <ListItem className={classes.listItem}>Nenhuma guia encontrada.</ListItem>
@@ -306,4 +253,4 @@ GuiasList.propTypes = {
 
 export default connect(null, {
   deleteGuia, updateGuiaStatus,
-})(withStyles(styles)(withRouter(GuiasList)));
+})(withStyles(styles)(GuiasList));

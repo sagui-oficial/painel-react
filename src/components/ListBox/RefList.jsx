@@ -41,6 +41,11 @@ const styles = theme => ({
       margin: 0,
     },
   },
+  avatar: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
 });
 
 class RefList extends Component {
@@ -71,6 +76,8 @@ class RefList extends Component {
       item,
       classes,
       error,
+      children,
+      avatar,
     } = this.props;
 
     const { loading } = this.state;
@@ -91,19 +98,22 @@ class RefList extends Component {
         component={Link}
         button
       >
-        <ListItemAvatar>
-          <Avatar aria-label={item[setBox.title]} className={classes.avatar}>
-            {item[setBox.title].substring(0, 1).toUpperCase()}
-          </Avatar>
-        </ListItemAvatar>
+        {avatar && (
+          <ListItemAvatar>
+            <Avatar aria-label={setBox.title} className={classes.avatar}>
+              {setBox.title.substring(0, 1).toUpperCase()}
+            </Avatar>
+          </ListItemAvatar>
+        )}
         <div className={classes.boxList}>
           <p className={classes.smallItemText}>
             <strong>{`${setBox.label}: `}</strong>
-            {item[setBox.pretitle]}
+            {setBox.pretitle}
           </p>
           <p>
-            <strong>{item[setBox.title]}</strong>
+            <strong>{setBox.title}</strong>
           </p>
+          {children && (children)}
         </div>
         <ListItemSecondaryAction className={classes.iconDelete}>
           <IconButton
@@ -124,7 +134,14 @@ RefList.propTypes = {
   item: PropTypes.instanceOf(Object).isRequired,
   setBox: PropTypes.instanceOf(Object).isRequired,
   onHandleDelete: PropTypes.func.isRequired,
+  children: PropTypes.node,
+  avatar: PropTypes.bool,
   error: PropTypes.string.isRequired,
+};
+
+RefList.defaultProps = {
+  children: null,
+  avatar: true,
 };
 
 export default withStyles(styles)(withRouter(RefList));
