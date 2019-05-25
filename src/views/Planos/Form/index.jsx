@@ -153,6 +153,8 @@ class PlanoForm extends Component {
       updatePlano: propUpdatePlano, history,
     } = this.props;
 
+    this.setState({ loading: true });
+
     if (editing) {
       const { plano: { PublicID } } = this.props;
       await propUpdatePlano({
@@ -166,6 +168,7 @@ class PlanoForm extends Component {
       await this.setState({ editing: true });
       await this.onHandleMessage('Plano adicionado.');
     }
+
     history.push('/planos');
   }
 

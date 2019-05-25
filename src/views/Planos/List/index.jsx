@@ -94,6 +94,7 @@ class PlanosList extends Component {
     const { deletePlano: propdeletePlano } = this.props;
     await propdeletePlano(PublicID);
     await this.onHandleMessage('Item excluído.');
+    this.setState({ search: '' });
   }
 
   onHandleSearch = ({ value, name }) => {

@@ -143,21 +143,22 @@ class GuiasList extends Component {
     });
   }
 
-  onHandleDeleteGuia = async (postID) => {
+  onHandleDeleteGuia = async ({ PublicID }) => {
     const { deleteGuia: propdeleteGuia } = this.props;
-    await propdeleteGuia({ Status: 99 }, postID);
+    await propdeleteGuia({ Status: 99 }, PublicID);
     await this.onHandleMessage('Item excluido.');
+    this.setState({ search: '' });
   }
 
-  onHandleStatusGuia = async (event, prevStatus, postID) => {
+  onHandleStatusGuia = async (event, { Status, PublicID }) => {
     const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
     const { target } = event;
 
-    if (prevStatus !== target.value) {
+    if (Status !== target.value) {
       await this.onHandleMessage('Status atualizado.');
       await propUpdateGuiaStatus({
         Status: target.value,
-      }, postID);
+      }, PublicID);
     }
   }
 
@@ -252,7 +253,7 @@ class GuiasList extends Component {
                       value={item.Status ? item.Status : 2}
                       className={classes.selectBox}
                       onClick={e => e.preventDefault()}
-                      onChange={e => this.onHandleStatusGuia(e, item.Status, item.PublicID)}
+                      onChange={e => this.onHandleStatusGuia(e, item)}
                       disabled={!!error}
                       displayEmpty
                     >
@@ -277,7 +278,7 @@ class GuiasList extends Component {
                 <ListItemSecondaryAction className={classes.iconDelete}>
                   <IconButton
                     disabled={!!error}
-                    onClick={() => this.onHandleDeleteGuia(item.PublicID)}
+                    onClick={() => this.onHandleDeleteGuia(item)}
                     aria-label="Deletar"
                   >
                     <DeleteIcon />

@@ -94,6 +94,7 @@ class PacientesList extends Component {
     const { deletePaciente: propdeletePaciente } = this.props;
     await propdeletePaciente(PublicID);
     await this.onHandleMessage('Item excluido.');
+    this.setState({ search: '' });
   }
 
   onHandleSearch = ({ value, name }) => {

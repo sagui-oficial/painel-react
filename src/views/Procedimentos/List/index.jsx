@@ -94,6 +94,7 @@ class ProcedimentosList extends Component {
     const { deleteProcedimento: propdeleteProcedimento } = this.props;
     await propdeleteProcedimento(PublicID);
     await this.onHandleMessage('Item excluido.');
+    this.setState({ search: '' });
   }
 
   onHandleSearch = ({ value, name }) => {
