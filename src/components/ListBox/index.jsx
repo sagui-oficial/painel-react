@@ -25,7 +25,7 @@ const styles = theme => ({
 
 const ListBox = (props) => {
   const {
-    classes, listItemsObject, ...rest
+    classes, listItemsObject, setBox, ...rest
   } = props;
 
   return (
@@ -34,9 +34,14 @@ const ListBox = (props) => {
         listItemsObject.length ? (
           listItemsObject.map(item => (
             <RefList
+              {...rest}
               key={item.PublicID}
               item={item}
-              {...rest}
+              setBox={{
+                ...setBox,
+                pretitle: item[setBox.pretitle],
+                title: item[setBox.title],
+              }}
             />
           ))
         ) : (
@@ -50,6 +55,7 @@ const ListBox = (props) => {
 ListBox.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   listItemsObject: PropTypes.instanceOf(Object).isRequired,
+  setBox: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default withStyles(styles)(ListBox);

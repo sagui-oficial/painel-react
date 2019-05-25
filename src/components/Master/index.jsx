@@ -229,7 +229,7 @@ class NavBar extends Component {
             </Toolbar>
           </AppBar>
           <div className={classes.mainContainer}>
-            {children}
+            {children && (children)}
           </div>
         </main>
       </div>
@@ -239,12 +239,13 @@ class NavBar extends Component {
 
 NavBar.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   title: PropTypes.string,
 };
 
 NavBar.defaultProps = {
   title: String(),
+  children: null,
 };
 
 export default withStyles(styles)(NavBar);
