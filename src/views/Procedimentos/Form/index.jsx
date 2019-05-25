@@ -115,6 +115,8 @@ class ProcedimentoForm extends Component {
       updateProcedimento: propUpdateProcedimento, history,
     } = this.props;
 
+    this.setState({ loading: true });
+
     if (editing) {
       const { procedimento: { PublicID } } = this.props;
       await propUpdateProcedimento({
@@ -129,6 +131,7 @@ class ProcedimentoForm extends Component {
       await this.setState({ editing: true });
       await this.onHandleMessage('Procedimento adicionado.');
     }
+
     history.push('/procedimentos');
   }
 

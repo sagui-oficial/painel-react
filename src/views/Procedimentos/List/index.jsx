@@ -1,60 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
-
-import {
-  IconButton,
-  Avatar,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  Select,
-  MenuItem,
-  Grid,
-} from '@material-ui/core';
-
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
+import { Select, MenuItem, Grid } from '@material-ui/core';
 
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
+import ListBox from '../../../components/ListBox';
 import { deleteProcedimento } from '../../../actions/procedimentos';
 import { orderBy, matchItem } from '../../../helpers';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
+const styles = () => ({
   topBottomSpace: {
     marginTop: '5px',
     marginBottom: '15px',
-  },
-  listItem: {
-    marginBottom: '15px',
-    paddingTop: '20px',
-    paddingBottom: '20px',
-    paddingRight: '50px',
-    alignItems: 'start',
-    borderRadius: '6px',
-    border: '1px solid rgba(0, 0, 0, 0.12)',
-    boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
-  },
-  iconDelete: {
-    top: '7px',
-    right: '7px',
-    transform: 'none',
-  },
-  smallItemText: {
-    fontSize: '14px',
-    color: '#616161',
-    paddingBottom: '7px',
   },
   selectBox: {
     fontSize: '14px',
@@ -67,12 +27,6 @@ const styles = theme => ({
     },
     '&:before, &:after': {
       border: 0,
-    },
-  },
-  boxList: {
-    paddingLeft: theme.spacing.unit * 1.8,
-    '& p': {
-      margin: 0,
     },
   },
 });
@@ -136,10 +90,11 @@ class ProcedimentosList extends Component {
     });
   }
 
-  onHandleDelete = async (postID) => {
+  onHandleDelete = async ({ PublicID }) => {
     const { deleteProcedimento: propdeleteProcedimento } = this.props;
-    await propdeleteProcedimento(postID);
+    await propdeleteProcedimento(PublicID);
     await this.onHandleMessage('Item excluido.');
+    this.setState({ search: '' });
   }
 
   onHandleSearch = ({ value, name }) => {
@@ -198,50 +153,17 @@ class ProcedimentosList extends Component {
           placeholder="Buscar procedimentos"
         />
 
-        <List dense className={classes.root}>
-          {allProcedimentos.length ? (
-            allProcedimentos.map(item => (
-              <ListItem
-                key={item.PublicID}
-                className={classes.listItem}
-                to={{
-                  pathname: `/procedimentos/${item.PublicID}`,
-                  state: { ...item },
-                }}
-                component={Link}
-                button
-              >
-                <ListItemAvatar>
-                  <Avatar aria-label={item.NomeProcedimento} className={classes.avatar}>
-                    {item.NomeProcedimento.substring(0, 1).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <div className={classes.boxList}>
-                  <p className={classes.smallItemText}>
-                    <strong>Código:</strong>
-                    {' '}
-                    {item.Codigo}
-                  </p>
-                  <p>
-                    <strong>{item.NomeProcedimento}</strong>
-                  </p>
-                </div>
-                <ListItemSecondaryAction className={classes.iconDelete}>
-                  <IconButton
-                    disabled={!!error}
-                    onClick={() => this.onHandleDelete(item.PublicID)}
-                    aria-label="Deletar"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))
-          ) : (
-            <ListItem className={classes.listItem}>Nenhum procedimento encontrado.</ListItem>
-          )
-          }
-        </List>
+        <ListBox
+          error={error}
+          listItemsObject={allProcedimentos}
+          onHandleDelete={this.onHandleDelete}
+          setBox={{
+            to: 'procedimentos',
+            label: 'Código',
+            pretitle: 'Codigo',
+            title: 'NomeProcedimento',
+          }}
+        />
       </Fragment>
     );
   }
@@ -256,4 +178,4 @@ ProcedimentosList.propTypes = {
 
 export default connect(null, {
   deleteProcedimento,
-})(withStyles(styles)(withRouter(ProcedimentosList)));
+})(withStyles(styles)(ProcedimentosList));

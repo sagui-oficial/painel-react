@@ -143,6 +143,8 @@ class PacienteForm extends Component {
 
     const { sendPaciente, editing } = this.state;
 
+    this.setState({ loading: true });
+
     if (editing) {
       const { paciente: { PublicID } } = this.props;
       await propUpdatePaciente({
@@ -156,6 +158,7 @@ class PacienteForm extends Component {
       await this.setState({ editing: true });
       await this.onHandleMessage('Paciente adicionado.');
     }
+
     history.push('/pacientes');
   }
 

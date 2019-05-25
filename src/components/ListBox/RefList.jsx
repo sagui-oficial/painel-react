@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -11,22 +11,10 @@ import {
   ListItemSecondaryAction,
 } from '@material-ui/core';
 
-import {
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
-
-import Loading from '../../../components/Loading';
+import { Delete as DeleteIcon } from '@material-ui/icons';
+import Loading from '../Loading';
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  topBottomSpace: {
-    marginTop: '5px',
-    marginBottom: '15px',
-  },
   listItem: {
     marginBottom: '15px',
     paddingTop: '20px',
@@ -47,19 +35,6 @@ const styles = theme => ({
     color: '#616161',
     paddingBottom: '7px',
   },
-  selectBox: {
-    fontSize: '14px',
-    '& [role="button"]': {
-      paddingLeft: 0,
-      background: 'none',
-    },
-    '&:hover:before, &:focus:before': {
-      border: '0 !important',
-    },
-    '&:before, &:after': {
-      border: 0,
-    },
-  },
   boxList: {
     paddingLeft: theme.spacing.unit * 1.8,
     '& p': {
@@ -68,8 +43,8 @@ const styles = theme => ({
   },
 });
 
-class ListBox extends Component {
-  ListBox = React.createRef()
+class RefList extends Component {
+  RefList = React.createRef()
 
   state = {
     loading: false,
@@ -92,8 +67,12 @@ class ListBox extends Component {
 
   render() {
     const {
-      item, classes, error,
+      setBox,
+      item,
+      classes,
+      error,
     } = this.props;
+
     const { loading } = this.state;
 
     if (loading) {
@@ -102,28 +81,28 @@ class ListBox extends Component {
 
     return (
       <ListItem
+        key={item.PublicID}
         className={classes.listItem}
-        ref={(el) => { this.ListBox = el; }}
+        ref={(el) => { this.RefList = el; }}
         to={{
-          pathname: `/planos/${item.PublicID}`,
+          pathname: `/${setBox.to}/${item.PublicID}`,
           state: { ...item },
         }}
         component={Link}
         button
       >
         <ListItemAvatar>
-          <Avatar aria-label={item.NomeFantasia} className={classes.avatar}>
-            {item.NomeFantasia.substring(0, 1).toUpperCase()}
+          <Avatar aria-label={item[setBox.title]} className={classes.avatar}>
+            {item[setBox.title].substring(0, 1).toUpperCase()}
           </Avatar>
         </ListItemAvatar>
         <div className={classes.boxList}>
           <p className={classes.smallItemText}>
-            <strong>CNPJ:</strong>
-            {' '}
-            {item.CNPJ}
+            <strong>{`${setBox.label}: `}</strong>
+            {item[setBox.pretitle]}
           </p>
           <p>
-            <strong>{item.NomeFantasia}</strong>
+            <strong>{item[setBox.title]}</strong>
           </p>
         </div>
         <ListItemSecondaryAction className={classes.iconDelete}>
@@ -140,11 +119,12 @@ class ListBox extends Component {
   }
 }
 
-ListBox.propTypes = {
+RefList.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   item: PropTypes.instanceOf(Object).isRequired,
+  setBox: PropTypes.instanceOf(Object).isRequired,
   onHandleDelete: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(ListBox);
+export default withStyles(styles)(withRouter(RefList));
