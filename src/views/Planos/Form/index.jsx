@@ -323,6 +323,7 @@ class PlanoForm extends Component {
         ...sendPlano,
         ListaProcedimentos: sendPlano.ListaProcedimentos.filter(item => (
           item.PublicID !== itemProcedimento.PublicID
+          && item.PublicID !== null
         )),
       },
     }));
@@ -507,31 +508,33 @@ class PlanoForm extends Component {
                 {
                   sendPlano && (
                     ListaProcedimentos && (
-                      ListaProcedimentos.map(item => (
-                        <ListItem
-                          key={item.PublicID}
-                          className={classes.listProcess}
-                        >
-                          <div className={classes.boxList}>
-                            <p className={classes.smallItemText}>
-                              {item.Codigo}
-                              {' - '}
-                              {item.NomeProcedimento}
-                              {' - '}
-                              {formatCurrency(item.ValorProcedimento)}
-                            </p>
-                          </div>
-                          <ListItemSecondaryAction className={classes.iconDelete}>
-                            <IconButton
-                              disabled={!!error}
-                              onClick={() => this.onHandleDeleteProcedimento(item)}
-                              aria-label="Deletar"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      ))
+                      ListaProcedimentos
+                        .filter(item => item.PublicID !== null)
+                        .map(item => (
+                          <ListItem
+                            key={item.PublicID}
+                            className={classes.listProcess}
+                          >
+                            <div className={classes.boxList}>
+                              <p className={classes.smallItemText}>
+                                {item.Codigo}
+                                {' - '}
+                                {item.NomeProcedimento}
+                                {' - '}
+                                {formatCurrency(item.ValorProcedimento)}
+                              </p>
+                            </div>
+                            <ListItemSecondaryAction className={classes.iconDelete}>
+                              <IconButton
+                                disabled={!!error}
+                                onClick={() => this.onHandleDeleteProcedimento(item)}
+                                aria-label="Deletar"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        ))
                     )
                   )
                 }
