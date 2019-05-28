@@ -11,6 +11,20 @@ import withRoot from '../withRoot';
 
 const activeRouters = dashboardRoutes.filter(item => item.active);
 
+
+// eslint-disable-next-line no-console
+console.log(`${'%c'}
+
+  ███████╗ █████╗  ██████╗ ██╗   ██╗██╗
+  ██╔════╝██╔══██╗██╔════╝ ██║   ██║██║
+  ███████╗███████║██║  ███╗██║   ██║██║
+  ╚════██║██╔══██║██║   ██║██║   ██║██║
+  ███████║██║  ██║╚██████╔╝╚██████╔╝██║
+  ╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝
+
+  Sistema para gestão de guias odontológicas
+`, 'font-family:monospace;color:#5b02c1;font-size:12px');
+
 const MainRouters = ({ auth }) => (
   <BrowserRouter>
     <Switch>
