@@ -1,5 +1,5 @@
 import {
-  GET_GUIAS, SAVE_GUIA, DELETE_GUIA, UPDATE_GUIA_STATUS,
+  GET_GUIAS, SAVE_GUIA, DELETE_GUIA, UPDATE_GUIA,
   GET_GUIA_DETAILS, FETCH_ERROR,
 } from '../actions/guias';
 
@@ -29,7 +29,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
         guia: payload,
         fetchError: '',
       };
-    case UPDATE_GUIA_STATUS:
+    case UPDATE_GUIA:
       return {
         ...state,
         guias: state.guias.map((item) => {

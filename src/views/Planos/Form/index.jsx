@@ -561,9 +561,9 @@ class PlanoForm extends Component {
 PlanoForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  plano: PropTypes.instanceOf(Object),
-  procedimentos: PropTypes.instanceOf(Object).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
+  plano: PropTypes.instanceOf(Object),
+  procedimentos: PropTypes.instanceOf(Object),
   addPlano: PropTypes.func.isRequired,
   updatePlano: PropTypes.func.isRequired,
   loadPlanoDetail: PropTypes.func.isRequired,
@@ -574,6 +574,7 @@ PlanoForm.propTypes = {
 
 PlanoForm.defaultProps = {
   plano: {},
+  procedimentos: [],
   title: String(),
 };
 

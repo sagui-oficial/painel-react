@@ -16,7 +16,7 @@ import {
 import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
 import RefList from '../../../components/ListBox/RefList';
-import { deleteGuia, updateGuiaStatus } from '../../../actions/guias';
+import { deleteGuia, updateGuia } from '../../../actions/guias';
 import {
   formatDate, formatCurrency, orderByDate, matchItem,
 } from '../../../helpers';
@@ -116,7 +116,7 @@ class GuiasList extends Component {
 
 
   onHandleStatusGuia = async (event, { Status, PublicID }) => {
-    const { updateGuiaStatus: propUpdateGuiaStatus } = this.props;
+    const { updateGuia: propUpdateGuiaStatus } = this.props;
     const { target } = event;
 
     if (Status !== target.value) {
@@ -248,9 +248,9 @@ GuiasList.propTypes = {
   guias: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
   deleteGuia: PropTypes.func.isRequired,
-  updateGuiaStatus: PropTypes.func.isRequired,
+  updateGuia: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  deleteGuia, updateGuiaStatus,
+  deleteGuia, updateGuia,
 })(withStyles(styles)(GuiasList));
