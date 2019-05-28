@@ -26,7 +26,7 @@ import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
-import { convertDatePicker, formatCurrency, fixDateOnSave } from '../../../helpers';
+import { convertDatePicker, fixDateOnSave, formatCurrency } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -103,13 +103,18 @@ class GuiaForm extends Component {
   baseState = this.state
 
   async componentDidMount() {
+    const { loadPacientes: propsLoadPacientes } = this.props;
     await this.onHandlePageLoad();
-    await this.onHandleLoadPacientes();
+    await propsLoadPacientes();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { error } = this.props;
+    const { error, pacientes } = this.props;
+
+    if (prevProps.pacientes !== pacientes) {
+      this.onHandleLoadPacientes();
+    }
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
@@ -129,7 +134,6 @@ class GuiaForm extends Component {
       const { guia } = this.props;
       const getGuiaItem = Object.keys(guia).length > 0 ? guia : sendGuia;
 
-
       this.setState({
         editing: true,
         sendGuia: {
@@ -144,16 +148,14 @@ class GuiaForm extends Component {
   }
 
   onHandleLoadPacientes = async () => {
-    const { loadPacientes: propsLoadPacientes } = this.props;
-    await propsLoadPacientes();
-
     const { pacientes, guia } = this.props;
+    const { editing } = this.state;
 
-    const newPlanSelectItem = pacientes.find(item => (
-      item.PublicID === guia.Paciente.PublicID
-    ));
+    if (editing) {
+      const newPlanSelectItem = pacientes.find(item => (
+        item.PublicID === guia.Paciente.PublicID
+      ));
 
-    if (typeof newPlanSelectItem !== 'undefined') {
       this.setState({
         selectedName: {
           PublicID: newPlanSelectItem.PublicID,
@@ -182,6 +184,8 @@ class GuiaForm extends Component {
       const { guia: { PublicID } } = this.props;
       await propUpdateGuia({
         ...sendGuia,
+        Solicitacao: fixDateOnSave(sendGuia.Solicitacao),
+        Vencimento: fixDateOnSave(sendGuia.Vencimento),
       }, PublicID);
       await this.onHandleMessage('Guia modificada.');
     } else {

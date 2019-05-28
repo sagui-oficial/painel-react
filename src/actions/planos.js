@@ -44,6 +44,18 @@ export function loadPlanoDetail(id) {
 }
 
 export function updatePlano(data, id) {
+  if (data.ListaProcedimentos.length === 0) {
+    // eslint-disable-next-line no-param-reassign
+    data.ListaProcedimentos = [
+      {
+        ValorProcedimento: '',
+        NomeProcedimento: '',
+        PublicID: null,
+        Codigo: null,
+      },
+    ];
+  }
+
   return async (dispatch) => {
     await APIResquest({
       uri: `planos/${id}`,
