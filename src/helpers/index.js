@@ -23,11 +23,7 @@ export const convertDatePicker = (_string) => {
   return `${year}-${month.substr(-2)}-${day.substr(-2)}`;
 };
 
-export const fixDateOnSave = (_string) => {
-  const parts = _string.split('-');
-  const mydate = new Date(parts[0], parts[1] - 1, parts[2]);
-  return mydate;
-};
+export const fixDateOnSave = _string => new Date(`${_string}T12:00:00-0300`);
 
 export const orderByDate = (arr = [], propName, order = 'asc') => (
   arr.slice(0).sort((a, b) => {
