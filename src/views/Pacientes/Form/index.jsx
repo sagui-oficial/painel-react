@@ -57,6 +57,7 @@ class PacienteForm extends Component {
       ListaPlanoOperadoraPaciente: String(),
       Funcao: String(),
       Anotacoes: String(),
+      TipoUsuario: Number(),
       CPF: String(),
       Email: String(),
       Telefone: String(),
