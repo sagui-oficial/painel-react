@@ -458,7 +458,7 @@ PacienteForm.propTypes = {
 
 PacienteForm.defaultProps = {
   paciente: {},
-  planos: {},
+  planos: [],
   title: String(),
 };
 

@@ -16,12 +16,17 @@ import {
 import Select from 'react-select';
 
 import { loadPacientes } from '../../../actions/pacientes';
+import {
+  addGuia,
+  loadGuiaDetail,
+  updateGuia,
+} from '../../../actions/guias';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
-import { convertDatePicker, formatCurrency } from '../../../helpers';
+import { convertDatePicker, formatCurrency, fixDateOnSave } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -50,7 +55,7 @@ class GuiaForm extends Component {
   state = {
     isBlocking: false,
     editing: false,
-    loading: false,
+    loading: true,
     selectedName: null,
     breadcrumb: [
       { label: 'Guias', url: '/guias' },
@@ -60,7 +65,7 @@ class GuiaForm extends Component {
       { label: 'Concluída', value: 2 },
     ],
     valorTotal: 0,
-    AllGuias: [],
+    AllPacientes: [],
     sendGuia: {
       Status: 1,
       Numero: String(),
@@ -74,8 +79,15 @@ class GuiaForm extends Component {
       Paciente: {
         Nome: String(),
         CPF: String(),
-        ListaPlanoOperadoraPaciente: Number(),
+        ListaPlanoOperadoraPaciente: String(),
+        Anotacoes: String(),
+        Email: String(),
+        Funcao: String(),
+        Id: Number(),
+        Telefone: String(),
       },
+      Procedimentos: [],
+      Arquivos: [],
     },
     isValidField: {
       Numero: false,
@@ -90,7 +102,9 @@ class GuiaForm extends Component {
 
   baseState = this.state
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.onHandlePageLoad();
+    await this.onHandleLoadPacientes();
     this.onHandleMessage();
   }
 
@@ -100,6 +114,87 @@ class GuiaForm extends Component {
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
     }
+  }
+
+  onHandlePageLoad = async () => {
+    const {
+      match,
+      loadGuiaDetail: propLoadGuiaDetail,
+    } = this.props;
+
+    const { sendGuia } = this.state;
+
+    if (match.params.id) {
+      await propLoadGuiaDetail(match.params.id);
+      const { guia } = this.props;
+      const getGuiaItem = Object.keys(guia).length > 0 ? guia : sendGuia;
+
+
+      this.setState({
+        editing: true,
+        sendGuia: {
+          ...getGuiaItem,
+          Solicitacao: convertDatePicker(getGuiaItem.Solicitacao),
+          Vencimento: convertDatePicker(getGuiaItem.Vencimento),
+        },
+      });
+    }
+
+    this.setState({ loading: false });
+  }
+
+  onHandleLoadPacientes = async () => {
+    const { loadPacientes: propsLoadPacientes } = this.props;
+    await propsLoadPacientes();
+
+    const { pacientes, guia } = this.props;
+
+    const newPlanSelectItem = pacientes.find(item => (
+      item.PublicID === guia.Paciente.PublicID
+    ));
+
+    if (typeof newPlanSelectItem !== 'undefined') {
+      this.setState({
+        selectedName: {
+          PublicID: newPlanSelectItem.PublicID,
+          value: newPlanSelectItem.Nome,
+          label: newPlanSelectItem.Nome,
+        },
+      });
+    }
+
+    this.setState({
+      AllPacientes: pacientes,
+    });
+  }
+
+  onHandleAdd = async () => {
+    const {
+      addGuia: propAddGuia,
+      updateGuia: propUpdateGuia, history,
+    } = this.props;
+
+    const { sendGuia, editing } = this.state;
+
+    this.setState({ loading: true });
+
+    if (editing) {
+      const { guia: { PublicID } } = this.props;
+      await propUpdateGuia({
+        ...sendGuia,
+      }, PublicID);
+      await this.onHandleMessage('Guia modificada.');
+    } else {
+      await propAddGuia({
+        ...sendGuia,
+        Solicitacao: fixDateOnSave(sendGuia.Solicitacao),
+        Vencimento: fixDateOnSave(sendGuia.Vencimento),
+      });
+      await this.setState({ editing: true });
+      await this.onHandleMessage('Guia adicionada.');
+    }
+
+    history.push('/guias');
   }
 
   onHandleMessage = (text) => {
@@ -124,10 +219,87 @@ class GuiaForm extends Component {
     });
   }
 
+  onHandleTarget = ({ value, name }) => {
+    const { sendGuia } = this.state;
+
+    this.setState({
+      isBlocking: true,
+      sendGuia: {
+        ...sendGuia,
+        [name]: value,
+      },
+    });
+  }
+
+  onHandleSelectPaciente = (target) => {
+    const { sendGuia } = this.state;
+    const { value, id } = target;
+
+    this.setState({
+      selectedName: target,
+      sendGuia: {
+        ...sendGuia,
+        Paciente: {
+          ...sendGuia.Paciente,
+          Nome: value,
+          PublicID: id,
+        },
+      },
+    });
+  }
+
+  onHandleBlur = ({ value, name }) => {
+    const { isValidField, sendGuia } = this.state;
+
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
+
+    this.setState({
+      sendGuia: {
+        ...sendGuia,
+        [name]: value.trim(),
+      },
+    });
+  }
+
+  onHandleValidateFields = (event) => {
+    event.preventDefault();
+
+    const { isValidField, sendGuia } = this.state;
+    const setValidFields = {};
+
+    Object.keys(isValidField).map((item) => {
+      if (typeof sendGuia[item] === 'string') {
+        setValidFields[item] = sendGuia[item].trim().length === 0;
+      }
+      return setValidFields;
+    });
+
+    this.setState({
+      ...isValidField,
+      isValidField: setValidFields,
+      isBlocking: false,
+    });
+
+    const countAll = Object.keys(setValidFields).length;
+    const countTrues = Object.values(setValidFields).filter(item => item === false);
+
+    if (countAll === countTrues.length) {
+      this.onHandleAdd();
+    } else {
+      this.onHandleMessage('Preencha todos os campos.');
+    }
+  }
+
   render() {
     const {
-      classes, title,
-      match, error, pacientes,
+      classes, title, match, error,
     } = this.props;
 
     const {
@@ -136,6 +308,7 @@ class GuiaForm extends Component {
       sendGuia, listStatus,
       valorTotal, selectedName,
       isValidField, loading,
+      AllPacientes,
     } = this.state;
 
     return (
@@ -185,7 +358,7 @@ class GuiaForm extends Component {
                     error={isValidField.Numero}
                     value={sendGuia.Numero}
                     onChange={e => this.onHandleTarget(e.target)}
-                    // onBlur={e => this.onHandleBlur(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o número da guia"
                     margin="normal"
                     variant="outlined"
@@ -277,25 +450,25 @@ class GuiaForm extends Component {
                 >
                   <Select
                     label="Nome do paciente"
-                    options={pacientes.map(suggestion => ({
-                      id: suggestion.PublicID,
-                      value: suggestion.Nome,
-                      label: suggestion.Nome,
-                    }))}
+                    options={
+                      AllPacientes.map(suggestion => ({
+                        id: suggestion.PublicID,
+                        value: suggestion.Nome,
+                        label: suggestion.Nome,
+                      }))}
                     components={{ Control, Option }}
                     value={selectedName}
-                    onChange={this.onHandleTargetPacienteNome}
+                    onChange={this.onHandleSelectPaciente}
                     placeholder="Selecione..."
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     disabled
                     label="CPF"
                     name="CPF"
-                    value={sendGuia.Paciente.CPF}
-                    onChange={this.onHandleTargetPaciente}
                     margin="normal"
                     variant="outlined"
                     helperText="020.000.009-92"
@@ -304,6 +477,7 @@ class GuiaForm extends Component {
                     }}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={3}>
                   <TextField
                     fullWidth
@@ -318,6 +492,7 @@ class GuiaForm extends Component {
                     }}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -332,6 +507,7 @@ class GuiaForm extends Component {
                     }}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={12}>
                   <TextField
                     fullWidth
@@ -339,7 +515,6 @@ class GuiaForm extends Component {
                     label="Plano/Operadora"
                     name="NomeFantasia"
                     value={sendGuia.PlanoOperadora.NomeFantasia}
-                    onChange={e => this.onHandleTarget(e.target)}
                     margin="normal"
                     variant="outlined"
                     InputLabelProps={{
@@ -379,20 +554,29 @@ class GuiaForm extends Component {
 GuiaForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
-  pacientes: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
+  pacientes: PropTypes.instanceOf(Object),
+  guia: PropTypes.instanceOf(Object),
+  addGuia: PropTypes.func.isRequired,
+  loadGuiaDetail: PropTypes.func.isRequired,
+  updateGuia: PropTypes.func.isRequired,
+  loadPacientes: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
 GuiaForm.defaultProps = {
+  guia: {},
+  pacientes: [],
   title: String(),
 };
 
 const mapStateToProps = state => ({
+  guia: state.guiasReducer.guia,
   pacientes: state.pacientesReducer.pacientes,
   error: state.guiasReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  loadPacientes,
+  addGuia, loadGuiaDetail, updateGuia, loadPacientes,
 })(withStyles(styles)(GuiaForm));
