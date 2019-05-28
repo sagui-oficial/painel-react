@@ -14,7 +14,7 @@ export function loadPacientes() {
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_PACIENTES, payload: res.filter(item => item.Status !== 99),
+        type: GET_PACIENTES, payload: res,
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };

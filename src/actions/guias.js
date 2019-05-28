@@ -14,7 +14,7 @@ export function loadGuias() {
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_GUIAS, payload: res.filter(item => item.Status !== 99),
+        type: GET_GUIAS, payload: res,
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };

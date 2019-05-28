@@ -15,7 +15,7 @@ import logger from 'redux-logger';
 import reducers from './reducers';
 import { env } from './config/variables';
 import firebaseConfig from './config/firebase';
-import DashboardLayout from './layouts/Dashboard';
+import MainRouters from './routes';
 
 import './assets/styles/default.sass';
 // import * as serviceWorker from './serviceWorker';
@@ -51,7 +51,7 @@ const store = createStore(
 store.firebaseAuthIsReady.then(() => {
   ReactDOM.render(
     <Provider store={store}>
-      <DashboardLayout />
+      <MainRouters />
     </Provider>,
     document.getElementById('root'),
   );

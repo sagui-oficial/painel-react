@@ -7,6 +7,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import dashboardRoutes from './dashbordRoutes';
 import Login from '../views/Login';
 import SignUp from '../views/SignUp';
+import withRoot from '../withRoot';
 
 const activeRouters = dashboardRoutes.filter(item => item.active);
 
@@ -71,4 +72,4 @@ const mapStateToProps = state => ({
   auth: state.firebase.auth.uid,
 });
 
-export default connect(mapStateToProps)(MainRouters);
+export default connect(mapStateToProps)(withRoot(MainRouters));

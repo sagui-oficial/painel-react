@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import reducers from '../../reducers';
-import DashboardLayout from '../../layouts/Dashboard';
+import MainRouters from '../../routes';
 
 const hist = createBrowserHistory();
 
@@ -22,7 +22,7 @@ it('Renders without crashing', () => {
   ReactDOM.render(
     <Provider store={store}>
       <Router history={hist}>
-        <DashboardLayout />
+        <MainRouters />
       </Router>
     </Provider>,
     div,
