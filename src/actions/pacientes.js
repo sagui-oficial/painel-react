@@ -10,7 +10,7 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadPacientes() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'pacientes',
+      uri: 'paciente',
       method: 'GET',
     })
       .then(res => dispatch({
@@ -23,7 +23,7 @@ export function loadPacientes() {
 export function addPaciente(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'pacientes',
+      uri: 'paciente',
       method: 'POST',
       data,
     })
@@ -35,7 +35,7 @@ export function addPaciente(data) {
 export function loadPacienteDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
+      uri: `paciente/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PACIENTE_DETAILS, payload: res }))
@@ -46,7 +46,7 @@ export function loadPacienteDetail(id) {
 export function updatePaciente(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
+      uri: `paciente/${id}`,
       method: 'PUT',
       data,
     })
@@ -58,7 +58,7 @@ export function updatePaciente(data, id) {
 export function deletePaciente(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
+      uri: `paciente/${id}`,
       method: 'DELETE',
     })
       .then(() => dispatch({ type: DELETE_PACIENTE, payload: id }))

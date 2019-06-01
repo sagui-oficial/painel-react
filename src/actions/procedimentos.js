@@ -10,7 +10,7 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadProcedimentos() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'procedimentos',
+      uri: 'procedimento',
       method: 'GET',
     })
       .then(res => dispatch({
@@ -23,7 +23,7 @@ export function loadProcedimentos() {
 export function addProcedimento(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'procedimentos',
+      uri: 'procedimento',
       method: 'POST',
       data,
     })
@@ -35,7 +35,7 @@ export function addProcedimento(data) {
 export function loadProcedimentoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `procedimento/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PROCEDIMENTO_DETAILS, payload: res }))
@@ -46,7 +46,7 @@ export function loadProcedimentoDetail(id) {
 export function updateProcedimento(data, id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `procedimento/${id}`,
       method: 'PUT',
       data,
     })
@@ -58,7 +58,7 @@ export function updateProcedimento(data, id) {
 export function deleteProcedimento(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `procedimento/${id}`,
       method: 'DELETE',
     })
       .then(() => dispatch({ type: DELETE_PROCEDIMENTO, payload: id }))

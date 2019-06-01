@@ -10,7 +10,7 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadPlanos() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'planos',
+      uri: 'planooperadora',
       method: 'GET',
     })
       .then(res => dispatch({
@@ -23,7 +23,7 @@ export function loadPlanos() {
 export function addPlano(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'planos',
+      uri: 'planooperadora',
       method: 'POST',
       data,
     })
@@ -35,7 +35,7 @@ export function addPlano(data) {
 export function loadPlanoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
+      uri: `planooperadora/${id}`,
       method: 'GET',
     })
       .then(res => dispatch({ type: GET_PLANO_DETAILS, payload: res }))
@@ -58,7 +58,7 @@ export function updatePlano(data, id) {
 
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
+      uri: `planooperadora/${id}`,
       method: 'PUT',
       data,
     })
@@ -70,7 +70,7 @@ export function updatePlano(data, id) {
 export function deletePlano(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
+      uri: `planooperadora/${id}`,
       method: 'DELETE',
     })
       .then(() => dispatch({ type: DELETE_PLANO, payload: id }))
