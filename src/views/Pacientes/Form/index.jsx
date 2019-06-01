@@ -52,16 +52,14 @@ class PacienteForm extends Component {
     ],
     AllPlanos: [],
     sendPaciente: {
-      Status: 1,
-      Nome: String(),
-      ListaPlanoOperadoraPaciente: String(),
-      Funcao: String(),
       Anotacoes: String(),
-      TipoUsuario: Number(),
       CPF: String(),
       Email: String(),
-      Telefone: String(),
+      Funcao: String(),
+      Nome: String(),
       NumeroPlano: String(),
+      PlanoOperadoraId: Number(),
+      Telefone: String(),
     },
     isValidField: {
       CPF: false,
@@ -118,13 +116,13 @@ class PacienteForm extends Component {
     const { planos, paciente } = this.props;
 
     const newPlanSelectItem = planos.find(item => (
-      item.PublicID === paciente.ListaPlanoOperadoraPaciente
+      item.Id === paciente.Id
     ));
 
     if (typeof newPlanSelectItem !== 'undefined') {
       this.setState({
         selectedPlano: {
-          PublicID: newPlanSelectItem.PublicID,
+          Id: newPlanSelectItem.Id,
           value: newPlanSelectItem.NomeFantasia,
           label: newPlanSelectItem.NomeFantasia,
         },
@@ -204,7 +202,7 @@ class PacienteForm extends Component {
       selectedPlano: target,
       sendPaciente: {
         ...sendPaciente,
-        ListaPlanoOperadoraPaciente: target.PublicID,
+        PlanoOperadoraId: target.Id,
       },
     });
   }
@@ -392,7 +390,7 @@ class PacienteForm extends Component {
                     options={
                       AllPlanos.map(suggestion => (
                         {
-                          PublicID: suggestion.PublicID,
+                          Id: suggestion.Id,
                           value: suggestion.NomeFantasia,
                           label: suggestion.NomeFantasia,
                         }
@@ -401,7 +399,6 @@ class PacienteForm extends Component {
                     components={{ Control, Option }}
                     value={selectedPlano}
                     onChange={this.onHandleSelectPlano}
-                    placeholder="Selecione..."
                   />
                 </Grid>
 
