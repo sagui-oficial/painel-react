@@ -5,25 +5,25 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
-  IconButton,
   Button,
   Typography,
   Grid,
   Divider,
   TextField,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
+  // List,
+  // ListItem,
+  // IconButton,
+  // ListItemSecondaryAction,
 } from '@material-ui/core';
 
-import { Delete as DeleteIcon } from '@material-ui/icons';
-import Select from 'react-select';
+// import { Delete as DeleteIcon } from '@material-ui/icons';
+// import Select from 'react-select';
 
 import Master from '../../../components/Master';
 import { addPlano, loadPlanoDetail, updatePlano } from '../../../actions/planos';
-import { formatCurrency } from '../../../helpers';
-import { loadProcedimentos } from '../../../actions/procedimentos';
-import { Control, Option } from '../../../components/AutoComplete';
+// import { formatCurrency } from '../../../helpers';
+// import { loadProcedimentos } from '../../../actions/procedimentos';
+// import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
@@ -80,7 +80,7 @@ class PlanoForm extends Component {
       NomeFantasia: String(),
       RazaoSocial: String(),
       CNPJ: String(),
-      ListaProcedimentos: [],
+      // ListaProcedimentos: [],
       DataEnvioLote: new Date(),
       DataRecebimentoLote: new Date(),
     },
@@ -99,7 +99,7 @@ class PlanoForm extends Component {
 
   async componentDidMount() {
     await this.onHandlePageLoad();
-    await this.onHandleLoadProcedimentos();
+    // await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
   }
 
@@ -111,7 +111,7 @@ class PlanoForm extends Component {
     }
   }
 
-  onHandleLoadProcedimentos = async () => {
+  /* onHandleLoadProcedimentos = async () => {
     const { loadProcedimentos: propsLoadProcedimentos } = this.props;
     await propsLoadProcedimentos();
 
@@ -126,7 +126,7 @@ class PlanoForm extends Component {
         return true;
       }),
     }));
-  }
+  } */
 
   onHandlePageLoad = async () => {
     const {
@@ -219,7 +219,7 @@ class PlanoForm extends Component {
     });
   }
 
-  onHandleSelectProcedimentos = (target) => {
+  /* onHandleSelectProcedimentos = (target) => {
     const { AdicionarProcedimentos } = this.state;
     const {
       name, value, PublicID, Codigo,
@@ -234,7 +234,7 @@ class PlanoForm extends Component {
         Codigo,
       },
     });
-  }
+  } */
 
   onHandleBlur = ({ value, name }) => {
     const { sendPlano, isValidField } = this.state;
@@ -285,7 +285,7 @@ class PlanoForm extends Component {
     }
   }
 
-  onHandleAddProcedimento = (event) => {
+  /* onHandleAddProcedimento = (event) => {
     event.preventDefault();
     const {
       sendPlano, AdicionarProcedimentos,
@@ -314,9 +314,9 @@ class PlanoForm extends Component {
         },
       });
     }
-  }
+  } */
 
-  onHandleDeleteProcedimento = (itemProcedimento) => {
+  /* onHandleDeleteProcedimento = (itemProcedimento) => {
     const { sendPlano } = this.state;
 
     this.setState(prevState => ({
@@ -329,7 +329,7 @@ class PlanoForm extends Component {
         )),
       },
     }));
-  }
+  } */
 
   render() {
     const {
@@ -337,13 +337,19 @@ class PlanoForm extends Component {
     } = this.props;
 
     const {
-      sendPlano, breadcrumb, selectedName,
-      editing, boxMessage, isValidField,
-      AdicionarProcedimentos, isBlocking,
-      AllProcedimentos, loading,
+      sendPlano,
+      breadcrumb,
+      loading,
+      isBlocking,
+      editing,
+      boxMessage,
+      isValidField,
+      // AdicionarProcedimentos,
+      // AllProcedimentos,
+      // selectedName,
     } = this.state;
 
-    const { ListaProcedimentos } = sendPlano;
+    // const { ListaProcedimentos } = sendPlano;
 
     return (
       <Master title={`${title} plano`}>
@@ -436,9 +442,9 @@ class PlanoForm extends Component {
                 </Grid>
               </Grid>
 
-              <br />
+              {/* <br /> */}
 
-              <Grid container alignItems="center">
+              {/* <Grid container alignItems="center">
                 <Typography variant="h6" color="inherit" noWrap>
                   Adicionar procedimentos
                 </Typography>
@@ -452,9 +458,9 @@ class PlanoForm extends Component {
                 >
                   +Adicionar
                 </Button>
-              </Grid>
+              </Grid> */}
 
-              <Grid container spacing={16}>
+              {/* <Grid container spacing={16}>
                 <Grid
                   item
                   xs={12}
@@ -504,9 +510,9 @@ class PlanoForm extends Component {
                     }}
                   />
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <List dense>
+              {/* <List dense>
                 {
                   sendPlano && (
                     ListaProcedimentos && (
@@ -540,7 +546,7 @@ class PlanoForm extends Component {
                     )
                   )
                 }
-              </List>
+              </List> */}
 
               <Button
                 type="submit"
@@ -568,27 +574,27 @@ PlanoForm.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
   plano: PropTypes.instanceOf(Object),
-  procedimentos: PropTypes.instanceOf(Object),
+  // procedimentos: PropTypes.instanceOf(Object),
   addPlano: PropTypes.func.isRequired,
   updatePlano: PropTypes.func.isRequired,
   loadPlanoDetail: PropTypes.func.isRequired,
-  loadProcedimentos: PropTypes.func.isRequired,
+  // loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
 PlanoForm.defaultProps = {
   plano: {},
-  procedimentos: [],
+  // procedimentos: [],
   title: String(),
 };
 
 const mapStateToProps = state => ({
   plano: state.planosReducer.plano,
   error: state.planosReducer.fetchError,
-  procedimentos: state.procedimentosReducer.procedimentos,
+  // procedimentos: state.procedimentosReducer.procedimentos,
 });
 
 export default connect(mapStateToProps, {
-  addPlano, loadPlanoDetail, updatePlano, loadProcedimentos,
+  addPlano, loadPlanoDetail, updatePlano, /* loadProcedimentos, */
 })(withStyles(styles)(PlanoForm));

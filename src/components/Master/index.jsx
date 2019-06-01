@@ -33,12 +33,15 @@ const drawerWidth = 240;
 const styles = theme => ({
   logo: {
     width: '100%',
-    maxWidth: '120px',
+    display: 'block',
+    margin: 'auto',
   },
   root: {
     display: 'flex',
   },
   linkLogo: {
+    width: '100%',
+    maxWidth: '120px',
     display: 'block',
     fontSize: '0',
   },

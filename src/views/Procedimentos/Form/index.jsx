@@ -54,7 +54,7 @@ class ProcedimentoForm extends Component {
     ],
     sendProcedimento: {
       Status: 1,
-      ValorProcedimento: 1,
+      ValorProcedimento: 0.01,
       Codigo: String(),
       NomeProcedimento: String(),
       Exigencias: String(),
@@ -278,6 +278,23 @@ class ProcedimentoForm extends Component {
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o código"
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Valor do procedimento"
+                    name="ValorProcedimento"
+                    required
+                    error={isValidField.ValorProcedimento}
+                    value={sendProcedimento.ValorProcedimento}
+                    onChange={e => this.onHandleTarget(e.target)}
+                    onBlur={e => this.onHandleBlur(e.target)}
+                    helperText="Digite o valor do procedimento"
+                    type="number"
+                    placeholder="1.000,00"
                     margin="normal"
                     variant="outlined"
                   />

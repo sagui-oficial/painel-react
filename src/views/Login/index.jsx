@@ -53,6 +53,9 @@ const styles = theme => ({
     width: '100%',
     margin: '3% auto 0',
   },
+  fieldSeparate: {
+    marginTop: '15px',
+  },
 });
 
 class Login extends Component {
@@ -136,8 +139,7 @@ class Login extends Component {
               />
             </Grid>
           </Grid>
-          <br />
-          <Grid container spacing={8} alignItems="flex-end">
+          <Grid className={classes.fieldSeparate} container spacing={8} alignItems="flex-end">
             <Grid item md sm xs>
               <TextField
                 name="password"

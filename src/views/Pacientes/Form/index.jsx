@@ -61,12 +61,12 @@ class PacienteForm extends Component {
       CPF: String(),
       Email: String(),
       Telefone: String(),
-      Carterinha: String(),
+      NumeroPlano: String(),
     },
     isValidField: {
       CPF: false,
       Nome: false,
-      Carterinha: false,
+      NumeroPlano: false,
     },
     boxMessage: {
       open: false,
@@ -409,13 +409,13 @@ class PacienteForm extends Component {
                   <TextField
                     fullWidth
                     required
-                    label="Carterinha"
-                    name="Carterinha"
-                    error={isValidField.Carterinha}
-                    value={sendPaciente.Carterinha}
+                    label="Carteirinha"
+                    name="NumeroPlano"
+                    error={isValidField.NumeroPlano}
+                    value={sendPaciente.NumeroPlano}
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
-                    helperText="Digite a carterinha"
+                    helperText="Digite o número da carteirinha"
                     margin="normal"
                     variant="outlined"
                   />
