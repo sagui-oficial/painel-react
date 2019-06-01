@@ -10,11 +10,12 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadPlanos() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'planos',
+      uri: 'planooperadora',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_PLANOS, payload: res,
+        type: GET_PLANOS,
+        payload: typeof res.Result.PlanosOperadoras !== 'undefined' ? res.Result.PlanosOperadoras : [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -23,11 +24,14 @@ export function loadPlanos() {
 export function addPlano(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'planos',
+      uri: 'planooperadora',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_PLANO, payload: res }))
+      .then(res => dispatch({
+        type: SAVE_PLANO,
+        payload: typeof res.Result.PlanoOperadora !== 'undefined' ? res.Result.PlanoOperadora : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -35,16 +39,19 @@ export function addPlano(data) {
 export function loadPlanoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
+      uri: `planooperadora/${id}`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_PLANO_DETAILS, payload: res }))
+      .then(res => dispatch({
+        type: GET_PLANO_DETAILS,
+        payload: typeof res.Result.PlanoOperadora !== 'undefined' ? res.Result.PlanoOperadora : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updatePlano(data, id) {
-  if (data.ListaProcedimentos.length === 0) {
+export function updatePlano(data) {
+  /* if (data.ListaProcedimentos.length === 0) {
     // eslint-disable-next-line no-param-reassign
     data.ListaProcedimentos = [
       {
@@ -54,15 +61,18 @@ export function updatePlano(data, id) {
         Codigo: null,
       },
     ];
-  }
+  } */
 
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
-      method: 'PUT',
+      uri: 'planooperadora',
+      method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_PLANO, payload: res }))
+      .then(res => dispatch({
+        type: UPDATE_PLANO,
+        payload: typeof res.Result.PlanoOperadora !== 'undefined' ? res.Result.PlanoOperadora : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -70,10 +80,13 @@ export function updatePlano(data, id) {
 export function deletePlano(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `planos/${id}`,
-      method: 'DELETE',
+      uri: `planooperadora/${id}`,
+      method: 'PATCH',
     })
-      .then(() => dispatch({ type: DELETE_PLANO, payload: id }))
+      .then(() => dispatch({
+        type: DELETE_PLANO,
+        payload: id,
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

@@ -10,11 +10,12 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadProcedimentos() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'procedimentos',
+      uri: 'procedimento',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_PROCEDIMENTOS, payload: res,
+        type: GET_PROCEDIMENTOS,
+        payload: typeof res.Result.Procedimentos !== 'undefined' ? res.Result.Procedimentos : [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -23,11 +24,14 @@ export function loadProcedimentos() {
 export function addProcedimento(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'procedimentos',
+      uri: 'procedimento',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_PROCEDIMENTO, payload: res }))
+      .then(res => dispatch({
+        type: SAVE_PROCEDIMENTO,
+        payload: typeof res.Result.Procedimento !== 'undefined' ? res.Result.Procedimento : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -35,22 +39,28 @@ export function addProcedimento(data) {
 export function loadProcedimentoDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
+      uri: `procedimento/${id}`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_PROCEDIMENTO_DETAILS, payload: res }))
+      .then(res => dispatch({
+        type: GET_PROCEDIMENTO_DETAILS,
+        payload: typeof res.Result.Procedimento !== 'undefined' ? res.Result.Procedimento : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updateProcedimento(data, id) {
+export function updateProcedimento(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
-      method: 'PUT',
+      uri: 'procedimento',
+      method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_PROCEDIMENTO, payload: res }))
+      .then(res => dispatch({
+        type: UPDATE_PROCEDIMENTO,
+        payload: typeof res.Result.Procedimento !== 'undefined' ? res.Result.Procedimento : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -58,10 +68,13 @@ export function updateProcedimento(data, id) {
 export function deleteProcedimento(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `procedimentos/${id}`,
-      method: 'DELETE',
+      uri: `procedimento/${id}`,
+      method: 'PATCH',
     })
-      .then(() => dispatch({ type: DELETE_PROCEDIMENTO, payload: id }))
+      .then(() => dispatch({
+        type: DELETE_PROCEDIMENTO,
+        payload: id,
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

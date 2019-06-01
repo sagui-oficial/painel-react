@@ -10,11 +10,12 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadPacientes() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'pacientes',
+      uri: 'paciente',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_PACIENTES, payload: res,
+        type: GET_PACIENTES,
+        payload: typeof res.Result.Pacientes !== 'undefined' ? res.Result.Pacientes : [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -23,11 +24,14 @@ export function loadPacientes() {
 export function addPaciente(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'pacientes',
+      uri: 'paciente',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_PACIENTE, payload: res }))
+      .then(res => dispatch({
+        type: SAVE_PACIENTE,
+        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -35,22 +39,28 @@ export function addPaciente(data) {
 export function loadPacienteDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
+      uri: `paciente/${id}`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_PACIENTE_DETAILS, payload: res }))
+      .then(res => dispatch({
+        type: GET_PACIENTE_DETAILS,
+        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updatePaciente(data, id) {
+export function updatePaciente(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
-      method: 'PUT',
+      uri: 'paciente',
+      method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_PACIENTE, payload: res }))
+      .then(res => dispatch({
+        type: UPDATE_PACIENTE,
+        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -58,10 +68,13 @@ export function updatePaciente(data, id) {
 export function deletePaciente(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `pacientes/${id}`,
-      method: 'DELETE',
+      uri: `paciente/${id}`,
+      method: 'PATCH',
     })
-      .then(() => dispatch({ type: DELETE_PACIENTE, payload: id }))
+      .then(() => dispatch({
+        type: DELETE_PACIENTE,
+        payload: id,
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

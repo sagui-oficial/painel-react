@@ -81,6 +81,8 @@ class PlanoForm extends Component {
       RazaoSocial: String(),
       CNPJ: String(),
       ListaProcedimentos: [],
+      DataEnvioLote: new Date(),
+      DataRecebimentoLote: new Date(),
     },
     isValidField: {
       NomeFantasia: false,

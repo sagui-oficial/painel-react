@@ -10,11 +10,12 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export function loadGuias() {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'guias',
+      uri: 'gto',
       method: 'GET',
     })
       .then(res => dispatch({
-        type: GET_GUIAS, payload: res,
+        type: GET_GUIAS,
+        payload: typeof res.Result.GTOs !== 'undefined' ? res.Result.GTOs : [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -23,11 +24,14 @@ export function loadGuias() {
 export function addGuia(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'guias',
+      uri: 'gto',
       method: 'POST',
       data,
     })
-      .then(res => dispatch({ type: SAVE_GUIA, payload: res }))
+      .then(res => dispatch({
+        type: SAVE_GUIA,
+        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -35,22 +39,28 @@ export function addGuia(data) {
 export function loadGuiaDetail(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `guias/${id}`,
+      uri: `gto/${id}`,
       method: 'GET',
     })
-      .then(res => dispatch({ type: GET_GUIA_DETAILS, payload: res }))
+      .then(res => dispatch({
+        type: GET_GUIA_DETAILS,
+        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
 
-export function updateGuia(data, id) {
+export function updateGuia(data) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `guias/${id}`,
-      method: 'PUT',
+      uri: 'gto',
+      method: 'PATCH',
       data,
     })
-      .then(res => dispatch({ type: UPDATE_GUIA, payload: res }))
+      .then(res => dispatch({
+        type: UPDATE_GUIA,
+        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }
@@ -58,10 +68,13 @@ export function updateGuia(data, id) {
 export function deleteGuia(id) {
   return async (dispatch) => {
     await APIResquest({
-      uri: `guias/${id}`,
-      method: 'DELETE',
+      uri: `gto/${id}`,
+      method: 'PATCH',
     })
-      .then(() => dispatch({ type: DELETE_GUIA, payload: id }))
+      .then(() => dispatch({
+        type: DELETE_GUIA,
+        payload: id,
+      }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
 }

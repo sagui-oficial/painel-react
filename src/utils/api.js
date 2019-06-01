@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * API BACKEND
  */
-export const API = process.env.REACT_APP_PUBLIC_URL || 'https://localhost:5001/backoffice';
+export const API = process.env.REACT_APP_PUBLIC_URL || process.env.REACT_APP_MOCK_API;
 
 /**
  * Call to API from url
@@ -16,6 +16,9 @@ export const APIResquest = (config) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'PUT,PATCH,GET,POST',
+        'Access-Control-Allow-Headers': 'Referer,Accept,Origin,User-Agent,Content-Type',
       },
     };
 
