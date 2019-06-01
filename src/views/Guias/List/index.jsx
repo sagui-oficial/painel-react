@@ -115,15 +115,17 @@ class GuiasList extends Component {
   }
 
 
-  onHandleStatusGuia = async (event, { Status, PublicID }) => {
+  onHandleStatusGuia = async (event, item) => {
     const { updateGuia: propUpdateGuiaStatus } = this.props;
+    const { Status } = item;
     const { target } = event;
 
     if (Status !== target.value) {
       await this.onHandleMessage('Status atualizado.');
       await propUpdateGuiaStatus({
+        ...item,
         Status: target.value,
-      }, PublicID);
+      });
     }
   }
 
@@ -222,10 +224,10 @@ class GuiasList extends Component {
 
                 <p>
                   {formatDate(item.Vencimento)}
-                  {' - '}
                   {
                     item.Procedimentos.length > 0 && (
                       <strong>
+                        {' - '}
                         {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
                       </strong>
                     )

@@ -11,11 +11,17 @@ import {
   TextField,
   Divider,
   MenuItem,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
 } from '@material-ui/core';
 
+import { Delete as DeleteIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
 import { loadPacientes } from '../../../actions/pacientes';
+import { loadProcedimentos } from '../../../actions/procedimentos';
 import {
   addGuia,
   loadGuiaDetail,
@@ -49,6 +55,13 @@ const styles = theme => ({
       width: '100%',
     },
   },
+  listProcess: {
+    marginBottom: '10px',
+    borderRadius: '3px',
+    paddingRight: '50px',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
+    boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
+  },
 });
 
 class GuiaForm extends Component {
@@ -56,7 +69,8 @@ class GuiaForm extends Component {
     isBlocking: false,
     editing: false,
     loading: true,
-    selectedName: null,
+    selectedPaciente: null,
+    selectedProcedimento: null,
     breadcrumb: [
       { label: 'Guias', url: '/guias' },
     ],
@@ -64,30 +78,22 @@ class GuiaForm extends Component {
       { label: 'Criada', value: 1 },
       { label: 'Concluída', value: 2 },
     ],
-    valorTotal: 0,
     AllPacientes: [],
+    AllProcedimentos: [],
+    AdicionarProcedimento: {},
     sendGuia: {
       Status: 1,
       Numero: String(),
       Solicitacao: convertDatePicker(new Date()),
       Vencimento: convertDatePicker(new Date()),
       PlanoOperadora: {
-        id: Number(),
-        PublicID: String(),
+        Id: Number(),
         NomeFantasia: String(),
       },
       Paciente: {
-        Nome: String(),
-        CPF: String(),
-        ListaPlanoOperadoraPaciente: String(),
-        Anotacoes: String(),
-        Email: String(),
-        Funcao: String(),
         Id: Number(),
-        Telefone: String(),
       },
       Procedimentos: [],
-      Arquivos: [],
     },
     isValidField: {
       Numero: false,
@@ -106,6 +112,7 @@ class GuiaForm extends Component {
     const { loadPacientes: propsLoadPacientes } = this.props;
     await this.onHandlePageLoad();
     await propsLoadPacientes();
+    await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
   }
 
@@ -147,18 +154,36 @@ class GuiaForm extends Component {
     this.setState({ loading: false });
   }
 
+  onHandleLoadProcedimentos = async () => {
+    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
+    await propsLoadProcedimentos();
+
+    const { procedimentos } = this.props;
+
+    this.setState(prevState => ({
+      AllProcedimentos: procedimentos.filter((item) => {
+        const result = prevState.sendGuia.Procedimentos.find(itemList => (
+          item.PublicID === itemList.PublicID
+        ));
+        if (result) return false;
+        return true;
+      }),
+    }));
+  }
+
   onHandleLoadPacientes = async () => {
     const { pacientes, guia } = this.props;
     const { editing } = this.state;
 
     if (editing) {
       const newPlanSelectItem = pacientes.find(item => (
-        item.PublicID === guia.Paciente.PublicID
+        item.Id === guia.Paciente.Id
       ));
 
       this.setState({
-        selectedName: {
-          PublicID: newPlanSelectItem.PublicID,
+        selectedPaciente: {
+          Id: newPlanSelectItem.Id,
+          PlanoOperadora: newPlanSelectItem.PlanoOperadora,
           value: newPlanSelectItem.Nome,
           label: newPlanSelectItem.Nome,
         },
@@ -181,12 +206,11 @@ class GuiaForm extends Component {
     this.setState({ loading: true });
 
     if (editing) {
-      const { guia: { PublicID } } = this.props;
       await propUpdateGuia({
         ...sendGuia,
         Solicitacao: fixDateOnSave(sendGuia.Solicitacao),
         Vencimento: fixDateOnSave(sendGuia.Vencimento),
-      }, PublicID);
+      });
       await this.onHandleMessage('Guia modificada.');
     } else {
       await propAddGuia({
@@ -237,19 +261,66 @@ class GuiaForm extends Component {
 
   onHandleSelectPaciente = (target) => {
     const { sendGuia } = this.state;
-    const { value, id } = target;
+    const { Id, PlanoOperadora } = target;
 
     this.setState({
-      selectedName: target,
+      selectedPaciente: target,
       sendGuia: {
         ...sendGuia,
+        PlanoOperadora,
         Paciente: {
-          ...sendGuia.Paciente,
-          Nome: value,
-          PublicID: id,
+          Id,
         },
       },
     });
+  }
+
+  onHandleSelectProcedimentos = (target) => {
+    const { Procedimento } = target;
+
+    this.setState({
+      selectedProcedimento: target,
+      AdicionarProcedimento: Procedimento,
+    });
+  }
+
+  onHandleAddProcedimento = (event) => {
+    event.preventDefault();
+    const {
+      sendGuia, AdicionarProcedimento,
+      selectedProcedimento, AllProcedimentos,
+    } = this.state;
+
+    if (selectedProcedimento) {
+      this.setState({
+        selectedProcedimento: String(),
+        AllProcedimentos: AllProcedimentos.filter(item => (
+          item.PublicID !== AdicionarProcedimento.PublicID
+        )),
+        sendGuia: {
+          ...sendGuia,
+          Procedimentos: [
+            AdicionarProcedimento,
+            ...sendGuia.Procedimentos,
+          ],
+        },
+      });
+    }
+  }
+
+  onHandleDeleteProcedimento = (itemProcedimento) => {
+    const { sendGuia } = this.state;
+
+    this.setState(prevState => ({
+      AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
+      sendGuia: {
+        ...sendGuia,
+        Procedimentos: sendGuia.Procedimentos.filter(item => (
+          item.PublicID !== itemProcedimento.PublicID
+          && item.PublicID !== null
+        )),
+      },
+    }));
   }
 
   onHandleBlur = ({ value, name }) => {
@@ -310,9 +381,10 @@ class GuiaForm extends Component {
       breadcrumb, editing,
       boxMessage, isBlocking,
       sendGuia, listStatus,
-      valorTotal, selectedName,
+      selectedPaciente,
+      selectedProcedimento,
       isValidField, loading,
-      AllPacientes,
+      AllPacientes, AllProcedimentos,
     } = this.state;
 
     return (
@@ -368,7 +440,7 @@ class GuiaForm extends Component {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
                     select
@@ -384,25 +456,10 @@ class GuiaForm extends Component {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    fullWidth
-                    value={formatCurrency(valorTotal)}
-                    label="Valor total"
-                    margin="normal"
-                    variant="outlined"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
               </Grid>
 
               <Grid container spacing={16}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
                     label="Data de solicitação"
@@ -418,7 +475,7 @@ class GuiaForm extends Component {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
                     label="Data de vencimento"
@@ -439,84 +496,55 @@ class GuiaForm extends Component {
               <br />
 
               <Typography variant="h6" color="inherit" noWrap>
-                Informação sobre o paciente
+                Informações do paciente
               </Typography>
 
               <Grid container spacing={16}>
                 <Grid
                   item
                   xs={12}
-                  sm={6}
+                  sm={5}
                   style={{
                     position: 'relative',
                     zIndex: '2',
                   }}
                 >
-                  <Select
-                    label="Nome do paciente"
-                    options={
-                      AllPacientes.map(suggestion => ({
-                        id: suggestion.PublicID,
-                        value: suggestion.Nome,
-                        label: suggestion.Nome,
-                      }))}
-                    components={{ Control, Option }}
-                    value={selectedName}
-                    onChange={this.onHandleSelectPaciente}
-                    placeholder="Selecione..."
-                  />
+                  {
+                    !editing ? (
+                      <Select
+                        label="Nome do paciente"
+                        options={
+                          AllPacientes.map(suggestion => ({
+                            Id: suggestion.Id,
+                            PlanoOperadora: suggestion.PlanoOperadora,
+                            value: suggestion.Nome,
+                            label: suggestion.Nome,
+                          }))}
+                        components={{ Control, Option }}
+                        value={selectedPaciente}
+                        onChange={this.onHandleSelectPaciente}
+                        placeholder="Selecione..."
+                      />
+                    ) : (
+                      <TextField
+                        fullWidth
+                        disabled
+                        value={sendGuia.Paciente.Nome}
+                        label="Nome do paciente"
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )
+                  }
                 </Grid>
-
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
                     disabled
-                    label="CPF"
-                    name="CPF"
-                    margin="normal"
-                    variant="outlined"
-                    helperText="020.000.009-92"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Telefone"
-                    name="Telefone"
-                    margin="normal"
-                    variant="outlined"
-                    helperText="(11) 9000-0000"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="E-mail"
-                    name="Email"
-                    margin="normal"
-                    variant="outlined"
-                    helperText="email@email.com.br"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Plano/Operadora"
+                    label="Plano/Convênio"
                     name="NomeFantasia"
                     value={sendGuia.PlanoOperadora.NomeFantasia}
                     margin="normal"
@@ -528,11 +556,112 @@ class GuiaForm extends Component {
                 </Grid>
               </Grid>
 
-              <br />
+              <Grid
+                container
+                alignItems="center"
+                style={{
+                  marginTop: '40px',
+                }}
+              >
+                <Typography variant="h6" color="inherit" noWrap>
+                  Adicionar procedimentos
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  disabled={!!error}
+                  className={classes.addBtn}
+                  onClick={this.onHandleAddProcedimento}
+                >
+                  +Adicionar
+                </Button>
+              </Grid>
 
-              <Typography variant="h6" color="inherit" noWrap>
-                Adicionar procedimentos
-              </Typography>
+              <Grid container spacing={16}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={9}
+                  style={{
+                    position: 'relative',
+                    zIndex: '2',
+                  }}
+                >
+                  <Select
+                    label="Cadastrar procedimentos"
+                    options={
+                      AllProcedimentos.map((suggestion) => {
+                        const NameProd = 'NomeProcedimento';
+                        return (
+                          {
+                            name: NameProd,
+                            Procedimento: suggestion,
+                            PublicID: suggestion.PublicID,
+                            Codigo: suggestion.Codigo,
+                            value: suggestion.NomeProcedimento,
+                            label: suggestion.NomeProcedimento,
+                          }
+                        );
+                      })
+                    }
+                    components={{ Control, Option }}
+                    value={selectedProcedimento}
+                    onChange={this.onHandleSelectProcedimentos}
+                    placeholder="Selecione..."
+                  />
+                </Grid>
+
+                {
+                  sendGuia
+                  && sendGuia.Procedimentos
+                  && sendGuia.Procedimentos.length > 0 && (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={9}
+                      style={{
+                        marginTop: '40px',
+                      }}
+                    >
+                      <Typography variant="h6" color="inherit" noWrap>
+                        Procedimentos realizados
+                      </Typography>
+
+                      <List dense>
+                        {
+                          sendGuia.Procedimentos
+                            .filter(item => item.PublicID !== null)
+                            .map(item => (
+                              <ListItem
+                                key={item.PublicID}
+                                className={classes.listProcess}
+                              >
+                                <div className={classes.boxList}>
+                                  <p className={classes.smallItemText}>
+                                    {item.Codigo}
+                                    {' - '}
+                                    {item.NomeProcedimento}
+                                    {' - '}
+                                    {formatCurrency(item.ValorProcedimento)}
+                                  </p>
+                                </div>
+                                <ListItemSecondaryAction className={classes.iconDelete}>
+                                  <IconButton
+                                    disabled={!!error}
+                                    onClick={() => this.onHandleDeleteProcedimento(item)}
+                                    aria-label="Deletar"
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              </ListItem>
+                            ))
+                        }
+                      </List>
+                    </Grid>
+                  )}
+              </Grid>
 
               <Button
                 type="submit"
@@ -560,11 +689,13 @@ GuiaForm.propTypes = {
   match: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   pacientes: PropTypes.instanceOf(Object),
+  procedimentos: PropTypes.instanceOf(Object),
   guia: PropTypes.instanceOf(Object),
   addGuia: PropTypes.func.isRequired,
   loadGuiaDetail: PropTypes.func.isRequired,
   updateGuia: PropTypes.func.isRequired,
   loadPacientes: PropTypes.func.isRequired,
+  loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
@@ -572,15 +703,17 @@ GuiaForm.propTypes = {
 GuiaForm.defaultProps = {
   guia: {},
   pacientes: [],
+  procedimentos: [],
   title: String(),
 };
 
 const mapStateToProps = state => ({
   guia: state.guiasReducer.guia,
   pacientes: state.pacientesReducer.pacientes,
+  procedimentos: state.procedimentosReducer.procedimentos,
   error: state.guiasReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  addGuia, loadGuiaDetail, updateGuia, loadPacientes,
+  addGuia, loadGuiaDetail, updateGuia, loadPacientes, loadProcedimentos,
 })(withStyles(styles)(GuiaForm));
