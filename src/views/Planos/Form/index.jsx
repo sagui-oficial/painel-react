@@ -64,7 +64,6 @@ class PlanoForm extends Component {
       ValorProcedimento: String(),
     },
     sendPlano: {
-      Status: 1,
       NomeFantasia: String(),
       RazaoSocial: String(),
       CNPJ: String(),

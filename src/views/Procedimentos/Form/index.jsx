@@ -53,16 +53,16 @@ class ProcedimentoForm extends Component {
       { label: 'Procedimentos', url: '/procedimentos' },
     ],
     sendProcedimento: {
-      Status: 1,
-      ValorProcedimento: 0.01,
       Codigo: String(),
       NomeProcedimento: String(),
+      ValorProcedimento: String(),
       Exigencias: String(),
       Anotacoes: String(),
     },
     isValidField: {
       Codigo: false,
       NomeProcedimento: false,
+      ValorProcedimento: false,
       Exigencias: false,
       Anotacoes: false,
     },
