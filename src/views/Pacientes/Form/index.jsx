@@ -55,7 +55,7 @@ class PacienteForm extends Component {
       Anotacoes: String(),
       CPF: String(),
       Email: String(),
-      Funcao: String(),
+      Funcao: 'FUNCAOSTRING',
       Nome: String(),
       NumeroPlano: String(),
       PlanoOperadoraId: Number(),
@@ -63,8 +63,11 @@ class PacienteForm extends Component {
     },
     isValidField: {
       CPF: false,
+      Email: false,
       Nome: false,
       NumeroPlano: false,
+      PlanoOperadoraId: false,
+      Telefone: false,
     },
     boxMessage: {
       open: false,
@@ -116,7 +119,7 @@ class PacienteForm extends Component {
     const { planos, paciente } = this.props;
 
     const newPlanSelectItem = planos.find(item => (
-      item.Id === paciente.Id
+      item.Id === paciente.PlanoOperadoraId
     ));
 
     if (typeof newPlanSelectItem !== 'undefined') {
@@ -341,12 +344,14 @@ class PacienteForm extends Component {
                 <Grid item xs={12} sm={3}>
                   <TextField
                     fullWidth
+                    required
                     label="Telefone"
                     name="Telefone"
+                    error={isValidField.Telefone}
                     value={sendPaciente.Telefone}
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
-                    helperText="(11) 9000-0000"
+                    helperText="(11) 90000-0000"
                     margin="normal"
                     variant="outlined"
                   />
@@ -355,8 +360,10 @@ class PacienteForm extends Component {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    required
                     label="E-mail"
                     name="Email"
+                    error={isValidField.Email}
                     value={sendPaciente.Email}
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
