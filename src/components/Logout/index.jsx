@@ -13,12 +13,18 @@ import { logout } from '../../actions/login';
 const styles = theme => ({
   root: {
     display: 'flex',
+    alignItems: 'center',
   },
   card: {
     maxWidth: 400,
   },
   avatar: {
     backgroundColor: '#3d3d3d',
+  },
+  nametitle: {
+    color: '#333',
+    fontSize: '12px',
+    marginRight: '5px',
   },
   avatar2: {
     backgroundColor: theme.roundedBtn.borderColor,
@@ -50,6 +56,7 @@ class MenuListComposition extends Component {
 
     return (
       <div className={classes.root}>
+        <span className={classes.nametitle}>{name && `Olá, ${name}`}</span>
         <IconButton
           buttonRef={(node) => {
             this.anchorEl = node;
@@ -84,7 +91,7 @@ class MenuListComposition extends Component {
                       style={{ paddingBottom: '0' }}
                       titleTypographyProps={{ style: { fontSize: '16px' } }}
                       subheaderTypographyProps={{ style: { fontSize: '14px' } }}
-                      title={name}
+                      // title={name}
                       subheader={email}
                     />
                     <CardActions>

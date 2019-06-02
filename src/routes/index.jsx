@@ -11,7 +11,6 @@ import withRoot from '../withRoot';
 
 const activeRouters = dashboardRoutes.filter(item => item.active);
 
-
 // eslint-disable-next-line no-console
 console.log(`${'%c'}
 

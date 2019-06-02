@@ -1,3 +1,4 @@
+/* global document */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
@@ -110,6 +111,14 @@ class PacienteForm extends Component {
     }
 
     this.setState({ loading: false });
+
+
+    const setAttributesFields = () => {
+      document.querySelector('[name="CPF"]').setAttribute('maxlength', '14');
+      document.querySelector('[name="Telefone"]').setAttribute('maxlength', '15');
+    };
+
+    setAttributesFields();
   }
 
   onHandleLoadPlanos = async () => {
@@ -186,14 +195,43 @@ class PacienteForm extends Component {
     });
   }
 
-  onHandleTarget = ({ value, name }) => {
+  onHandleTarget = (event) => {
     const { sendPaciente } = this.state;
+    const { target } = event;
+    const { value, name } = target;
 
     this.setState({
       isBlocking: true,
       sendPaciente: {
         ...sendPaciente,
-        [name]: value,
+        [name]: name === 'CPF' ? (
+          value
+            .trim().toUpperCase()
+            .replace(/[^0-9]/g, '')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+        ) : value,
+      },
+    });
+  }
+
+  onHandleTargetTelefone = (event) => {
+    const { sendPaciente } = this.state;
+    const { target } = event;
+    const { value, name } = target;
+
+    this.setState({
+      isBlocking: true,
+      sendPaciente: {
+        ...sendPaciente,
+        [name]: name === 'Telefone' ? (
+          value
+            .trim().toUpperCase()
+            .replace(/[^0-9]/g, '')
+            .replace(/^(\d{2})(\d)/g, '($1) $2')
+            .replace(/(\d)(\d{4})$/, '$1-$2')
+        ) : value,
       },
     });
   }
@@ -315,9 +353,10 @@ class PacienteForm extends Component {
                     required
                     label="CPF"
                     name="CPF"
+                    maxLength="14"
                     error={isValidField.CPF}
                     value={sendPaciente.CPF}
-                    onChange={e => this.onHandleTarget(e.target)}
+                    onChange={e => this.onHandleTarget(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o CPF"
                     margin="normal"
@@ -333,7 +372,7 @@ class PacienteForm extends Component {
                     name="Nome"
                     error={isValidField.Nome}
                     value={sendPaciente.Nome}
-                    onChange={e => this.onHandleTarget(e.target)}
+                    onChange={e => this.onHandleTarget(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o nome do paciente."
                     margin="normal"
@@ -349,7 +388,7 @@ class PacienteForm extends Component {
                     name="Telefone"
                     error={isValidField.Telefone}
                     value={sendPaciente.Telefone}
-                    onChange={e => this.onHandleTarget(e.target)}
+                    onChange={e => this.onHandleTargetTelefone(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="(11) 90000-0000"
                     margin="normal"
@@ -365,7 +404,7 @@ class PacienteForm extends Component {
                     name="Email"
                     error={isValidField.Email}
                     value={sendPaciente.Email}
-                    onChange={e => this.onHandleTarget(e.target)}
+                    onChange={e => this.onHandleTarget(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="email@email.com.br"
                     margin="normal"
@@ -417,7 +456,7 @@ class PacienteForm extends Component {
                     name="NumeroPlano"
                     error={isValidField.NumeroPlano}
                     value={sendPaciente.NumeroPlano}
-                    onChange={e => this.onHandleTarget(e.target)}
+                    onChange={e => this.onHandleTarget(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o número da carteirinha"
                     margin="normal"
