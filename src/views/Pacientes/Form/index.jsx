@@ -18,6 +18,7 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
+import { validateCPF } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -52,6 +53,7 @@ class PacienteForm extends Component {
       { label: 'Pacientes', url: '/pacientes' },
     ],
     AllPlanos: [],
+    CPFMessage: 'Digite um CPF válido.',
     sendPaciente: {
       Anotacoes: String(),
       CPF: String(),
@@ -111,7 +113,6 @@ class PacienteForm extends Component {
     }
 
     this.setState({ loading: false });
-
 
     const setAttributesFields = () => {
       document.querySelector('[name="CPF"]').setAttribute('maxlength', '14');
@@ -204,6 +205,40 @@ class PacienteForm extends Component {
       isBlocking: true,
       sendPaciente: {
         ...sendPaciente,
+        [name]: value,
+      },
+    });
+  }
+
+  onHandleTargetCPF = (event) => {
+    const { isValidField, sendPaciente } = this.state;
+    const { target } = event;
+    const { value, name } = target;
+
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        CPFMessage: 'Digite o CPF.',
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
+
+    if (!validateCPF(value)) {
+      this.setState({
+        CPFMessage: this.baseState.CPFMessage,
+        isValidField: {
+          ...isValidField,
+          [name]: !validateCPF(value),
+        },
+      });
+    }
+
+    this.setState({
+      isBlocking: true,
+      sendPaciente: {
+        ...sendPaciente,
         [name]: name === 'CPF' ? (
           value
             .trim().toUpperCase()
@@ -278,20 +313,32 @@ class PacienteForm extends Component {
       if (typeof sendPaciente[item] === 'string') {
         setValidFields[item] = sendPaciente[item].trim().length === 0;
       }
+
+      if (!validateCPF(sendPaciente.CPF)) {
+        setValidFields.CPF = !validateCPF(sendPaciente.CPF);
+
+        this.setState({
+          CPFMessage: this.baseState.CPFMessage,
+        });
+      }
+
       return setValidFields;
     });
 
-    this.setState({
+    /* this.setState({
       ...isValidField,
       isValidField: setValidFields,
       isBlocking: false,
-    });
+    }); */
 
     const countAll = Object.keys(setValidFields).length;
     const countTrues = Object.values(setValidFields).filter(item => item === false);
 
     if (countAll === countTrues.length) {
       this.onHandleAdd();
+      this.onHandleMessage('Adicionado com sucesso.');
+    } else if (isValidField.CPF) {
+      this.onHandleMessage(this.baseState.CPFMessage);
     } else {
       this.onHandleMessage('Preencha todos os campos.');
     }
@@ -305,7 +352,7 @@ class PacienteForm extends Component {
 
     const {
       sendPaciente, breadcrumb, isValidField,
-      editing, boxMessage, isBlocking,
+      editing, boxMessage, isBlocking, CPFMessage,
       AllPlanos, selectedPlano, loading,
     } = this.state;
 
@@ -356,9 +403,9 @@ class PacienteForm extends Component {
                     maxLength="14"
                     error={isValidField.CPF}
                     value={sendPaciente.CPF}
-                    onChange={e => this.onHandleTarget(e)}
-                    onBlur={e => this.onHandleBlur(e.target)}
-                    helperText="Digite o CPF"
+                    onChange={e => this.onHandleTargetCPF(e)}
+                    onBlur={e => this.onHandleTargetCPF(e)}
+                    helperText={CPFMessage || 'Digite o CPF.'}
                     margin="normal"
                     variant="outlined"
                   />

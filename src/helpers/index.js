@@ -76,3 +76,35 @@ export const matchItem = (_string, _value) => {
   const item = typeof _string !== 'undefined' ? _string.toString() : '';
   return normalizeString(item).indexOf(normalizeString(_value)) > -1;
 };
+
+export const validateCPF = (strCPF) => {
+  const convertStrCPFToNumber = strCPF.replace(/[^\d]+/g, '');
+  let sumNumbers;
+  let getLastTwoNumbers;
+  sumNumbers = 0;
+
+  if (convertStrCPFToNumber === '00000000000') return false;
+
+  for (let i = 1; i <= 9; i += 1) {
+    sumNumbers += parseInt(convertStrCPFToNumber.substring(i - 1, i), 10) * (11 - i);
+  }
+
+  getLastTwoNumbers = (sumNumbers * 10) % 11;
+
+  if ((getLastTwoNumbers === 10) || (getLastTwoNumbers === 11)) getLastTwoNumbers = 0;
+
+  if (getLastTwoNumbers !== parseInt(convertStrCPFToNumber.substring(9, 10), 10)) return false;
+  sumNumbers = 0;
+
+  for (let i = 1; i <= 10; i += 1) {
+    sumNumbers += parseInt(convertStrCPFToNumber.substring(i - 1, i), 10) * (12 - i);
+  }
+
+  getLastTwoNumbers = (sumNumbers * 10) % 11;
+
+  if ((getLastTwoNumbers === 10) || (getLastTwoNumbers === 11)) getLastTwoNumbers = 0;
+
+  if (getLastTwoNumbers !== parseInt(convertStrCPFToNumber.substring(10, 11), 10)) return false;
+
+  return true;
+};
