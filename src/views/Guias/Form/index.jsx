@@ -506,7 +506,7 @@ class GuiaForm extends Component {
                   sm={5}
                   style={{
                     position: 'relative',
-                    zIndex: '2',
+                    zIndex: '4',
                   }}
                 >
                   {
