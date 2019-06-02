@@ -69,6 +69,7 @@ class GuiaForm extends Component {
     isBlocking: false,
     editing: false,
     loading: true,
+    valorTotal: Number(),
     selectedPaciente: null,
     selectedProcedimento: null,
     breadcrumb: [
@@ -140,6 +141,16 @@ class GuiaForm extends Component {
       await propLoadGuiaDetail(match.params.id);
       const { guia } = this.props;
       const getGuiaItem = Object.keys(guia).length > 0 ? guia : sendGuia;
+      const { ValorTotalProcedimentos } = getGuiaItem;
+
+      if (
+        ValorTotalProcedimentos
+        && typeof ValorTotalProcedimentos !== 'undefined'
+      ) {
+        this.setState({
+          valorTotal: ValorTotalProcedimentos,
+        });
+      }
 
       this.setState({
         editing: true,
@@ -150,7 +161,6 @@ class GuiaForm extends Component {
         },
       });
     }
-
     this.setState({ loading: false });
   }
 
@@ -287,24 +297,25 @@ class GuiaForm extends Component {
   onHandleAddProcedimento = (event) => {
     event.preventDefault();
     const {
-      sendGuia, AdicionarProcedimento,
-      selectedProcedimento, AllProcedimentos,
+      selectedProcedimento,
+      sendGuia,
     } = this.state;
 
     if (selectedProcedimento) {
-      this.setState({
+      this.setState(prevState => ({
         selectedProcedimento: String(),
-        AllProcedimentos: AllProcedimentos.filter(item => (
-          item.PublicID !== AdicionarProcedimento.PublicID
+        valorTotal: prevState.valorTotal + prevState.AdicionarProcedimento.ValorProcedimento,
+        AllProcedimentos: prevState.AllProcedimentos.filter(item => (
+          item.PublicID !== prevState.AdicionarProcedimento.PublicID
         )),
         sendGuia: {
           ...sendGuia,
           Procedimentos: [
-            AdicionarProcedimento,
+            prevState.AdicionarProcedimento,
             ...sendGuia.Procedimentos,
           ],
         },
-      });
+      }));
     }
   }
 
@@ -313,6 +324,7 @@ class GuiaForm extends Component {
 
     this.setState(prevState => ({
       AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
+      valorTotal: prevState.valorTotal - itemProcedimento.ValorProcedimento,
       sendGuia: {
         ...sendGuia,
         Procedimentos: sendGuia.Procedimentos.filter(item => (
@@ -378,13 +390,19 @@ class GuiaForm extends Component {
     } = this.props;
 
     const {
-      breadcrumb, editing,
-      boxMessage, isBlocking,
-      sendGuia, listStatus,
+      AllPacientes,
+      AllProcedimentos,
+      boxMessage,
+      breadcrumb,
+      editing,
+      isBlocking,
+      isValidField,
+      listStatus,
+      loading,
       selectedPaciente,
       selectedProcedimento,
-      isValidField, loading,
-      AllPacientes, AllProcedimentos,
+      sendGuia,
+      valorTotal,
     } = this.state;
 
     return (
@@ -611,57 +629,72 @@ class GuiaForm extends Component {
                     placeholder="Selecione..."
                   />
                 </Grid>
-
-                {
-                  sendGuia
-                  && sendGuia.Procedimentos
-                  && sendGuia.Procedimentos.length > 0 && (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={9}
-                      style={{
-                        marginTop: '40px',
-                      }}
-                    >
-                      <Typography variant="h6" color="inherit" noWrap>
-                        Procedimentos realizados
-                      </Typography>
-
-                      <List dense>
-                        {
-                          sendGuia.Procedimentos
-                            .filter(item => item.PublicID !== null)
-                            .map(item => (
-                              <ListItem
-                                key={item.PublicID}
-                                className={classes.listProcess}
-                              >
-                                <div className={classes.boxList}>
-                                  <p className={classes.smallItemText}>
-                                    {item.Codigo}
-                                    {' - '}
-                                    {item.NomeProcedimento}
-                                    {' - '}
-                                    {formatCurrency(item.ValorProcedimento)}
-                                  </p>
-                                </div>
-                                <ListItemSecondaryAction className={classes.iconDelete}>
-                                  <IconButton
-                                    disabled={!!error}
-                                    onClick={() => this.onHandleDeleteProcedimento(item)}
-                                    aria-label="Deletar"
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </ListItemSecondaryAction>
-                              </ListItem>
-                            ))
-                        }
-                      </List>
-                    </Grid>
-                  )}
               </Grid>
+
+              {
+                sendGuia
+                && sendGuia.Procedimentos
+                && sendGuia.Procedimentos.length > 0 && (
+                  <Fragment>
+                    <Grid container alignItems="center" style={{ marginTop: '40px' }}>
+                      <Grid item xs={12} sm={3}>
+                        <Typography variant="h6" color="inherit" noWrap>
+                          Procedimentos realizados
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <TextField
+                          fullWidth
+                          value={formatCurrency(valorTotal)}
+                          label="Valor total"
+                          margin="normal"
+                          variant="outlined"
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container alignItems="center" style={{ marginTop: '15px' }}>
+                      <Grid item xs={12} sm={9}>
+                        <List dense>
+                          {
+                            sendGuia.Procedimentos
+                              .filter(item => item.PublicID !== null)
+                              .map(item => (
+                                <ListItem
+                                  key={item.PublicID}
+                                  className={classes.listProcess}
+                                >
+                                  <div className={classes.boxList}>
+                                    <p className={classes.smallItemText}>
+                                      {item.Codigo}
+                                      {' - '}
+                                      {item.NomeProcedimento}
+                                      {' - '}
+                                      {formatCurrency(item.ValorProcedimento)}
+                                    </p>
+                                  </div>
+                                  <ListItemSecondaryAction className={classes.iconDelete}>
+                                    <IconButton
+                                      disabled={!!error}
+                                      onClick={() => this.onHandleDeleteProcedimento(item)}
+                                      aria-label="Deletar"
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </ListItemSecondaryAction>
+                                </ListItem>
+                              ))
+                          }
+                        </List>
+                      </Grid>
+                    </Grid>
+                  </Fragment>
+                )}
 
               <Button
                 type="submit"

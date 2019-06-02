@@ -225,10 +225,11 @@ class GuiasList extends Component {
                 <p>
                   {formatDate(item.Vencimento)}
                   {
-                    item.Procedimentos.length > 0 && (
+                    item.ValorTotalProcedimentos
+                    && typeof item.ValorTotalProcedimentos !== 'undefined' && (
                       <strong>
                         {' - '}
-                        {formatCurrency(item.Procedimentos[0].ValorProcedimento)}
+                        {formatCurrency(item.ValorTotalProcedimentos)}
                       </strong>
                     )
                   }
