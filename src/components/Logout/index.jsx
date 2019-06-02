@@ -25,6 +25,9 @@ const styles = theme => ({
     color: '#333',
     fontSize: '12px',
     marginRight: '5px',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
   avatar2: {
     backgroundColor: theme.roundedBtn.borderColor,
