@@ -336,7 +336,7 @@ class PacienteForm extends Component {
     const countTrues = Object.values(setValidFields).filter(item => item === false);
 
     if (countAll === countTrues.length) {
-      // this.onHandleAdd();
+      this.onHandleAdd();
       this.onHandleMessage('Adicionado com sucesso.');
     } else if (isValidField.CPF) {
       this.onHandleMessage(CPFMessage);
