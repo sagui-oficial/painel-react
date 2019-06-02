@@ -18,7 +18,7 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
-import { validateCPF } from '../../../helpers';
+import { validateCPF, formatPhone, formatCPF } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -235,14 +235,7 @@ class PacienteForm extends Component {
       isBlocking: true,
       sendPaciente: {
         ...sendPaciente,
-        [name]: name === 'CPF' ? (
-          value
-            .trim().toUpperCase()
-            .replace(/[^0-9]/g, '')
-            .replace(/(\d{3})(\d)/, '$1.$2')
-            .replace(/(\d{3})(\d)/, '$1.$2')
-            .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-        ) : value,
+        [name]: name === 'CPF' ? (formatCPF(value)) : value,
       },
     });
   }
@@ -256,13 +249,7 @@ class PacienteForm extends Component {
       isBlocking: true,
       sendPaciente: {
         ...sendPaciente,
-        [name]: name === 'Telefone' ? (
-          value
-            .trim().toUpperCase()
-            .replace(/[^0-9]/g, '')
-            .replace(/^(\d{2})(\d)/g, '($1) $2')
-            .replace(/(\d)(\d{4})$/, '$1-$2')
-        ) : value,
+        [name]: name === 'Telefone' ? (formatPhone(value)) : value,
       },
     });
   }

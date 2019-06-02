@@ -1,3 +1,4 @@
+/* global document */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { addPlano, loadPlanoDetail, updatePlano } from '../../../actions/planos'
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
+import { formatCNPJ } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -86,6 +88,7 @@ class PlanoForm extends Component {
   async componentDidMount() {
     await this.onHandlePageLoad();
     this.onHandleMessage();
+    document.querySelector('[name="CNPJ"]').setAttribute('maxlength', '18');
   }
 
   componentDidUpdate(prevProps) {
@@ -171,7 +174,7 @@ class PlanoForm extends Component {
       isBlocking: true,
       sendPlano: {
         ...sendPlano,
-        [name]: value,
+        [name]: name === 'CNPJ' ? (formatCNPJ(value)) : value,
       },
     });
   }

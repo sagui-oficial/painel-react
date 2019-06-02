@@ -77,6 +77,33 @@ export const matchItem = (_string, _value) => {
   return normalizeString(item).indexOf(normalizeString(_value)) > -1;
 };
 
+export const formatPhone = _value => (
+  _value
+    .trim().toUpperCase()
+    .replace(/[^0-9]/g, '')
+    .replace(/^(\d{2})(\d)/g, '($1) $2')
+    .replace(/(\d)(\d{4})$/, '$1-$2')
+);
+
+export const formatCPF = _value => (
+  _value
+    .trim().toUpperCase()
+    .replace(/[^0-9]/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+);
+
+export const formatCNPJ = _value => (
+  _value
+    .trim().toUpperCase()
+    .replace(/[^0-9]/g, '')
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+);
+
 export const validateCPF = (strCPF) => {
   const convertStrCPFToNumber = strCPF.replace(/[^\d]+/g, '');
   let sumNumbers;
