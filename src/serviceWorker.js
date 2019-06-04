@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-param-reassign */
 /* global window fetch navigator */
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost'
