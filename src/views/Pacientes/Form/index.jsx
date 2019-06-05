@@ -18,7 +18,9 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
-import { validateCPF, formatPhone, formatCPF } from '../../../helpers';
+import {
+  validateCPF, validateEmail, formatPhone, formatCPF,
+} from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -254,6 +256,38 @@ class PacienteForm extends Component {
     });
   }
 
+  onHandleTargetEmail = (event) => {
+    const { isValidField, sendPaciente } = this.state;
+    const { target } = event;
+    const { value, name } = target;
+
+    if (typeof isValidField[name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: value.trim().length === 0,
+        },
+      });
+    }
+
+    if (!validateEmail(value)) {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [name]: !validateEmail(value),
+        },
+      });
+    }
+
+    this.setState({
+      isBlocking: true,
+      sendPaciente: {
+        ...sendPaciente,
+        [name]: value.trim(),
+      },
+    });
+  }
+
   onHandleSelectPlano = (target) => {
     const { sendPaciente } = this.state;
 
@@ -305,6 +339,10 @@ class PacienteForm extends Component {
         });
       }
 
+      if (!validateEmail(sendPaciente.Email)) {
+        setValidFields.Email = !validateEmail(sendPaciente.Email);
+      }
+
       return setValidFields;
     });
 
@@ -327,6 +365,8 @@ class PacienteForm extends Component {
       this.onHandleMessage('Adicionado com sucesso.');
     } else if (isValidField.CPF) {
       this.onHandleMessage(CPFMessage);
+    } else if (isValidField.Email) {
+      this.onHandleMessage('E-mail inválido.');
     } else {
       this.onHandleMessage('Preencha todos os campos.');
     }
@@ -439,7 +479,7 @@ class PacienteForm extends Component {
                     name="Email"
                     error={isValidField.Email}
                     value={sendPaciente.Email}
-                    onChange={e => this.onHandleTarget(e)}
+                    onChange={e => this.onHandleTargetEmail(e)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="email@email.com.br"
                     margin="normal"
@@ -479,6 +519,7 @@ class PacienteForm extends Component {
                     }
                     components={{ Control, Option }}
                     value={selectedPlano}
+                    placeholder="Selecionar plano..."
                     onChange={this.onHandleSelectPlano}
                   />
                 </Grid>

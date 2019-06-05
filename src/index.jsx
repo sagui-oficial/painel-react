@@ -8,8 +8,6 @@ import { reduxFirestore, getFirestore } from 'redux-firestore';
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-
-/* LOG REDUX STORE ON CONSOLE */
 import logger from 'redux-logger';
 
 import reducers from './reducers';

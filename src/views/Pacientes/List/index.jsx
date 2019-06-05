@@ -128,7 +128,6 @@ class PacientesList extends Component {
           open={boxMessage.open}
           onHandleOnClose={this.onHandleOnClose}
         />
-
         <Grid
           container
           direction="row"
