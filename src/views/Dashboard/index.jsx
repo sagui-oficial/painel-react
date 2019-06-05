@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { instanceOf } from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   withStyles,
   Grid,
@@ -28,7 +28,7 @@ const Dashboard = ({ title, classes }) => (
 
 Dashboard.propTypes = {
   title: PropTypes.string,
-  classes: instanceOf(Object),
+  classes: PropTypes.instanceOf(Object),
 };
 
 Dashboard.defaultProps = {
