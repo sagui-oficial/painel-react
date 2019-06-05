@@ -13,13 +13,15 @@ const store = createStore(
   applyMiddleware(thunk),
 );
 
-it('Renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(
-    <Provider store={store}>
-      <MainRouters />
-    </Provider>,
-    div,
-  );
-  ReactDOM.unmountComponentAtNode(div);
+describe('Routers', () => {
+  it('Renders without crashing', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(
+      <Provider store={store}>
+        <MainRouters />
+      </Provider>,
+      div,
+    );
+    ReactDOM.unmountComponentAtNode(div);
+  });
 });
