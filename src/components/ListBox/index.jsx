@@ -25,7 +25,10 @@ const styles = theme => ({
 
 const ListBox = (props) => {
   const {
-    classes, listItemsObject, setBox, ...rest
+    classes,
+    listItemsObject,
+    setBox,
+    ...rest
   } = props;
 
   return (
