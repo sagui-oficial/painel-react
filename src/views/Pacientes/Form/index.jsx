@@ -125,19 +125,22 @@ class PacienteForm extends Component {
     await propsLoadPlanos();
 
     const { planos, paciente } = this.props;
+    const { editing } = this.state;
 
-    const newPlanSelectItem = planos.find(item => (
-      item.Id === paciente.PlanoOperadoraId
-    ));
+    if (editing) {
+      const newPlanSelectItem = planos.find(item => (
+        item.Id === paciente.PlanoOperadoraId
+      ));
 
-    if (typeof newPlanSelectItem !== 'undefined') {
-      this.setState({
-        selectedPlano: {
-          Id: newPlanSelectItem.Id,
-          value: newPlanSelectItem.NomeFantasia,
-          label: newPlanSelectItem.NomeFantasia,
-        },
-      });
+      if (newPlanSelectItem) {
+        this.setState({
+          selectedPlano: {
+            Id: newPlanSelectItem.Id,
+            value: newPlanSelectItem.NomeFantasia,
+            label: newPlanSelectItem.NomeFantasia,
+          },
+        });
+      }
     }
 
     this.setState({

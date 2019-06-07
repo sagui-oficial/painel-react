@@ -13,7 +13,8 @@ import {
 } from '@material-ui/core';
 
 import {
-  addProcedimento, loadProcedimentoDetail,
+  addProcedimento,
+  loadProcedimentoDetail,
   updateProcedimento,
 } from '../../../actions/procedimentos';
 import Master from '../../../components/Master';
@@ -55,14 +56,13 @@ class ProcedimentoForm extends Component {
     sendProcedimento: {
       Codigo: String(),
       NomeProcedimento: String(),
-      ValorProcedimento: String(),
+      ValorProcedimento: 0,
       Exigencias: String(),
       Anotacoes: String(),
     },
     isValidField: {
       Codigo: false,
       NomeProcedimento: false,
-      ValorProcedimento: false,
       Exigencias: false,
       Anotacoes: false,
     },
@@ -118,10 +118,9 @@ class ProcedimentoForm extends Component {
     this.setState({ loading: true });
 
     if (editing) {
-      const { procedimento: { PublicID } } = this.props;
       await propUpdateProcedimento({
         ...sendProcedimento,
-      }, PublicID);
+      });
       await this.onHandleMessage('Procedimento modificado.');
     } else {
       await propAddProcedimento({
@@ -278,23 +277,6 @@ class ProcedimentoForm extends Component {
                     onChange={e => this.onHandleTarget(e.target)}
                     onBlur={e => this.onHandleBlur(e.target)}
                     helperText="Digite o código"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    label="Valor do procedimento"
-                    name="ValorProcedimento"
-                    required
-                    error={isValidField.ValorProcedimento}
-                    value={sendProcedimento.ValorProcedimento}
-                    onChange={e => this.onHandleTarget(e.target)}
-                    onBlur={e => this.onHandleBlur(e.target)}
-                    helperText="Digite o valor do procedimento"
-                    type="number"
-                    placeholder="1.000,00"
                     margin="normal"
                     variant="outlined"
                   />

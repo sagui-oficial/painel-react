@@ -6,19 +6,28 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
+  IconButton,
   Button,
   Typography,
   Grid,
   Divider,
   TextField,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
 } from '@material-ui/core';
+
+import { Delete as DeleteIcon } from '@material-ui/icons';
+import Select from 'react-select';
 
 import Master from '../../../components/Master';
 import { addPlano, loadPlanoDetail, updatePlano } from '../../../actions/planos';
+import { formatCurrency, formatCNPJ } from '../../../helpers';
+import { loadProcedimentos } from '../../../actions/procedimentos';
+import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
-import { formatCNPJ } from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -59,9 +68,11 @@ class PlanoForm extends Component {
     isBlocking: false,
     editing: false,
     loading: true,
+    selectedProcedimento: null,
     breadcrumb: [
       { label: 'Planos', url: '/planos' },
     ],
+    AllProcedimentos: [],
     AdicionarProcedimentos: {
       ValorProcedimento: String(),
     },
@@ -71,6 +82,7 @@ class PlanoForm extends Component {
       CNPJ: String(),
       DataEnvioLote: new Date(),
       DataRecebimentoLote: new Date(),
+      Procedimentos: [],
     },
     isValidField: {
       NomeFantasia: false,
@@ -87,6 +99,7 @@ class PlanoForm extends Component {
 
   async componentDidMount() {
     await this.onHandlePageLoad();
+    await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
     document.querySelector('[name="CNPJ"]').setAttribute('maxlength', '18');
   }
@@ -97,6 +110,23 @@ class PlanoForm extends Component {
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
     }
+  }
+
+  onHandleLoadProcedimentos = async () => {
+    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
+    await propsLoadProcedimentos();
+
+    const { procedimentos } = this.props;
+
+    this.setState(prevState => ({
+      AllProcedimentos: procedimentos.filter((item) => {
+        const result = prevState.sendPlano.Procedimentos.find(itemList => (
+          item.PublicID === itemList.PublicID
+        ));
+        if (result) return false;
+        return true;
+      }),
+    }));
   }
 
   onHandlePageLoad = async () => {
@@ -190,6 +220,19 @@ class PlanoForm extends Component {
     });
   }
 
+  onHandleSelectProcedimentos = (target) => {
+    const { AdicionarProcedimentos } = this.state;
+    const { Procedimento } = target;
+
+    this.setState({
+      selectedProcedimento: target,
+      AdicionarProcedimentos: {
+        ...AdicionarProcedimentos,
+        ...Procedimento,
+      },
+    });
+  }
+
   onHandleBlur = ({ value, name }) => {
     const { sendPlano, isValidField } = this.state;
 
@@ -239,19 +282,74 @@ class PlanoForm extends Component {
     }
   }
 
+  onHandleAddProcedimento = (event) => {
+    event.preventDefault();
+    const {
+      AdicionarProcedimentos,
+      AllProcedimentos,
+      selectedProcedimento,
+      sendPlano,
+    } = this.state;
+
+    const { ValorProcedimento } = AdicionarProcedimentos;
+
+    if (
+      ValorProcedimento.trim().length > 0
+      && selectedProcedimento
+    ) {
+      this.setState({
+        selectedProcedimento: String(),
+        AllProcedimentos: AllProcedimentos.filter(item => (
+          item.PublicID !== AdicionarProcedimentos.PublicID
+        )),
+        AdicionarProcedimentos: {
+          ValorProcedimento: String(),
+        },
+        sendPlano: {
+          ...sendPlano,
+          Procedimentos: [
+            AdicionarProcedimentos,
+            ...sendPlano.Procedimentos,
+          ],
+        },
+      });
+    }
+  }
+
+  onHandleDeleteProcedimento = (itemProcedimento) => {
+    const { sendPlano } = this.state;
+
+    this.setState(prevState => ({
+      AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
+      sendPlano: {
+        ...sendPlano,
+        Procedimentos: sendPlano.Procedimentos.filter(item => (
+          item.PublicID !== itemProcedimento.PublicID
+          && item.PublicID !== null
+        )),
+      },
+    }));
+  }
+
   render() {
     const {
-      classes, error, title, match,
+      classes,
+      error,
+      match,
+      title,
     } = this.props;
 
     const {
-      sendPlano,
-      breadcrumb,
-      loading,
-      isBlocking,
-      editing,
+      AdicionarProcedimentos,
+      AllProcedimentos,
       boxMessage,
+      breadcrumb,
+      editing,
+      isBlocking,
       isValidField,
+      loading,
+      selectedProcedimento,
+      sendPlano,
     } = this.state;
 
     return (
@@ -345,6 +443,128 @@ class PlanoForm extends Component {
                 </Grid>
               </Grid>
 
+              <br />
+
+              <Grid container alignItems="center">
+                <Typography variant="h6" color="inherit" noWrap>
+                  Adicionar procedimentos
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  disabled={!!error}
+                  className={classes.addBtn}
+                  onClick={this.onHandleAddProcedimento}
+                >
+                  +Adicionar
+                </Button>
+              </Grid>
+
+              <Grid container spacing={16}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={9}
+                  style={{
+                    position: 'relative',
+                    zIndex: '2',
+                  }}
+                >
+                  <Select
+                    label="Cadastrar procedimentos"
+                    options={
+                      AllProcedimentos.map((suggestion) => {
+                        const NameProd = 'NomeProcedimento';
+                        return (
+                          {
+                            name: NameProd,
+                            Procedimento: suggestion,
+                            PublicID: suggestion.PublicID,
+                            Codigo: suggestion.Codigo,
+                            value: suggestion.NomeProcedimento,
+                            label: suggestion.NomeProcedimento,
+                          }
+                        );
+                      })
+                    }
+                    components={{ Control, Option }}
+                    value={selectedProcedimento}
+                    onChange={this.onHandleSelectProcedimentos}
+                    placeholder="Selecione..."
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    fullWidth
+                    label="Valor"
+                    name="ValorProcedimento"
+                    value={AdicionarProcedimentos.ValorProcedimento}
+                    onChange={e => this.onHandleTargetValorProcedimento(e.target)}
+                    type="number"
+                    helperText="Apenas números"
+                    placeholder="1.000,00"
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {
+                sendPlano
+                && sendPlano.Procedimentos
+                && sendPlano.Procedimentos.length > 0 && (
+                  <Fragment>
+                    <Grid container alignItems="center" style={{ marginTop: '40px' }}>
+                      <Grid item xs={12}>
+                        <Typography variant="h6" color="inherit" noWrap>
+                          Procedimentos realizados
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container alignItems="center" style={{ marginTop: '15px' }}>
+                      <Grid item xs={12} sm={9}>
+                        <List dense>
+                          {
+                            sendPlano.Procedimentos
+                              .filter(item => item.PublicID !== null)
+                              .map(item => (
+                                <ListItem
+                                  key={item.PublicID}
+                                  className={classes.listProcess}
+                                >
+                                  <div className={classes.boxList}>
+                                    <p className={classes.smallItemText}>
+                                      {item.Codigo}
+                                      {' - '}
+                                      {item.NomeProcedimento}
+                                      {' - '}
+                                      {formatCurrency(item.ValorProcedimento)}
+                                    </p>
+                                  </div>
+                                  <ListItemSecondaryAction className={classes.iconDelete}>
+                                    <IconButton
+                                      disabled={!!error}
+                                      onClick={() => this.onHandleDeleteProcedimento(item)}
+                                      aria-label="Deletar"
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </ListItemSecondaryAction>
+                                </ListItem>
+                              ))
+                          }
+                        </List>
+                      </Grid>
+                    </Grid>
+                  </Fragment>
+                )
+              }
+
               <Button
                 type="submit"
                 variant="outlined"
@@ -371,23 +591,27 @@ PlanoForm.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
   plano: PropTypes.instanceOf(Object),
+  procedimentos: PropTypes.instanceOf(Object),
   addPlano: PropTypes.func.isRequired,
   updatePlano: PropTypes.func.isRequired,
   loadPlanoDetail: PropTypes.func.isRequired,
+  loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
 PlanoForm.defaultProps = {
   plano: {},
+  procedimentos: [],
   title: String(),
 };
 
 const mapStateToProps = state => ({
   plano: state.planosReducer.plano,
   error: state.planosReducer.fetchError,
+  procedimentos: state.procedimentosReducer.procedimentos,
 });
 
 export default connect(mapStateToProps, {
-  addPlano, loadPlanoDetail, updatePlano,
+  addPlano, loadPlanoDetail, updatePlano, loadProcedimentos,
 })(withStyles(styles)(PlanoForm));
