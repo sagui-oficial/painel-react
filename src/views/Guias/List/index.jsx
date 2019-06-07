@@ -18,7 +18,10 @@ import Message from '../../../components/Message';
 import RefList from '../../../components/ListBox/RefList';
 import { deleteGuia, updateGuia } from '../../../actions/guias';
 import {
-  formatDate, formatCurrency, orderByDate, matchItem,
+  formatDate,
+  formatCurrency,
+  orderByDate,
+  matchItem,
 } from '../../../helpers';
 
 const styles = theme => ({
