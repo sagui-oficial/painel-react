@@ -181,24 +181,8 @@ class GuiaForm extends Component {
     }));
   }
 
-  onHandleLoadPacientes = async () => {
-    const { pacientes, guia } = this.props;
-    const { editing } = this.state;
-
-    if (editing) {
-      const newPlanSelectItem = pacientes.find(item => (
-        item.Id === guia.Paciente.Id
-      ));
-
-      this.setState({
-        selectedPaciente: {
-          Id: newPlanSelectItem.Id,
-          PlanoOperadora: newPlanSelectItem.PlanoOperadora,
-          value: newPlanSelectItem.Nome,
-          label: newPlanSelectItem.Nome,
-        },
-      });
-    }
+  onHandleLoadPacientes = () => {
+    const { pacientes } = this.props;
 
     this.setState({
       AllPacientes: pacientes,
@@ -694,7 +678,8 @@ class GuiaForm extends Component {
                       </Grid>
                     </Grid>
                   </Fragment>
-                )}
+                )
+              }
 
               <Button
                 type="submit"
