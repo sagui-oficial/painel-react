@@ -94,8 +94,8 @@ class Planos extends Component {
 
 Planos.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  planos: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  planos: PropTypes.instanceOf(Object),
   loadPlanos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -103,6 +103,7 @@ Planos.propTypes = {
 
 Planos.defaultProps = {
   title: String(),
+  planos: [],
 };
 
 const mapStateToProps = state => ({
