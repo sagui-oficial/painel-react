@@ -1,4 +1,3 @@
-/* global document */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
@@ -101,7 +100,6 @@ class PlanoForm extends Component {
     await this.onHandlePageLoad();
     await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
-    document.querySelector('[name="CNPJ"]').setAttribute('maxlength', '18');
   }
 
   componentDidUpdate(prevProps) {
@@ -396,6 +394,9 @@ class PlanoForm extends Component {
                     required
                     label="CNPJ"
                     name="CNPJ"
+                    inputProps={{
+                      maxLength: '18',
+                    }}
                     error={isValidField.CNPJ}
                     value={sendPlano.CNPJ}
                     onChange={e => this.onHandleTarget(e.target)}

@@ -1,3 +1,4 @@
+/* global window */
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -65,9 +66,15 @@ class RefList extends Component {
   }
 
   onHandleDelete = (item) => {
-    this.setState({ loading: true });
-    const { onHandleDelete } = this.props;
-    onHandleDelete(item);
+    const { setBox } = this.props;
+    const itemTitle = setBox.title || '';
+
+    // eslint-disable-next-line no-alert
+    if (window.confirm(`Deseja realmente excluir o registro ${itemTitle}?`)) {
+      this.setState({ loading: true });
+      const { onHandleDelete } = this.props;
+      onHandleDelete(item);
+    }
   }
 
   render() {

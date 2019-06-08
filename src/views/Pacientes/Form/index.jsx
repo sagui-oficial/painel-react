@@ -1,4 +1,3 @@
-/* global document */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
@@ -11,16 +10,25 @@ import {
 } from '@material-ui/core';
 import Select from 'react-select';
 
-import { addPaciente, loadPacienteDetail, updatePaciente } from '../../../actions/pacientes';
+import {
+  addPaciente,
+  loadPacienteDetail,
+  updatePaciente,
+} from '../../../actions/pacientes';
+
+import {
+  validateCPF,
+  validateEmail,
+  formatPhone,
+  formatCPF,
+} from '../../../helpers';
+
 import { loadPlanos } from '../../../actions/planos';
 import { Control, Option } from '../../../components/AutoComplete';
 import Breadcrumb from '../../../components/Breadcrumb';
 import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
-import {
-  validateCPF, validateEmail, formatPhone, formatCPF,
-} from '../../../helpers';
 
 const styles = theme => ({
   divider: {
@@ -83,12 +91,14 @@ class PacienteForm extends Component {
   baseState = this.state
 
   async componentDidMount() {
-    await this.onHandlePageLoad();
-    await this.onHandleLoadPlanos();
-    this.onHandleMessage();
+    const { match } = this.props;
 
-    document.querySelector('[name="CPF"]').setAttribute('maxlength', '14');
-    document.querySelector('[name="Telefone"]').setAttribute('maxlength', '15');
+    if (match.params.id) {
+      await this.onHandlePageLoad();
+    }
+
+    this.onHandleLoadPlanos();
+    this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
@@ -107,15 +117,13 @@ class PacienteForm extends Component {
 
     const { sendPaciente } = this.state;
 
-    if (match.params.id) {
-      await propLoadPacienteDetail(match.params.id);
-      const { paciente } = this.props;
+    await propLoadPacienteDetail(match.params.id);
+    const { paciente } = this.props;
 
-      this.setState({
-        editing: true,
-        sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
-      });
-    }
+    this.setState({
+      editing: true,
+      sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
+    });
 
     this.setState({ loading: false });
   }
@@ -431,7 +439,9 @@ class PacienteForm extends Component {
                     required
                     label="CPF"
                     name="CPF"
-                    maxLength="14"
+                    inputProps={{
+                      maxLength: '14',
+                    }}
                     error={isValidField.CPF}
                     value={sendPaciente.CPF}
                     onChange={e => this.onHandleTargetCPF(e)}
@@ -464,6 +474,9 @@ class PacienteForm extends Component {
                     required
                     label="Telefone"
                     name="Telefone"
+                    inputProps={{
+                      maxLength: '15',
+                    }}
                     error={isValidField.Telefone}
                     value={sendPaciente.Telefone}
                     onChange={e => this.onHandleTargetTelefone(e)}

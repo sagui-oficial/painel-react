@@ -5,23 +5,23 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  List,
-  ListItem,
-  Select,
-  FormControl,
-  MenuItem,
-  Grid,
+// List,
+// ListItem,
+// Select,
+// FormControl,
+// MenuItem,
+// Grid,
 } from '@material-ui/core';
 
-import BoxSearch from '../../../components/Search';
+// import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-import RefList from '../../../components/ListBox/RefList';
-import { deleteGuia, updateGuia } from '../../../actions/guias';
+// import RefList from '../../../components/ListBox/RefList';
+import { deleteLote, updateLote } from '../../../actions/lotes';
 import {
-  formatDate,
-  formatCurrency,
-  orderByDate,
-  matchItem,
+// formatDate,
+// formatCurrency,
+// orderByDate,
+// matchItem,
 } from '../../../helpers';
 
 const styles = theme => ({
@@ -59,11 +59,11 @@ const styles = theme => ({
   },
 });
 
-class GuiasList extends Component {
+class LotesList extends Component {
   state = {
-    allGuias: [],
-    search: '',
-    order: 'asc',
+    // allLotes: [],
+    // search: '',
+    // order: 'asc',
     boxMessage: {
       open: false,
       text: '',
@@ -71,29 +71,29 @@ class GuiasList extends Component {
   }
 
   componentDidMount() {
-    this.onLoad();
+    // this.onLoad();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { guias, error } = this.props;
+    const { /* lotes, */ error } = this.props;
 
-    if (prevProps.guias !== guias) {
+    /* if (prevProps.lotes !== lotes) {
       this.onLoad();
-    }
+    } */
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
     }
   }
 
-  onLoad = () => {
-    const { guias } = this.props;
+  /* onLoad = () => {
+    const { lotes } = this.props;
     const { order } = this.state;
     this.setState({
-      allGuias: orderByDate(guias, 'Vencimento', order),
+      allLotes: orderByDate(lotes, 'Vencimento', order),
     });
-  }
+  } */
 
   onHandleMessage = (text) => {
     const { error } = this.props;
@@ -117,49 +117,51 @@ class GuiasList extends Component {
     });
   }
 
-
-  onHandleStatusGuia = async (event, item) => {
-    const { updateGuia: propUpdateGuiaStatus } = this.props;
+  /* onHandleStatusLote = async (event, item) => {
+    const { updateLote: propUpdateLoteStatus } = this.props;
     const { Status } = item;
     const { target } = event;
 
     if (Status !== target.value) {
       await this.onHandleMessage('Status atualizado.');
-      await propUpdateGuiaStatus({
+      await propUpdateLoteStatus({
         ...item,
         Status: target.value,
       });
     }
-  }
+  } */
 
-  onHandleDelete = async ({ PublicID }) => {
-    const { deleteGuia: propdeleteGuia } = this.props;
-    await propdeleteGuia(PublicID);
+  /* onHandleDelete = async ({ PublicID }) => {
+    const { deleteLote: propdeleteLote } = this.props;
+    await propdeleteLote(PublicID);
     await this.onHandleMessage('Item excluido.');
     this.setState({ search: '' });
-  }
+  } */
 
-  onHandleSearch = ({ value, name }) => {
-    const { guias } = this.props;
+  /* onHandleSearch = ({ value, name }) => {
+    const { lotes } = this.props;
     this.setState(prevState => ({
       [name]: value,
-      allGuias: orderByDate(guias, 'Vencimento', prevState.order).filter(item => (
+      allLotes: orderByDate(lotes, 'Vencimento', prevState.order).filter(item => (
         matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
       )),
     }));
-  }
+  } */
 
-  onHandleOrder = (order) => {
+  /* onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
-      allGuias: orderByDate(prevState.allGuias, 'Vencimento', order),
+      allLotes: orderByDate(prevState.allLotes, 'Vencimento', order),
     }));
-  }
+  } */
 
   render() {
-    const { classes, error } = this.props;
+    // const { classes , error } = this.props;
     const {
-      allGuias, boxMessage, order, search,
+      /* allLotes,
+      search, */
+      boxMessage,
+      // order,
     } = this.state;
 
     return (
@@ -170,7 +172,7 @@ class GuiasList extends Component {
           onHandleOnClose={this.onHandleOnClose}
         />
 
-        <Grid
+        {/* <Grid
           container
           direction="row"
           justify="flex-end"
@@ -185,25 +187,25 @@ class GuiasList extends Component {
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
           </Select>
-        </Grid>
+        </Grid> */}
 
-        <BoxSearch
+        {/* <BoxSearch
           value={search}
           name="search"
           onChange={e => this.onHandleSearch(e.target)}
-          placeholder="Buscar guias"
-        />
+          placeholder="Buscar lotes"
+        /> */}
 
-        <List dense className={classes.root}>
-          {allGuias.length ? (
-            allGuias.map(item => (
+        {/* <List dense className={classes.root}>
+          {allLotes.length ? (
+            allLotes.map(item => (
               <RefList
                 key={item.PublicID}
                 item={item}
                 error={error}
                 onHandleDelete={this.onHandleDelete}
                 setBox={{
-                  to: 'guias',
+                  to: 'lotes',
                   label: 'Numero',
                   pretitle: item.Numero,
                   title: item.Paciente.Nome,
@@ -215,13 +217,13 @@ class GuiasList extends Component {
                     value={item.Status ? item.Status : 2}
                     className={classes.selectBox}
                     onClick={e => e.preventDefault()}
-                    onChange={e => this.onHandleStatusGuia(e, item)}
+                    onChange={e => this.onHandleStatusLote(e, item)}
                     disabled={!!error}
                     displayEmpty
                   >
                     <MenuItem value={1}>Criada</MenuItem>
                     <MenuItem value={2}>Concluida</MenuItem>
-                    {/* <MenuItem value={99}>Deletada</MenuItem> */}
+                    <MenuItem value={99}>Deletada</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -240,23 +242,23 @@ class GuiasList extends Component {
               </RefList>
             ))
           ) : (
-            <ListItem className={classes.listItem}>Nenhuma guia encontrada.</ListItem>
+            <ListItem className={classes.listItem}>Nenhum lote encontrad.</ListItem>
           )
           }
-        </List>
+        </List> */}
       </Fragment>
     );
   }
 }
 
-GuiasList.propTypes = {
-  classes: PropTypes.instanceOf(Object).isRequired,
-  guias: PropTypes.instanceOf(Object).isRequired,
+LotesList.propTypes = {
+  // classes: PropTypes.instanceOf(Object).isRequired,
+  // lotes: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
-  deleteGuia: PropTypes.func.isRequired,
-  updateGuia: PropTypes.func.isRequired,
+  // deleteLote: PropTypes.func.isRequired,
+  // updateLote: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  deleteGuia, updateGuia,
-})(withStyles(styles)(GuiasList));
+  deleteLote, updateLote,
+})(withStyles(styles)(LotesList));
