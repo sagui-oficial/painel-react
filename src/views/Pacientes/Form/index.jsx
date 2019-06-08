@@ -91,13 +91,8 @@ class PacienteForm extends Component {
   baseState = this.state
 
   async componentDidMount() {
-    const { match } = this.props;
-
-    if (match.params.id) {
-      await this.onHandlePageLoad();
-    }
-
-    this.onHandleLoadPlanos();
+    await this.onHandlePageLoad();
+    await this.onHandleLoadPlanos();
     this.onHandleMessage();
   }
 
@@ -117,13 +112,14 @@ class PacienteForm extends Component {
 
     const { sendPaciente } = this.state;
 
-    await propLoadPacienteDetail(match.params.id);
-    const { paciente } = this.props;
-
-    this.setState({
-      editing: true,
-      sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
-    });
+    if (match.params.id) {
+      await propLoadPacienteDetail(match.params.id);
+      const { paciente } = this.props;
+      this.setState({
+        editing: true,
+        sendPaciente: Object.keys(paciente).length > 0 ? paciente : sendPaciente,
+      });
+    }
 
     this.setState({ loading: false });
   }
