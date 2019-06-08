@@ -15,7 +15,7 @@ export function loadPacientes() {
     })
       .then(res => dispatch({
         type: GET_PACIENTES,
-        payload: typeof res.Result.Pacientes !== 'undefined' ? res.Result.Pacientes : [],
+        payload: res.Result.Pacientes || [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -30,7 +30,7 @@ export function addPaciente(data) {
     })
       .then(res => dispatch({
         type: SAVE_PACIENTE,
-        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+        payload: res.Result.Paciente || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -44,7 +44,7 @@ export function loadPacienteDetail(id) {
     })
       .then(res => dispatch({
         type: GET_PACIENTE_DETAILS,
-        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+        payload: res.Result.Paciente || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -59,7 +59,7 @@ export function updatePaciente(data) {
     })
       .then(res => dispatch({
         type: UPDATE_PACIENTE,
-        payload: typeof res.Result.Paciente !== 'undefined' ? res.Result.Paciente : {},
+        payload: res.Result.Paciente || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
