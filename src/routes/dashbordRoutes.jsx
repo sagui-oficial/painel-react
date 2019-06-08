@@ -15,6 +15,7 @@ import Planos from '../views/Planos';
 import Procedimentos from '../views/Procedimentos';
 
 // FORMS
+import LoteForm from '../views/Lotes/Form';
 import GuiaForm from '../views/Guias/Form';
 import PacienteForm from '../views/Pacientes/Form';
 import PlanoForm from '../views/Planos/Form';
@@ -36,7 +37,7 @@ const dashboardRoutes = [
     icon: Book,
     active: true,
     component: Lotes,
-    editMode: null,
+    editMode: LoteForm,
   },
   {
     id: 3,
