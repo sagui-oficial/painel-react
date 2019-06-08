@@ -15,7 +15,7 @@ export function loadGuias() {
     })
       .then(res => dispatch({
         type: GET_GUIAS,
-        payload: typeof res.Result.GTOs !== 'undefined' ? res.Result.GTOs : [],
+        payload: res.Result.GTOs || [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -30,7 +30,7 @@ export function addGuia(data) {
     })
       .then(res => dispatch({
         type: SAVE_GUIA,
-        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+        payload: res.Result.GTO || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -44,7 +44,7 @@ export function loadGuiaDetail(id) {
     })
       .then(res => dispatch({
         type: GET_GUIA_DETAILS,
-        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+        payload: res.Result.GTO || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -59,7 +59,7 @@ export function updateGuia(data) {
     })
       .then(res => dispatch({
         type: UPDATE_GUIA,
-        payload: typeof res.Result.GTO !== 'undefined' ? res.Result.GTO : {},
+        payload: res.Result.GTO || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };

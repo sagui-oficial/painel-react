@@ -15,7 +15,7 @@ export function loadLotes() {
     })
       .then(res => dispatch({
         type: GET_LOTES,
-        payload: typeof res.Result.Lotes !== 'undefined' ? res.Result.Lotes : [],
+        payload: res.Result.Lotes || [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -30,7 +30,7 @@ export function addLote(data) {
     })
       .then(res => dispatch({
         type: SAVE_LOTE,
-        payload: typeof res.Result.Lote !== 'undefined' ? res.Result.Lote : {},
+        payload: res.Result.Lote || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -44,7 +44,7 @@ export function loadLoteDetail(id) {
     })
       .then(res => dispatch({
         type: GET_LOTE_DETAILS,
-        payload: typeof res.Result.Lote !== 'undefined' ? res.Result.Lote : {},
+        payload: res.Result.Lote || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
@@ -59,7 +59,7 @@ export function updateLote(data) {
     })
       .then(res => dispatch({
         type: UPDATE_LOTE,
-        payload: typeof res.Result.Lote !== 'undefined' ? res.Result.Lote : {},
+        payload: res.Result.Lote || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };
