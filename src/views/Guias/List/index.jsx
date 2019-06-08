@@ -64,6 +64,11 @@ class GuiasList extends Component {
     allGuias: [],
     search: '',
     order: 'asc',
+    readStatus: {
+      1: 'Criada',
+      2: 'Concluída',
+      99: 'Deletada',
+    },
     boxMessage: {
       open: false,
       text: '',
@@ -135,7 +140,7 @@ class GuiasList extends Component {
   onHandleDelete = async ({ PublicID }) => {
     const { deleteGuia: propdeleteGuia } = this.props;
     await propdeleteGuia(PublicID);
-    await this.onHandleMessage('Item excluido.');
+    await this.onHandleMessage('Item excluído.');
     this.setState({ search: '' });
   }
 
@@ -144,7 +149,11 @@ class GuiasList extends Component {
     this.setState(prevState => ({
       [name]: value,
       allGuias: orderByDate(guias, 'Vencimento', prevState.order).filter(item => (
-        matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
+        matchItem(item.Numero, value)
+        || matchItem(item.Paciente.Nome, value)
+        || matchItem(item.PlanoOperadora.NomeFantasia, value)
+        || matchItem(formatDate(item.Vencimento), value)
+        || matchItem(prevState.readStatus[item.Status], value)
       )),
     }));
   }
@@ -157,9 +166,17 @@ class GuiasList extends Component {
   }
 
   render() {
-    const { classes, error } = this.props;
     const {
-      allGuias, boxMessage, order, search,
+      classes,
+      error,
+    } = this.props;
+
+    const {
+      allGuias,
+      boxMessage,
+      order,
+      readStatus,
+      search,
     } = this.state;
 
     return (
@@ -204,11 +221,19 @@ class GuiasList extends Component {
                 onHandleDelete={this.onHandleDelete}
                 setBox={{
                   to: 'guias',
-                  label: 'Numero',
+                  label: 'Número',
                   pretitle: item.Numero,
                   title: item.Paciente.Nome,
                 }}
               >
+                {
+                  item.PlanoOperadora
+                  && item.PlanoOperadora.NomeFantasia && (
+                    <p style={{ paddingTop: 7 }}>
+                      {item.PlanoOperadora.NomeFantasia}
+                    </p>
+                  )
+                }
                 <FormControl>
                   <Select
                     name={item.Numero}
@@ -219,8 +244,8 @@ class GuiasList extends Component {
                     disabled={!!error}
                     displayEmpty
                   >
-                    <MenuItem value={1}>Criada</MenuItem>
-                    <MenuItem value={2}>Concluida</MenuItem>
+                    <MenuItem value={1}>{readStatus[1]}</MenuItem>
+                    <MenuItem value={2}>{readStatus[2]}</MenuItem>
                     {/* <MenuItem value={99}>Deletada</MenuItem> */}
                   </Select>
                 </FormControl>
