@@ -226,7 +226,7 @@ class GuiasList extends Component {
                 </FormControl>
 
                 <p>
-                  {formatDate(item.Vencimento)}
+                  {item.Vencimento && formatDate(item.Vencimento)}
                   {
                     item.ValorTotalProcedimentos
                     && typeof item.ValorTotalProcedimentos !== 'undefined' && (

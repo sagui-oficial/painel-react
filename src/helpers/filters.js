@@ -1,5 +1,5 @@
-export const orderByDate = (arr = [], propName, order = 'asc') => (
-  arr.slice(0).sort((a, b) => {
+export const orderByDate = (arr = [{}], propName, order = 'asc') => (
+  arr && arr.slice(0).sort((a, b) => {
     const firstDate = new Date(a[propName]);
     const secondDate = new Date(b[propName]);
     let orderDesc = 1;
@@ -15,8 +15,8 @@ export const orderByDate = (arr = [], propName, order = 'asc') => (
     return 0;
   }));
 
-export const orderBy = (arr = [], propName, order = 'asc') => (
-  arr.slice(0).sort((a, b) => {
+export const orderBy = (arr = [{}], propName, order = 'asc') => (
+  arr && arr.slice(0).sort((a, b) => {
     const firstDate = a[propName];
     const secondDate = b[propName];
     let orderDesc = 1;

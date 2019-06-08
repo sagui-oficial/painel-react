@@ -92,8 +92,8 @@ class Guias extends Component {
 
 Guias.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  guias: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  guias: PropTypes.instanceOf(Object),
   loadGuias: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -101,6 +101,7 @@ Guias.propTypes = {
 
 Guias.defaultProps = {
   title: String(),
+  guias: [],
 };
 
 const mapStateToProps = state => ({

@@ -2,7 +2,6 @@ import {
   formatCPF,
   validateCPF,
   formatCNPJ,
-  validateCNPJ,
   validateEmail,
 } from '../../helpers';
 
@@ -27,13 +26,6 @@ describe('CNPJ field', () => {
   it('Should format number to string CNPJ', () => {
     expect(formatCNPJ('00900900000190')).toBe('00.900.900/0001-90');
     expect(formatCNPJ(90900900000190)).toBe('90.900.900/0001-90');
-  });
-  /* it('Should check if CNPJ is valid', () => {
-    expect(validateCNPJ('90900900000190')).toBeTruthy();
-    expect(validateCNPJ('76582133000185')).toBeTruthy();
-  }); */
-  it('Should check if CNPJ is invalid', () => {
-    expect(validateCNPJ('90900900000190')).toBeFalsy();
   });
 });
 

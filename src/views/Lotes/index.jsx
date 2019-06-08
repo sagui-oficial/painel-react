@@ -92,8 +92,8 @@ class Lotes extends Component {
 
 Lotes.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  lotes: PropTypes.instanceOf(Object),
   history: PropTypes.instanceOf(Object).isRequired,
+  lotes: PropTypes.instanceOf(Object),
   loadLotes: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -101,12 +101,12 @@ Lotes.propTypes = {
 
 Lotes.defaultProps = {
   title: String(),
-  lotes: {},
+  lotes: [],
 };
 
 const mapStateToProps = state => ({
-  lotes: state.guiasReducer.lotes,
-  error: state.guiasReducer.fetchError,
+  lotes: state.lotesReducer.lotes,
+  error: state.lotesReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {

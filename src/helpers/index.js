@@ -10,7 +10,6 @@ import {
 
 import {
   validateCPF,
-  validateCNPJ,
   validateEmail,
 } from './validators';
 
@@ -33,7 +32,6 @@ export {
 
 export {
   validateCPF,
-  validateCNPJ,
   validateEmail,
 };
 

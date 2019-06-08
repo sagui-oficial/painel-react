@@ -94,8 +94,8 @@ class Procedimentos extends Component {
 
 Procedimentos.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  procedimentos: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  procedimentos: PropTypes.instanceOf(Object),
   loadProcedimentos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -103,6 +103,7 @@ Procedimentos.propTypes = {
 
 Procedimentos.defaultProps = {
   title: String(),
+  procedimentos: [],
 };
 
 const mapStateToProps = state => ({

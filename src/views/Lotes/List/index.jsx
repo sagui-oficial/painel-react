@@ -5,23 +5,22 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-// List,
-// ListItem,
-// Select,
-// FormControl,
-// MenuItem,
-// Grid,
+  List,
+  ListItem,
+  Select,
+  MenuItem,
+  Grid,
 } from '@material-ui/core';
 
-// import BoxSearch from '../../../components/Search';
+import BoxSearch from '../../../components/Search';
 import Message from '../../../components/Message';
-// import RefList from '../../../components/ListBox/RefList';
-import { deleteLote, updateLote } from '../../../actions/lotes';
+import RefList from '../../../components/ListBox/RefList';
+import { deleteLote } from '../../../actions/lotes';
 import {
-// formatDate,
-// formatCurrency,
-// orderByDate,
-// matchItem,
+  formatDate,
+  formatCurrency,
+  orderByDate,
+  matchItem,
 } from '../../../helpers';
 
 const styles = theme => ({
@@ -61,9 +60,9 @@ const styles = theme => ({
 
 class LotesList extends Component {
   state = {
-    // allLotes: [],
-    // search: '',
-    // order: 'asc',
+    allLotes: [],
+    search: '',
+    order: 'asc',
     boxMessage: {
       open: false,
       text: '',
@@ -71,29 +70,29 @@ class LotesList extends Component {
   }
 
   componentDidMount() {
-    // this.onLoad();
+    this.onLoad();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { /* lotes, */ error } = this.props;
+    const { lotes, error } = this.props;
 
-    /* if (prevProps.lotes !== lotes) {
+    if (prevProps.lotes !== lotes) {
       this.onLoad();
-    } */
+    }
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
     }
   }
 
-  /* onLoad = () => {
+  onLoad = () => {
     const { lotes } = this.props;
     const { order } = this.state;
     this.setState({
-      allLotes: orderByDate(lotes, 'Vencimento', order),
+      allLotes: orderByDate(lotes, 'DataEnvioCorreio', order),
     });
-  } */
+  }
 
   onHandleMessage = (text) => {
     const { error } = this.props;
@@ -131,37 +130,37 @@ class LotesList extends Component {
     }
   } */
 
-  /* onHandleDelete = async ({ PublicID }) => {
+  onHandleDelete = async ({ PublicID }) => {
     const { deleteLote: propdeleteLote } = this.props;
     await propdeleteLote(PublicID);
     await this.onHandleMessage('Item excluido.');
     this.setState({ search: '' });
-  } */
+  }
 
-  /* onHandleSearch = ({ value, name }) => {
+  onHandleSearch = ({ value, name }) => {
     const { lotes } = this.props;
     this.setState(prevState => ({
       [name]: value,
-      allLotes: orderByDate(lotes, 'Vencimento', prevState.order).filter(item => (
+      allLotes: orderByDate(lotes, 'DataEnvioCorreio', prevState.order).filter(item => (
         matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
       )),
     }));
-  } */
+  }
 
-  /* onHandleOrder = (order) => {
+  onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
-      allLotes: orderByDate(prevState.allLotes, 'Vencimento', order),
+      allLotes: orderByDate(prevState.allLotes, 'DataEnvioCorreio', order),
     }));
-  } */
+  }
 
   render() {
-    // const { classes , error } = this.props;
+    const { classes, error } = this.props;
     const {
-      /* allLotes,
-      search, */
+      search,
       boxMessage,
-      // order,
+      allLotes,
+      order,
     } = this.state;
 
     return (
@@ -172,7 +171,7 @@ class LotesList extends Component {
           onHandleOnClose={this.onHandleOnClose}
         />
 
-        {/* <Grid
+        <Grid
           container
           direction="row"
           justify="flex-end"
@@ -187,16 +186,16 @@ class LotesList extends Component {
             <MenuItem value="asc">Mais recentes</MenuItem>
             <MenuItem value="desc">Mais antigos</MenuItem>
           </Select>
-        </Grid> */}
+        </Grid>
 
-        {/* <BoxSearch
+        <BoxSearch
           value={search}
           name="search"
           onChange={e => this.onHandleSearch(e.target)}
           placeholder="Buscar lotes"
-        /> */}
+        />
 
-        {/* <List dense className={classes.root}>
+        <List dense className={classes.root}>
           {allLotes.length ? (
             allLotes.map(item => (
               <RefList
@@ -207,34 +206,18 @@ class LotesList extends Component {
                 setBox={{
                   to: 'lotes',
                   label: 'Numero',
-                  pretitle: item.Numero,
-                  title: item.Paciente.Nome,
+                  pretitle: item.Numero || '',
+                  title: item.Paciente.Nome || '',
                 }}
               >
-                <FormControl>
-                  <Select
-                    name={item.Numero}
-                    value={item.Status ? item.Status : 2}
-                    className={classes.selectBox}
-                    onClick={e => e.preventDefault()}
-                    onChange={e => this.onHandleStatusLote(e, item)}
-                    disabled={!!error}
-                    displayEmpty
-                  >
-                    <MenuItem value={1}>Criada</MenuItem>
-                    <MenuItem value={2}>Concluida</MenuItem>
-                    <MenuItem value={99}>Deletada</MenuItem>
-                  </Select>
-                </FormControl>
-
                 <p>
-                  {formatDate(item.Vencimento)}
+                  {item.DataEnvioCorreio && formatDate(item.DataEnvioCorreio)}
                   {
-                    item.ValorTotalProcedimentos
-                    && typeof item.ValorTotalProcedimentos !== 'undefined' && (
+                    item.ValorTotalLote
+                    && typeof item.ValorTotalLote !== 'undefined' && (
                       <strong>
                         {' - '}
-                        {formatCurrency(item.ValorTotalProcedimentos)}
+                        {formatCurrency(item.ValorTotalLote)}
                       </strong>
                     )
                   }
@@ -242,23 +225,22 @@ class LotesList extends Component {
               </RefList>
             ))
           ) : (
-            <ListItem className={classes.listItem}>Nenhum lote encontrad.</ListItem>
+            <ListItem className={classes.listItem}>Nenhum lote encontrado.</ListItem>
           )
           }
-        </List> */}
+        </List>
       </Fragment>
     );
   }
 }
 
 LotesList.propTypes = {
-  // classes: PropTypes.instanceOf(Object).isRequired,
-  // lotes: PropTypes.instanceOf(Object).isRequired,
+  classes: PropTypes.instanceOf(Object).isRequired,
+  lotes: PropTypes.instanceOf(Object).isRequired,
   error: PropTypes.string.isRequired,
-  // deleteLote: PropTypes.func.isRequired,
-  // updateLote: PropTypes.func.isRequired,
+  deleteLote: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  deleteLote, updateLote,
+  deleteLote,
 })(withStyles(styles)(LotesList));

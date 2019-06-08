@@ -45,8 +45,6 @@ export const validateCPF = (strCPF) => {
   return true;
 };
 
-export const validateCNPJ = (/* strCNPJ */) => false;
-
 export const validateEmail = (strEmail) => {
   const emailFormat = /^([a-z\d.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
   return emailFormat.test(strEmail);

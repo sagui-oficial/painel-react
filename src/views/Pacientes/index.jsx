@@ -94,8 +94,8 @@ class Pacientes extends Component {
 
 Pacientes.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
-  pacientes: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  pacientes: PropTypes.instanceOf(Object),
   loadPacientes: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -103,6 +103,7 @@ Pacientes.propTypes = {
 
 Pacientes.defaultProps = {
   title: String(),
+  pacientes: [],
 };
 
 const mapStateToProps = state => ({
