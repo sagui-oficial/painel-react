@@ -76,46 +76,29 @@ class LoteForm extends Component {
     breadcrumb: [
       { label: 'Lotes', url: '/lotes' },
     ],
-    /* valorTotal: Number(),
-    selectedPaciente: null,
-    selectedProcedimento: null,
-    listStatus: [
-      { label: 'Criada', value: 1 },
-      { label: 'Concluída', value: 2 },
-    ],
-    AllPacientes: [],
-    AllProcedimentos: [],
-    AdicionarProcedimento: {}, */
+    // valorTotal: Number(),
+    // selectedPaciente: null,
+    // selectedProcedimento: null,
+    // listStatus: [
+    //   { label: 'Criada', value: 1 },
+    //   { label: 'Concluída', value: 2 },
+    // ],
+    // AllPacientes: [],
+    // AllProcedimentos: [],
+    // AdicionarProcedimento: {},
     sendLote: {
-      valorTotalLote: Number(),
-      valorTotalPagoLote: Number(),
-      dataEnvioCorreio: convertDatePicker(new Date()),
-      dataPrevistaRecebimento: convertDatePicker(new Date()),
-      totalGTOLote: 0,
-      listaGTO: [],
-      funcionario: {
-        Nome: 'Maria',
-        Id: 1,
-      },
-      planoOperadora: {},
-    },
-
-    /* sendLote: {
-      Status: 1,
+      ValorTotalLote: Number(),
+      ValorTotalPagoLote: Number(),
       DataEnvioCorreio: convertDatePicker(new Date()),
       DataPrevistaRecebimento: convertDatePicker(new Date()),
-      ValorTotalLote: Number(),
-      PlanoOperadora: {
-        Id: Number(),
-        NomeFantasia: String(),
-      },
+      TotalGTOLote: 0,
+      ListaGTO: [],
+      PlanoOperadora: {},
       Funcionario: {
         Nome: 'Maria',
         Id: 1,
       },
-      ListaGTO: [],
-    }, */
-
+    },
     isValidField: {},
     boxMessage: {
       open: false,
@@ -157,16 +140,16 @@ class LoteForm extends Component {
       await propLoadLoteDetail(match.params.id);
       const { lote } = this.props;
       const getLoteItem = Object.keys(lote).length > 0 ? lote : sendLote;
-      const { ValorTotalLote } = getLoteItem;
+      // const { ValorTotalLote } = getLoteItem;
 
-      if (
-        ValorTotalLote
-        && typeof ValorTotalLote !== 'undefined'
-      ) {
-        this.setState({
-          valorTotal: ValorTotalLote,
-        });
-      }
+      // if (
+      //   ValorTotalLote
+      //   && typeof ValorTotalLote !== 'undefined'
+      // ) {
+      //   this.setState({
+      //     valorTotal: ValorTotalLote,
+      //   });
+      // }
 
       this.setState({
         editing: true,
