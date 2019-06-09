@@ -110,9 +110,14 @@ class GuiaForm extends Component {
   baseState = this.state
 
   async componentDidMount() {
-    const { loadPacientes: propsLoadPacientes } = this.props;
     await this.onHandlePageLoad();
-    await propsLoadPacientes();
+
+    const { loadPacientes: propsLoadPacientes } = this.props;
+    const { editing } = this.state;
+    if (!editing) {
+      await propsLoadPacientes();
+    }
+
     await this.onHandleLoadProcedimentos();
     this.onHandleMessage();
   }

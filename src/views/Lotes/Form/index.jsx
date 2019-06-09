@@ -10,18 +10,17 @@ import {
   Grid,
   TextField,
   Divider,
-  // MenuItem,
-  // List,
-  // ListItem,
-  // ListItemSecondaryAction,
-  // IconButton,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
 } from '@material-ui/core';
 
-// import { Delete as DeleteIcon } from '@material-ui/icons';
-// import Select from 'react-select';
+import { Delete as DeleteIcon } from '@material-ui/icons';
+import Select from 'react-select';
 
-// import { loadPacientes } from '../../../actions/pacientes';
-// import { loadProcedimentos } from '../../../actions/procedimentos';
+import { loadGuias } from '../../../actions/guias';
+import { loadPlanos } from '../../../actions/planos';
 import {
   addLote,
   loadLoteDetail,
@@ -31,11 +30,11 @@ import Message from '../../../components/Message';
 import Loading from '../../../components/Loading';
 import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
-// import { Control, Option } from '../../../components/AutoComplete';
+import { Control, Option } from '../../../components/AutoComplete';
 import {
   convertDatePicker,
   fixDateOnSave,
-  // formatCurrency,
+  formatCurrency,
 } from '../../../helpers';
 
 const styles = theme => ({
@@ -76,22 +75,18 @@ class LoteForm extends Component {
     breadcrumb: [
       { label: 'Lotes', url: '/lotes' },
     ],
-    // valorTotal: Number(),
-    // selectedPaciente: null,
-    // selectedProcedimento: null,
-    // listStatus: [
-    //   { label: 'Criada', value: 1 },
-    //   { label: 'Concluída', value: 2 },
-    // ],
-    // AllPacientes: [],
-    // AllProcedimentos: [],
-    // AdicionarProcedimento: {},
+    valorTotal: Number(),
+    selectedGuia: null,
+    selectedPlano: null,
+    AllPlanos: [],
+    AllGuias: [],
+    AdicionarGuia: {},
     sendLote: {
       ValorTotalLote: Number(),
       ValorTotalPagoLote: Number(),
       DataEnvioCorreio: convertDatePicker(new Date()),
       DataPrevistaRecebimento: convertDatePicker(new Date()),
-      TotalGTOLote: 0,
+      TotalGTOLote: Number(),
       ListaGTO: [],
       PlanoOperadora: {},
       Funcionario: {
@@ -109,19 +104,24 @@ class LoteForm extends Component {
   baseState = this.state
 
   async componentDidMount() {
-    // const { loadPacientes: propsLoadPacientes } = this.props;
     await this.onHandlePageLoad();
-    // await propsLoadPacientes();
-    // await this.onHandleLoadProcedimentos();
+
+    const { loadPlanos: propsLoadPlanos } = this.props;
+    const { editing } = this.state;
+    if (!editing) {
+      await propsLoadPlanos();
+    }
+
+    await this.onHandleLoadGuias();
     this.onHandleMessage();
   }
 
   componentDidUpdate(prevProps) {
-    const { error/* , pacientes */ } = this.props;
+    const { error, planos } = this.props;
 
-    /* if (prevProps.pacientes !== pacientes) {
-      this.onHandleLoadPacientes();
-    } */
+    if (prevProps.planos !== planos) {
+      this.onHandleLoadPlanos();
+    }
 
     if (prevProps.error !== error) {
       this.onHandleMessage('Conectado.');
@@ -140,23 +140,23 @@ class LoteForm extends Component {
       await propLoadLoteDetail(match.params.id);
       const { lote } = this.props;
       const getLoteItem = Object.keys(lote).length > 0 ? lote : sendLote;
-      // const { ValorTotalLote } = getLoteItem;
+      const { ValorTotalLote } = getLoteItem;
 
-      // if (
-      //   ValorTotalLote
-      //   && typeof ValorTotalLote !== 'undefined'
-      // ) {
-      //   this.setState({
-      //     valorTotal: ValorTotalLote,
-      //   });
-      // }
+      if (
+        ValorTotalLote
+        && typeof ValorTotalLote !== 'undefined'
+      ) {
+        this.setState({
+          valorTotal: ValorTotalLote,
+        });
+      }
 
       this.setState({
         editing: true,
         sendLote: {
           ...getLoteItem,
-          Solicitacao: convertDatePicker(getLoteItem.Solicitacao),
-          Vencimento: convertDatePicker(getLoteItem.Vencimento),
+          DataEnvioCorreio: convertDatePicker(getLoteItem.DataEnvioCorreio),
+          DataPrevistaRecebimento: convertDatePicker(getLoteItem.DataPrevistaRecebimento),
         },
       });
     }
@@ -164,30 +164,22 @@ class LoteForm extends Component {
     this.setState({ loading: false });
   }
 
-  /* onHandleLoadProcedimentos = async () => {
-    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
-    await propsLoadProcedimentos();
+  onHandleLoadGuias = async () => {
+    const { loadGuias: propsLoadGuias } = this.props;
+    await propsLoadGuias();
 
-    const { procedimentos } = this.props;
+    const { guias } = this.props;
 
     this.setState(prevState => ({
-      AllProcedimentos: procedimentos.filter((item) => {
-        const result = prevState.sendLote.Procedimentos.find(itemList => (
+      AllGuias: guias.filter((item) => {
+        const result = prevState.sendLote.ListaGTO.find(itemList => (
           item.PublicID === itemList.PublicID
         ));
         if (result) return false;
         return true;
       }),
     }));
-  } */
-
-  /* onHandleLoadPacientes = () => {
-    const { pacientes } = this.props;
-
-    this.setState({
-      AllPacientes: pacientes,
-    });
-  } */
+  }
 
   onHandleAdd = async () => {
     const {
@@ -202,18 +194,18 @@ class LoteForm extends Component {
     if (editing) {
       await propUpdateLote({
         ...sendLote,
-        dataEnvioCorreio: fixDateOnSave(sendLote.dataEnvioCorreio),
-        dataPrevistaRecebimento: fixDateOnSave(sendLote.dataPrevistaRecebimento),
+        DataEnvioCorreio: fixDateOnSave(sendLote.DataEnvioCorreio),
+        DataPrevistaRecebimento: fixDateOnSave(sendLote.DataPrevistaRecebimento),
       });
-      await this.onHandleMessage('Lote modificada.');
+      await this.onHandleMessage('Lote modificado.');
     } else {
       await propAddLote({
         ...sendLote,
-        dataEnvioCorreio: fixDateOnSave(sendLote.dataEnvioCorreio),
-        dataPrevistaRecebimento: fixDateOnSave(sendLote.dataPrevistaRecebimento),
+        DataEnvioCorreio: fixDateOnSave(sendLote.DataEnvioCorreio),
+        DataPrevistaRecebimento: fixDateOnSave(sendLote.DataPrevistaRecebimento),
       });
       await this.setState({ editing: true });
-      await this.onHandleMessage('Lote adicionada.');
+      await this.onHandleMessage('Lote adicionado.');
     }
 
     history.push('/lotes');
@@ -253,71 +245,75 @@ class LoteForm extends Component {
     });
   }
 
-  /* onHandleSelectPaciente = (target) => {
-    const { sendLote } = this.state;
-    const { Id, PlanoOperadora } = target;
+  onHandleLoadPlanos = () => {
+    const { planos } = this.props;
 
     this.setState({
-      selectedPaciente: target,
+      AllPlanos: planos,
+    });
+  }
+
+  onHandleSelectPlano = (target) => {
+    const { sendLote } = this.state;
+
+    this.setState({
+      selectedPlano: target,
       sendLote: {
         ...sendLote,
-        PlanoOperadora,
-        Paciente: {
-          Id,
-        },
+        PlanoOperadoraId: target.Id,
       },
     });
-  } */
+  }
 
-  /* onHandleSelectProcedimentos = (target) => {
-    const { Procedimento } = target;
+  onHandleSelectGuia = (target) => {
+    const { ListaGTO } = target;
 
     this.setState({
-      selectedProcedimento: target,
-      AdicionarProcedimento: Procedimento,
+      selectedGuia: target,
+      AdicionarGuia: ListaGTO,
     });
-  } */
+  }
 
-  /* onHandleAddProcedimento = (event) => {
+  onHandleAddGuia = (event) => {
     event.preventDefault();
     const {
-      selectedProcedimento,
+      selectedGuia,
       sendLote,
     } = this.state;
 
-    if (selectedProcedimento) {
+    if (selectedGuia) {
       this.setState(prevState => ({
-        selectedProcedimento: String(),
-        valorTotal: prevState.valorTotal + prevState.AdicionarProcedimento.ValorProcedimento,
-        AllProcedimentos: prevState.AllProcedimentos.filter(item => (
-          item.PublicID !== prevState.AdicionarProcedimento.PublicID
+        selectedGuia: String(),
+        valorTotal: prevState.valorTotal + prevState.AdicionarGuia.ValorTotalProcedimentos,
+        AllGuias: prevState.AllGuias.filter(item => (
+          item.PublicID !== prevState.AdicionarGuia.PublicID
         )),
         sendLote: {
           ...sendLote,
-          Procedimentos: [
-            prevState.AdicionarProcedimento,
-            ...sendLote.Procedimentos,
+          ListaGTO: [
+            prevState.AdicionarGuia,
+            ...sendLote.ListaGTO,
           ],
         },
       }));
     }
-  } */
+  }
 
-  /* onHandleDeleteProcedimento = (itemProcedimento) => {
+  onHandleDeleteGuia = (itemGuia) => {
     const { sendLote } = this.state;
 
     this.setState(prevState => ({
-      AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
-      valorTotal: prevState.valorTotal - itemProcedimento.ValorProcedimento,
+      AllGuias: prevState.AllGuias.concat([itemGuia]),
+      valorTotal: prevState.valorTotal - itemGuia.ValorTotalProcedimentos,
       sendLote: {
         ...sendLote,
-        Procedimentos: sendLote.Procedimentos.filter(item => (
-          item.PublicID !== itemProcedimento.PublicID
-          && item.PublicID !== null
+        ListaGTO: sendLote.ListaGTO.filter(item => (
+          item.PublicID !== null
+          && item.PublicID !== itemGuia.PublicID
         )),
       },
     }));
-  } */
+  }
 
   onHandleBlur = ({ value, name }) => {
     const { isValidField, sendLote } = this.state;
@@ -342,51 +338,41 @@ class LoteForm extends Component {
   onHandleValidateFields = (event) => {
     event.preventDefault();
 
-    const { isValidField, sendLote } = this.state;
-    const setValidFields = {};
-
-    Object.keys(isValidField).map((item) => {
-      if (typeof sendLote[item] === 'string') {
-        setValidFields[item] = sendLote[item].trim().length === 0;
-      }
-      return setValidFields;
-    });
-
-    this.setState({
-      ...isValidField,
-      isValidField: setValidFields,
-      isBlocking: false,
-    });
-
-    const countAll = Object.keys(setValidFields).length;
-    const countTrues = Object.values(setValidFields).filter(item => item === false);
-
-    if (countAll === countTrues.length) {
-      this.onHandleAdd();
-    } else {
+    const { selectedPlano, sendLote } = this.state;
+    if (selectedPlano === null) {
       this.onHandleMessage('Preencha todos os campos.');
+    } else if (sendLote.ListaGTO.length === 0) {
+      this.onHandleMessage('Adicione pelo menos uma guia.');
+    } else {
+      // this.onHandleAdd();
+      this.onHandleMessage('Lote adicionado.');
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(sendLote));
+      // eslint-disable-next-line no-console
+      console.table(sendLote);
     }
   }
 
   render() {
     const {
-      classes, title, match, error,
+      classes,
+      error,
+      match,
+      title,
     } = this.props;
 
     const {
-      // AllPacientes,
-      // AllProcedimentos,
+      AllGuias,
+      AllPlanos,
       boxMessage,
       breadcrumb,
       editing,
       isBlocking,
-      // isValidField,
-      // listStatus,
       loading,
-      // selectedPaciente,
-      // selectedProcedimento,
+      selectedGuia,
+      selectedPlano,
       sendLote,
-      // valorTotal,
+      valorTotal,
     } = this.state;
 
     return (
@@ -427,50 +413,15 @@ class LoteForm extends Component {
 
             <form className={classes.form} noValidate autoComplete="off">
               <Grid container spacing={16}>
-                {/* <Grid item xs={12} sm={3}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Número da lote"
-                    name="Numero"
-                    error={isValidField.Numero}
-                    value={sendLote.Numero}
-                    onChange={e => this.onHandleTarget(e.target)}
-                    onBlur={e => this.onHandleBlur(e.target)}
-                    helperText="Digite o número da lote"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </Grid> */}
-
-                {/* <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    select
-                    value={sendLote.Status}
-                    onChange={e => this.onHandleTarget(e.target)}
-                    label="Status"
-                    name="Status"
-                    margin="normal"
-                    variant="outlined"
-                  >
-                    {listStatus.map(option => (
-                      <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid> */}
-              </Grid>
-
-              <Grid container spacing={16}>
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
-                    label="Data de solicitação"
-                    name="dataEnvioCorreio"
+                    label="Data Correio"
+                    name="DataEnvioCorreio"
                     type="date"
                     onChange={e => this.onHandleTarget(e.target)}
-                    defaultValue={sendLote.dataEnvioCorreio}
-                    helperText="23/02/2019"
+                    defaultValue={sendLote.DataEnvioCorreio}
+                    helperText="17/06/2019"
                     margin="normal"
                     variant="outlined"
                     InputLabelProps={{
@@ -481,12 +432,12 @@ class LoteForm extends Component {
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
-                    label="Data de vencimento"
-                    name="dataPrevistaRecebimento"
+                    label="Data Recebimento"
+                    name="DataPrevistaRecebimento"
                     type="date"
                     onChange={e => this.onHandleTarget(e.target)}
-                    defaultValue={sendLote.dataPrevistaRecebimento}
-                    helperText="23/02/2019"
+                    defaultValue={sendLote.DataPrevistaRecebimento}
+                    helperText="17/06/2019"
                     margin="normal"
                     variant="outlined"
                     InputLabelProps={{
@@ -496,135 +447,118 @@ class LoteForm extends Component {
                 </Grid>
               </Grid>
 
-              {/* <br /> */}
-
-              {/* <Typography variant="h6" color="inherit" noWrap>
-                Informações do paciente
-              </Typography> */}
-
-              {/* <Grid container spacing={16}>
-                <Grid
-                  item
-                  xs={12}
-                  sm={5}
-                  style={{
-                    position: 'relative',
-                    zIndex: '4',
-                  }}
-                >
-                  {
-                    !editing ? (
-                      <Select
-                        label="Nome do paciente"
-                        options={
-                          AllPacientes.map(suggestion => ({
-                            Id: suggestion.Id,
-                            PlanoOperadora: suggestion.PlanoOperadora,
-                            value: suggestion.Nome,
-                            label: suggestion.Nome,
-                          }))}
-                        components={{ Control, Option }}
-                        value={selectedPaciente}
-                        onChange={this.onHandleSelectPaciente}
-                        placeholder="Selecione..."
-                      />
-                    ) : (
-                      <TextField
-                        fullWidth
-                        disabled
-                        value={sendLote.Paciente.Nome}
-                        label="Nome do paciente"
-                        margin="normal"
-                        variant="outlined"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
-                    )
-                  }
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Plano/Convênio"
-                    name="NomeFantasia"
-                    value={sendLote.PlanoOperadora.NomeFantasia}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-              </Grid> */}
-
-              {/* <Grid
-                container
-                alignItems="center"
-                style={{
-                  marginTop: '40px',
-                }}
-              >
-                <Typography variant="h6" color="inherit" noWrap>
-                  Adicionar procedimentos
-                </Typography>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="medium"
-                  disabled={!!error}
-                  className={classes.addBtn}
-                  onClick={this.onHandleAddProcedimento}
-                >
-                  +Adicionar
-                </Button>
-              </Grid> */}
-
-              {/* <Grid container spacing={16}>
+              <Grid container spacing={16}>
                 <Grid
                   item
                   xs={12}
                   sm={9}
                   style={{
                     position: 'relative',
-                    zIndex: '2',
+                    zIndex: '3',
                   }}
                 >
-                  <Select
-                    label="Cadastrar procedimentos"
-                    options={
-                      AllProcedimentos.map((suggestion) => {
-                        const NameProd = 'NomeProcedimento';
-                        return (
+                  {!editing ? (
+                    <Select
+                      label="Selecionar plano/convênio"
+                      options={
+                        AllPlanos.map(suggestion => (
                           {
-                            name: NameProd,
-                            Procedimento: suggestion,
-                            PublicID: suggestion.PublicID,
-                            Codigo: suggestion.Codigo,
-                            value: suggestion.NomeProcedimento,
-                            label: suggestion.NomeProcedimento,
+                            Id: suggestion.Id,
+                            value: suggestion.NomeFantasia,
+                            label: suggestion.NomeFantasia,
                           }
-                        );
-                      })
-                    }
-                    components={{ Control, Option }}
-                    value={selectedProcedimento}
-                    onChange={this.onHandleSelectProcedimentos}
-                    placeholder="Selecione..."
-                  />
+                        ))
+                      }
+                      components={{ Control, Option }}
+                      value={selectedPlano}
+                      placeholder="Selecionar plano..."
+                      onChange={this.onHandleSelectPlano}
+                    />
+                  ) : (
+                    <TextField
+                      fullWidth
+                      disabled
+                      value={sendLote.PlanoOperadora.NomeFantasia}
+                      label="Plano/Operadora"
+                      margin="normal"
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  )}
                 </Grid>
-              </Grid> */}
+              </Grid>
 
-              {/* {
+              {selectedPlano !== null && (
+                <Grid
+                  container
+                  alignItems="center"
+                  style={{
+                    marginTop: '40px',
+                  }}
+                >
+                  <Typography variant="h6" color="inherit" noWrap>
+                    Adicionar guias
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="medium"
+                    disabled={!!error}
+                    className={classes.addBtn}
+                    onClick={this.onHandleAddGuia}
+                  >
+                    +Adicionar
+                  </Button>
+                </Grid>
+              )}
+
+              {selectedPlano !== null && (
+                <Grid container spacing={16}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={9}
+                    style={{
+                      position: 'relative',
+                      zIndex: '2',
+                    }}
+                  >
+                    <Select
+                      label="Cadastrar guias"
+                      options={
+                        AllGuias.map((suggestion) => {
+                          const NameProd = 'Numero';
+                          return (
+                            {
+                              name: NameProd,
+                              ListaGTO: suggestion,
+                              PublicID: suggestion.PublicID,
+                              value: suggestion.Numero,
+                              label: suggestion.Numero,
+                            }
+                          );
+                        })
+                      }
+                      components={{ Control, Option }}
+                      value={selectedGuia}
+                      onChange={this.onHandleSelectGuia}
+                      placeholder="Selecione..."
+                    />
+                  </Grid>
+                </Grid>
+              )}
+
+              {
                 sendLote
-                && sendLote.Procedimentos
-                && sendLote.Procedimentos.length > 0 && (
+                && sendLote.ListaGTO
+                && sendLote.ListaGTO.length > 0 && (
                   <Fragment>
                     <Grid container alignItems="center" style={{ marginTop: '40px' }}>
                       <Grid item xs={12} sm={3}>
                         <Typography variant="h6" color="inherit" noWrap>
-                          Procedimentos realizados
+                          Guias adicionadas
                         </Typography>
                       </Grid>
                       <Grid item xs={12} sm={3}>
@@ -647,7 +581,7 @@ class LoteForm extends Component {
                       <Grid item xs={12} sm={9}>
                         <List dense>
                           {
-                            sendLote.Procedimentos
+                            sendLote.ListaGTO
                               .filter(item => item.PublicID !== null)
                               .map(item => (
                                 <ListItem
@@ -656,17 +590,23 @@ class LoteForm extends Component {
                                 >
                                   <div className={classes.boxList}>
                                     <p className={classes.smallItemText}>
-                                      {item.Codigo}
-                                      {' - '}
-                                      {item.NomeProcedimento}
-                                      {' - '}
-                                      {formatCurrency(item.ValorProcedimento)}
+                                      {item.Numero}
+                                      <br />
+                                      {item.Paciente.Nome}
+                                      <br />
+                                      {item.PlanoOperadora.NomeFantasia}
+                                      {
+                                        item.ValorTotalProcedimentos && (
+                                          <br />,
+                                          formatCurrency(item.ValorTotalProcedimentos)
+                                        )
+                                      }
                                     </p>
                                   </div>
                                   <ListItemSecondaryAction className={classes.iconDelete}>
                                     <IconButton
                                       disabled={!!error}
-                                      onClick={() => this.onHandleDeleteProcedimento(item)}
+                                      onClick={() => this.onHandleDeleteGuia(item)}
                                       aria-label="Deletar"
                                     >
                                       <DeleteIcon />
@@ -680,7 +620,7 @@ class LoteForm extends Component {
                     </Grid>
                   </Fragment>
                 )
-              } */}
+              }
 
               <Button
                 type="submit"
@@ -707,32 +647,36 @@ LoteForm.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  // pacientes: PropTypes.instanceOf(Object),
-  // procedimentos: PropTypes.instanceOf(Object),
+  guias: PropTypes.instanceOf(Object),
+  planos: PropTypes.instanceOf(Object),
   lote: PropTypes.instanceOf(Object),
   addLote: PropTypes.func.isRequired,
   loadLoteDetail: PropTypes.func.isRequired,
   updateLote: PropTypes.func.isRequired,
-  // loadPacientes: PropTypes.func.isRequired,
-  // loadProcedimentos: PropTypes.func.isRequired,
+  loadGuias: PropTypes.func.isRequired,
+  loadPlanos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
 
 LoteForm.defaultProps = {
   lote: {},
-  // pacientes: [],
-  // procedimentos: [],
+  guias: [],
+  planos: [],
   title: String(),
 };
 
 const mapStateToProps = state => ({
   lote: state.lotesReducer.lote,
-  // pacientes: state.pacientesReducer.pacientes,
-  // procedimentos: state.procedimentosReducer.procedimentos,
+  guias: state.guiasReducer.guias,
+  planos: state.planosReducer.planos,
   error: state.lotesReducer.fetchError,
 });
 
 export default connect(mapStateToProps, {
-  addLote, loadLoteDetail, updateLote, /* loadPacientes, loadProcedimentos, */
+  addLote,
+  loadLoteDetail,
+  updateLote,
+  loadGuias,
+  loadPlanos,
 })(withStyles(styles)(LoteForm));
