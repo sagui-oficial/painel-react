@@ -19,7 +19,7 @@ import {
 import { Delete as DeleteIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
-import { loadGuias } from '../../../actions/guias';
+import { loadGuiasOperadora } from '../../../actions/guias';
 import { loadPlanos } from '../../../actions/planos';
 import {
   addLote,
@@ -107,20 +107,31 @@ class LoteForm extends Component {
     await this.onHandlePageLoad();
 
     const { loadPlanos: propsLoadPlanos } = this.props;
-    const { editing } = this.state;
+    const { editing, sendLote } = this.state;
     if (!editing) {
       await propsLoadPlanos();
     }
 
-    await this.onHandleLoadGuias();
+    if (sendLote.PlanoOperadora.PublicID) {
+      this.onHandleLoadGuias(sendLote.PlanoOperadora.PublicID);
+    }
+
     this.onHandleMessage();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { error, planos } = this.props;
+    const { selectedPlano, sendLote } = this.state;
 
     if (prevProps.planos !== planos) {
       this.onHandleLoadPlanos();
+    }
+
+    if (
+      prevState.selectedPlano !== selectedPlano
+      && sendLote.PlanoOperadora.PublicID
+    ) {
+      this.onHandleLoadGuias(sendLote.PlanoOperadora.PublicID);
     }
 
     if (prevProps.error !== error) {
@@ -164,9 +175,9 @@ class LoteForm extends Component {
     this.setState({ loading: false });
   }
 
-  onHandleLoadGuias = async () => {
-    const { loadGuias: propsLoadGuias } = this.props;
-    await propsLoadGuias();
+  onHandleLoadGuias = async (id) => {
+    const { loadGuiasOperadora: propsLoadGuiasOperadora } = this.props;
+    await propsLoadGuiasOperadora(id);
 
     const { guias } = this.props;
 
@@ -255,12 +266,13 @@ class LoteForm extends Component {
 
   onHandleSelectPlano = (target) => {
     const { sendLote } = this.state;
+    const { PlanoOperadora } = target;
 
     this.setState({
       selectedPlano: target,
       sendLote: {
         ...sendLote,
-        PlanoOperadoraId: target.Id,
+        PlanoOperadora,
       },
     });
   }
@@ -344,12 +356,8 @@ class LoteForm extends Component {
     } else if (sendLote.ListaGTO.length === 0) {
       this.onHandleMessage('Adicione pelo menos uma guia.');
     } else {
-      // this.onHandleAdd();
-      this.onHandleMessage('Lote adicionado.');
-      // eslint-disable-next-line no-console
-      console.log(JSON.stringify(sendLote));
-      // eslint-disable-next-line no-console
-      console.table(sendLote);
+      this.onHandleAdd();
+      // console.log(JSON.stringify(sendLote));
     }
   }
 
@@ -457,13 +465,14 @@ class LoteForm extends Component {
                     zIndex: '3',
                   }}
                 >
-                  {!editing ? (
+                  {!editing && sendLote.ListaGTO.length === 0 ? (
                     <Select
                       label="Selecionar plano/convênio"
                       options={
                         AllPlanos.map(suggestion => (
                           {
                             Id: suggestion.Id,
+                            PlanoOperadora: suggestion,
                             value: suggestion.NomeFantasia,
                             label: suggestion.NomeFantasia,
                           }
@@ -655,7 +664,7 @@ LoteForm.propTypes = {
   addLote: PropTypes.func.isRequired,
   loadLoteDetail: PropTypes.func.isRequired,
   updateLote: PropTypes.func.isRequired,
-  loadGuias: PropTypes.func.isRequired,
+  loadGuiasOperadora: PropTypes.func.isRequired,
   loadPlanos: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
@@ -679,6 +688,6 @@ export default connect(mapStateToProps, {
   addLote,
   loadLoteDetail,
   updateLote,
-  loadGuias,
+  loadGuiasOperadora,
   loadPlanos,
 })(withStyles(styles)(LoteForm));
