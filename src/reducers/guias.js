@@ -1,6 +1,11 @@
 import {
-  GET_GUIAS, SAVE_GUIA, DELETE_GUIA, UPDATE_GUIA,
-  GET_GUIA_DETAILS, FETCH_ERROR,
+  GET_GUIAS,
+  GET_GUIAS_OPERADORA,
+  SAVE_GUIA,
+  DELETE_GUIA,
+  UPDATE_GUIA,
+  GET_GUIA_DETAILS,
+  FETCH_ERROR,
 } from '../actions/guias';
 
 const INITIAL_STATE = {
@@ -12,6 +17,12 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, { type, payload }) {
   switch (type) {
     case GET_GUIAS:
+      return {
+        ...state,
+        guias: payload,
+        fetchError: '',
+      };
+    case GET_GUIAS_OPERADORA:
       return {
         ...state,
         guias: payload,
