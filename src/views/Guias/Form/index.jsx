@@ -115,10 +115,14 @@ class GuiaForm extends Component {
     await this.onHandlePageLoad();
 
     const { loadPacientes: propsLoadPacientes } = this.props;
-    const { editing } = this.state;
+    const { editing, sendGuia } = this.state;
 
     if (!editing) {
       await propsLoadPacientes();
+    }
+
+    if (sendGuia.PlanoOperadora.PublicID) {
+      this.onHandleLoadProcedimentos(sendGuia.PlanoOperadora.PublicID);
     }
 
     this.onHandleMessage();
@@ -132,7 +136,10 @@ class GuiaForm extends Component {
       this.onHandleLoadPacientes();
     }
 
-    if (prevState.selectedPaciente !== selectedPaciente) {
+    if (
+      prevState.selectedPaciente !== selectedPaciente
+      && !sendGuia.PlanoOperadora.PublicID
+    ) {
       this.onHandleLoadProcedimentos(sendGuia.PlanoOperadora.PublicID);
     }
 
