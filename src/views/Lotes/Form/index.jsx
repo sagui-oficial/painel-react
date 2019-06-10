@@ -597,8 +597,10 @@ class LoteForm extends Component {
                                       {item.PlanoOperadora.NomeFantasia}
                                       {
                                         item.ValorTotalProcedimentos && (
-                                          <br />,
-                                          formatCurrency(item.ValorTotalProcedimentos)
+                                          <Fragment>
+                                            <br />
+                                            {formatCurrency(item.ValorTotalProcedimentos)}
+                                          </Fragment>
                                         )
                                       }
                                     </p>

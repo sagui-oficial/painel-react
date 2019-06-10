@@ -21,7 +21,7 @@ import { Delete as DeleteIcon } from '@material-ui/icons';
 import Select from 'react-select';
 
 import { loadPacientes } from '../../../actions/pacientes';
-import { loadProcedimentos } from '../../../actions/procedimentos';
+import { loadProcedimentosOperadora } from '../../../actions/procedimentos';
 import {
   addGuia,
   loadGuiaDetail,
@@ -89,10 +89,12 @@ class GuiaForm extends Component {
       Vencimento: convertDatePicker(new Date()),
       PlanoOperadora: {
         Id: Number(),
+        PublicID: String(),
         NomeFantasia: String(),
       },
       Paciente: {
         Id: Number(),
+        PublicID: String(),
       },
       Procedimentos: [],
     },
@@ -113,20 +115,32 @@ class GuiaForm extends Component {
     await this.onHandlePageLoad();
 
     const { loadPacientes: propsLoadPacientes } = this.props;
-    const { editing } = this.state;
+    const { editing, sendGuia } = this.state;
+
     if (!editing) {
       await propsLoadPacientes();
     }
 
-    await this.onHandleLoadProcedimentos();
+    if (sendGuia.PlanoOperadora.PublicID) {
+      this.onHandleLoadProcedimentos(sendGuia.PlanoOperadora.PublicID);
+    }
+
     this.onHandleMessage();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { error, pacientes } = this.props;
+    const { selectedPaciente, sendGuia } = this.state;
 
     if (prevProps.pacientes !== pacientes) {
       this.onHandleLoadPacientes();
+    }
+
+    if (
+      prevState.selectedPaciente !== selectedPaciente
+      && !sendGuia.PlanoOperadora.PublicID
+    ) {
+      this.onHandleLoadProcedimentos(sendGuia.PlanoOperadora.PublicID);
     }
 
     if (prevProps.error !== error) {
@@ -166,12 +180,13 @@ class GuiaForm extends Component {
         },
       });
     }
+
     this.setState({ loading: false });
   }
 
-  onHandleLoadProcedimentos = async () => {
-    const { loadProcedimentos: propsLoadProcedimentos } = this.props;
-    await propsLoadProcedimentos();
+  onHandleLoadProcedimentos = async (id) => {
+    const { loadProcedimentosOperadora: propsLoadProcedimentosOperadora } = this.props;
+    await propsLoadProcedimentosOperadora(id);
 
     const { procedimentos } = this.props;
 
@@ -260,7 +275,7 @@ class GuiaForm extends Component {
 
   onHandleSelectPaciente = (target) => {
     const { sendGuia } = this.state;
-    const { Id, PlanoOperadora } = target;
+    const { Id, PublicID, PlanoOperadora } = target;
 
     this.setState({
       selectedPaciente: target,
@@ -269,6 +284,7 @@ class GuiaForm extends Component {
         PlanoOperadora,
         Paciente: {
           Id,
+          PublicID,
         },
       },
     });
@@ -523,6 +539,7 @@ class GuiaForm extends Component {
                         options={
                           AllPacientes.map(suggestion => ({
                             Id: suggestion.Id,
+                            PublicID: suggestion.PublicID,
                             PlanoOperadora: suggestion.PlanoOperadora,
                             value: suggestion.Nome,
                             label: suggestion.Nome,
@@ -626,7 +643,7 @@ class GuiaForm extends Component {
                 && sendGuia.Procedimentos.length > 0 && (
                   <Fragment>
                     <Grid container alignItems="center" style={{ marginTop: '40px' }}>
-                      <Grid item xs={12} sm={3}>
+                      <Grid item xs={12} sm={6}>
                         <Typography variant="h6" color="inherit" noWrap>
                           Procedimentos realizados
                         </Typography>
@@ -718,7 +735,7 @@ GuiaForm.propTypes = {
   loadGuiaDetail: PropTypes.func.isRequired,
   updateGuia: PropTypes.func.isRequired,
   loadPacientes: PropTypes.func.isRequired,
-  loadProcedimentos: PropTypes.func.isRequired,
+  loadProcedimentosOperadora: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
   title: PropTypes.string,
 };
@@ -738,5 +755,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  addGuia, loadGuiaDetail, updateGuia, loadPacientes, loadProcedimentos,
+  addGuia, loadGuiaDetail, updateGuia, loadPacientes, loadProcedimentosOperadora,
 })(withStyles(styles)(GuiaForm));

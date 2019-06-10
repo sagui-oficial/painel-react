@@ -1,7 +1,11 @@
 import {
-  GET_PROCEDIMENTOS, GET_PROCEDIMENTO_DETAILS,
-  SAVE_PROCEDIMENTO, DELETE_PROCEDIMENTO,
-  UPDATE_PROCEDIMENTO, FETCH_ERROR,
+  GET_PROCEDIMENTOS,
+  GET_PROCEDIMENTO_DETAILS,
+  GET_PROCEDIMENTOS_OPERADORA,
+  SAVE_PROCEDIMENTO,
+  DELETE_PROCEDIMENTO,
+  UPDATE_PROCEDIMENTO,
+  FETCH_ERROR,
 } from '../actions/procedimentos';
 
 const INITIAL_STATE = {
@@ -22,6 +26,12 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return {
         ...state,
         procedimento: payload,
+        fetchError: '',
+      };
+    case GET_PROCEDIMENTOS_OPERADORA:
+      return {
+        ...state,
+        procedimentos: payload,
         fetchError: '',
       };
     case SAVE_PROCEDIMENTO:
