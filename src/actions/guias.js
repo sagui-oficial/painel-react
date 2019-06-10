@@ -1,6 +1,7 @@
 import { APIResquest } from '../utils/api';
 
 export const GET_GUIAS = 'GET_GUIAS';
+export const GET_GUIAS_OPERADORA = 'GET_GUIAS_OPERADORA';
 export const GET_GUIA_DETAILS = 'GET_GUIA_DETAILS';
 export const SAVE_GUIA = 'SAVE_GUIA';
 export const DELETE_GUIA = 'DELETE_GUIA';
@@ -15,6 +16,20 @@ export function loadGuias() {
     })
       .then(res => dispatch({
         type: GET_GUIAS,
+        payload: res.Result.GTOs || [],
+      }))
+      .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
+  };
+}
+
+export function loadGuiasOperadora(id) {
+  return async (dispatch) => {
+    await APIResquest({
+      uri: `gto/${id}/listargtooperadora`,
+      method: 'GET',
+    })
+      .then(res => dispatch({
+        type: GET_GUIAS_OPERADORA,
         payload: res.Result.GTOs || [],
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));

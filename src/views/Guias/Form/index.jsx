@@ -94,6 +94,7 @@ class GuiaForm extends Component {
       },
       Paciente: {
         Id: Number(),
+        Nome: String(),
         PublicID: String(),
       },
       Procedimentos: [],
@@ -101,7 +102,6 @@ class GuiaForm extends Component {
     isValidField: {
       Numero: false,
       Nome: false,
-      PlanoOperadora: false,
     },
     boxMessage: {
       open: false,
@@ -138,7 +138,7 @@ class GuiaForm extends Component {
 
     if (
       prevState.selectedPaciente !== selectedPaciente
-      && !sendGuia.PlanoOperadora.PublicID
+      && sendGuia.PlanoOperadora.PublicID
     ) {
       this.onHandleLoadProcedimentos(sendGuia.PlanoOperadora.PublicID);
     }
@@ -285,6 +285,7 @@ class GuiaForm extends Component {
         Paciente: {
           Id,
           PublicID,
+          Nome: target.value,
         },
       },
     });
@@ -533,7 +534,7 @@ class GuiaForm extends Component {
                   }}
                 >
                   {
-                    !editing ? (
+                    !editing && sendGuia.Procedimentos.length === 0 ? (
                       <Select
                         label="Nome do paciente"
                         options={
@@ -580,128 +581,132 @@ class GuiaForm extends Component {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                alignItems="center"
-                style={{
-                  marginTop: '40px',
-                }}
-              >
-                <Typography variant="h6" color="inherit" noWrap>
-                  Adicionar procedimentos
-                </Typography>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="medium"
-                  disabled={!!error}
-                  className={classes.addBtn}
-                  onClick={this.onHandleAddProcedimento}
-                >
-                  +Adicionar
-                </Button>
-              </Grid>
+              {selectedPaciente !== null && (
+                <Fragment>
+                  <Grid
+                    container
+                    alignItems="center"
+                    style={{
+                      marginTop: '40px',
+                    }}
+                  >
+                    <Typography variant="h6" color="inherit" noWrap>
+                      Adicionar procedimentos
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      size="medium"
+                      disabled={!!error}
+                      className={classes.addBtn}
+                      onClick={this.onHandleAddProcedimento}
+                    >
+                      +Adicionar
+                    </Button>
+                  </Grid>
 
-              <Grid container spacing={16}>
-                <Grid
-                  item
-                  xs={12}
-                  sm={9}
-                  style={{
-                    position: 'relative',
-                    zIndex: '2',
-                  }}
-                >
-                  <Select
-                    label="Cadastrar procedimentos"
-                    options={
-                      AllProcedimentos.map((suggestion) => {
-                        const NameProd = 'NomeProcedimento';
-                        return (
-                          {
-                            name: NameProd,
-                            Procedimento: suggestion,
-                            PublicID: suggestion.PublicID,
-                            Codigo: suggestion.Codigo,
-                            value: suggestion.NomeProcedimento,
-                            label: suggestion.NomeProcedimento,
-                          }
-                        );
-                      })
-                    }
-                    components={{ Control, Option }}
-                    value={selectedProcedimento}
-                    onChange={this.onHandleSelectProcedimentos}
-                    placeholder="Selecione..."
-                  />
-                </Grid>
-              </Grid>
-
-              {
-                sendGuia
-                && sendGuia.Procedimentos
-                && sendGuia.Procedimentos.length > 0 && (
-                  <Fragment>
-                    <Grid container alignItems="center" style={{ marginTop: '40px' }}>
-                      <Grid item xs={12} sm={6}>
-                        <Typography variant="h6" color="inherit" noWrap>
-                          Procedimentos realizados
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <TextField
-                          fullWidth
-                          value={formatCurrency(valorTotal)}
-                          label="Valor total"
-                          margin="normal"
-                          variant="outlined"
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                        />
-                      </Grid>
+                  <Grid container spacing={16}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={9}
+                      style={{
+                        position: 'relative',
+                        zIndex: '2',
+                      }}
+                    >
+                      <Select
+                        label="Cadastrar procedimentos"
+                        options={
+                          AllProcedimentos.map((suggestion) => {
+                            const NameProd = 'NomeProcedimento';
+                            return (
+                              {
+                                name: NameProd,
+                                Procedimento: suggestion,
+                                PublicID: suggestion.PublicID,
+                                Codigo: suggestion.Codigo,
+                                value: suggestion.NomeProcedimento,
+                                label: suggestion.NomeProcedimento,
+                              }
+                            );
+                          })
+                        }
+                        components={{ Control, Option }}
+                        value={selectedProcedimento}
+                        onChange={this.onHandleSelectProcedimentos}
+                        placeholder="Selecione..."
+                      />
                     </Grid>
-                    <Grid container alignItems="center" style={{ marginTop: '15px' }}>
-                      <Grid item xs={12} sm={9}>
-                        <List dense>
-                          {
-                            sendGuia.Procedimentos
-                              .filter(item => item.PublicID !== null)
-                              .map(item => (
-                                <ListItem
-                                  key={item.PublicID}
-                                  className={classes.listProcess}
-                                >
-                                  <div className={classes.boxList}>
-                                    <p className={classes.smallItemText}>
-                                      {item.Codigo}
-                                      {' - '}
-                                      {item.NomeProcedimento}
-                                      {' - '}
-                                      {formatCurrency(item.ValorProcedimento)}
-                                    </p>
-                                  </div>
-                                  <ListItemSecondaryAction className={classes.iconDelete}>
-                                    <IconButton
-                                      disabled={!!error}
-                                      onClick={() => this.onHandleDeleteProcedimento(item)}
-                                      aria-label="Deletar"
+                  </Grid>
+
+                  {
+                    sendGuia
+                    && sendGuia.Procedimentos
+                    && sendGuia.Procedimentos.length > 0 && (
+                      <Fragment>
+                        <Grid container alignItems="center" style={{ marginTop: '40px' }}>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="h6" color="inherit" noWrap>
+                              Procedimentos realizados
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={3}>
+                            <TextField
+                              fullWidth
+                              value={formatCurrency(valorTotal)}
+                              label="Valor total"
+                              margin="normal"
+                              variant="outlined"
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            />
+                          </Grid>
+                        </Grid>
+                        <Grid container alignItems="center" style={{ marginTop: '15px' }}>
+                          <Grid item xs={12} sm={9}>
+                            <List dense>
+                              {
+                                sendGuia.Procedimentos
+                                  .filter(item => item.PublicID !== null)
+                                  .map(item => (
+                                    <ListItem
+                                      key={item.PublicID}
+                                      className={classes.listProcess}
                                     >
-                                      <DeleteIcon />
-                                    </IconButton>
-                                  </ListItemSecondaryAction>
-                                </ListItem>
-                              ))
-                          }
-                        </List>
-                      </Grid>
-                    </Grid>
-                  </Fragment>
-                )
-              }
+                                      <div className={classes.boxList}>
+                                        <p className={classes.smallItemText}>
+                                          {item.Codigo}
+                                          {' - '}
+                                          {item.NomeProcedimento}
+                                          {' - '}
+                                          {formatCurrency(item.ValorProcedimento)}
+                                        </p>
+                                      </div>
+                                      <ListItemSecondaryAction className={classes.iconDelete}>
+                                        <IconButton
+                                          disabled={!!error}
+                                          onClick={() => this.onHandleDeleteProcedimento(item)}
+                                          aria-label="Deletar"
+                                        >
+                                          <DeleteIcon />
+                                        </IconButton>
+                                      </ListItemSecondaryAction>
+                                    </ListItem>
+                                  ))
+                              }
+                            </List>
+                          </Grid>
+                        </Grid>
+                      </Fragment>
+                    )
+                  }
+                </Fragment>
+              )}
 
               <Button
                 type="submit"
