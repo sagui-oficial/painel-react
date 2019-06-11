@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * API BACKEND
  */
-export const API = process.env.REACT_APP_PUBLIC_URL || process.env.REACT_APP_MOCK_API;
+export const API = process.env.REACT_APP_PUBLIC_URL;
 
 /**
  * Call to API from url
