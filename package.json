@@ -1,5 +1,6 @@
 {
   "name": "sagui-react",
+  "description": "Sistema Administração de Guias Odontológicas",
   "version": "0.2.0",
   "private": true,
   "bugs": {
