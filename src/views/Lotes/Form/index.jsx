@@ -153,17 +153,9 @@ class LoteForm extends Component {
       const getLoteItem = Object.keys(lote).length > 0 ? lote : sendLote;
       const { ValorTotalLote } = getLoteItem;
 
-      if (
-        ValorTotalLote
-        && typeof ValorTotalLote !== 'undefined'
-      ) {
-        this.setState({
-          valorTotal: ValorTotalLote,
-        });
-      }
-
       this.setState({
         editing: true,
+        valorTotal: ValorTotalLote || 0,
         sendLote: {
           ...getLoteItem,
           DataEnvioCorreio: convertDatePicker(getLoteItem.DataEnvioCorreio),
@@ -499,7 +491,7 @@ class LoteForm extends Component {
                 </Grid>
               </Grid>
 
-              {selectedPlano !== null && (
+              {sendLote.PlanoOperadora.PublicID && (
                 <Grid
                   container
                   alignItems="center"
@@ -523,7 +515,7 @@ class LoteForm extends Component {
                 </Grid>
               )}
 
-              {selectedPlano !== null && (
+              {sendLote.PlanoOperadora.PublicID && (
                 <Grid container spacing={16}>
                   <Grid
                     item
@@ -537,18 +529,20 @@ class LoteForm extends Component {
                     <Select
                       label="Cadastrar guias"
                       options={
-                        AllGuias.map((suggestion) => {
-                          const NameProd = 'Numero';
-                          return (
-                            {
-                              name: NameProd,
-                              ListaGTO: suggestion,
-                              PublicID: suggestion.PublicID,
-                              value: suggestion.Numero,
-                              label: suggestion.Numero,
-                            }
-                          );
-                        })
+                        AllGuias
+                          .filter(item => item.ValorTotalProcedimentos)
+                          .map((suggestion) => {
+                            const NameProd = 'Numero';
+                            return (
+                              {
+                                name: NameProd,
+                                ListaGTO: suggestion,
+                                PublicID: suggestion.PublicID,
+                                value: suggestion.Numero,
+                                label: suggestion.Numero,
+                              }
+                            );
+                          })
                       }
                       components={{ Control, Option }}
                       value={selectedGuia}

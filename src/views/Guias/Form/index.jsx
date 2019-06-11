@@ -581,7 +581,7 @@ class GuiaForm extends Component {
                 </Grid>
               </Grid>
 
-              {selectedPaciente !== null && (
+              {sendGuia.PlanoOperadora.PublicID && (
                 <Fragment>
                   <Grid
                     container
