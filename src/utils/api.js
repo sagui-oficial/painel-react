@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * API BACKEND
  */
-export const API = process.env.REACT_APP_PUBLIC_URL || process.env.REACT_APP_API_DEVELOPMENT;
+export const API = process.env.REACT_APP_STAGE === 'development' ? process.env.REACT_APP_API_DEVELOPMENT : process.env.REACT_APP_API_PRODUCTION;
 
 /**
  * Call to API from url
@@ -42,4 +42,4 @@ export const APIResquest = (config) => {
   return promiseResquestAPI();
 };
 
-export default { API, APIResquest };
+export default { APIResquest };
