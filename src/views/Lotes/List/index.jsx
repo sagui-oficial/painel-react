@@ -90,7 +90,7 @@ class LotesList extends Component {
     const { lotes } = this.props;
     const { order } = this.state;
     this.setState({
-      allLotes: orderByDate(lotes, 'DataEnvioCorreio', order),
+      allLotes: orderByDate(lotes, 'DataPrevistaRecebimento', order),
     });
   }
 
@@ -141,8 +141,10 @@ class LotesList extends Component {
     const { lotes } = this.props;
     this.setState(prevState => ({
       [name]: value,
-      allLotes: orderByDate(lotes, 'DataEnvioCorreio', prevState.order).filter(item => (
-        matchItem(item.Numero, value) || matchItem(item.Paciente.Nome, value)
+      allLotes: orderByDate(lotes, 'DataPrevistaRecebimento', prevState.order).filter(item => (
+        matchItem(item.Id, value)
+        || matchItem(item.PlanoOperadora.NomeFantasia, value)
+        || matchItem(formatDate(item.DataPrevistaRecebimento), value)
       )),
     }));
   }
@@ -150,7 +152,7 @@ class LotesList extends Component {
   onHandleOrder = (order) => {
     this.setState(prevState => ({
       order,
-      allLotes: orderByDate(prevState.allLotes, 'DataEnvioCorreio', order),
+      allLotes: orderByDate(prevState.allLotes, 'DataPrevistaRecebimento', order),
     }));
   }
 
@@ -206,12 +208,12 @@ class LotesList extends Component {
                 setBox={{
                   to: 'lotes',
                   label: 'Código',
-                  pretitle: item.PlanoOperadora.NomeFantasia || '',
+                  pretitle: item.Id || '',
                   title: item.PlanoOperadora.NomeFantasia || '',
                 }}
               >
-                <p>
-                  {item.DataEnvioCorreio && formatDate(item.DataEnvioCorreio)}
+                <p style={{ paddingTop: 7 }}>
+                  {item.DataPrevistaRecebimento && formatDate(item.DataPrevistaRecebimento)}
                   {
                     item.ValorTotalLote
                     && typeof item.ValorTotalLote !== 'undefined' && (
