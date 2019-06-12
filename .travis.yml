@@ -22,7 +22,7 @@ jobs:
           secure: $FIREBASE_TOKEN
         project: "sagui-dev"
       on:
-        branch: feature/development
+        branch: master
 
     - stage: production
       env:
