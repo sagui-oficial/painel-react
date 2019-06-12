@@ -1,36 +1,44 @@
 language: node_js
+
 node_js:
   - "8"
+
 cache:
   yarn: true
   directories:
     - node_modules
 
-before_deploy:
-  - yarn build
+jobs:
+  include:
+    - stage: development
+      env:
+        - REACT_APP_STAGE=development
+      before_deploy:
+        - yarn build
+      deploy:
+        skip_cleanup: true
+        provider: firebase
+        token:
+          secure: $FIREBASE_TOKEN
+        project: "sagui-dev"
+        on:
+          branch:
+            - feature/development
 
-deploy:
-  - provider: firebase
-    env:
-      - REACT_APP_STAGE=development
-    token:
-      secure: $FIREBASE_TOKEN
-    project: "sagui-dev"
-    skip_cleanup: true
-    on:
-      branch:
-        - feature/development
-
-  - provider: firebase
-    env:
-      - REACT_APP_STAGE=production
-    token:
-      secure: $FIREBASE_TOKEN
-    project: "sagui-app"
-    skip_cleanup: true
-    on:
-      branch:
-        - master
+    - stage: production
+      env:
+        - REACT_APP_STAGE=production
+      before_deploy:
+        - yarn build
+      deploy:
+        skip_cleanup: true
+        provider: firebase
+        token:
+          secure: $FIREBASE_TOKEN
+        project: "sagui-app"
+        on:
+          branch:
+            - master
 
 notifications:
   email:
