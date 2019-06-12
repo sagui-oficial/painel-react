@@ -78,6 +78,8 @@ class GuiaForm extends Component {
     listStatus: [
       { label: 'Criada', value: 1 },
       { label: 'Concluída', value: 2 },
+      { label: 'Paga', value: 3 },
+      { label: 'Glosada', value: 4 },
     ],
     AllPacientes: [],
     AllProcedimentos: [],

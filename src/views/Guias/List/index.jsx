@@ -67,6 +67,8 @@ class GuiasList extends Component {
     readStatus: {
       1: 'Criada',
       2: 'Concluída',
+      3: 'Paga',
+      4: 'Glosada',
       99: 'Deletada',
     },
     boxMessage: {
@@ -246,6 +248,8 @@ class GuiasList extends Component {
                   >
                     <MenuItem value={1}>{readStatus[1]}</MenuItem>
                     <MenuItem value={2}>{readStatus[2]}</MenuItem>
+                    <MenuItem value={3}>{readStatus[3]}</MenuItem>
+                    <MenuItem value={4}>{readStatus[4]}</MenuItem>
                     {/* <MenuItem value={99}>Deletada</MenuItem> */}
                   </Select>
                 </FormControl>
