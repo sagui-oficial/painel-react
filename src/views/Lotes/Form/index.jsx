@@ -342,8 +342,8 @@ class LoteForm extends Component {
   onHandleValidateFields = (event) => {
     event.preventDefault();
 
-    const { selectedPlano, sendLote } = this.state;
-    if (selectedPlano === null) {
+    const { selectedPlano, editing, sendLote } = this.state;
+    if (selectedPlano === null && !editing) {
       this.onHandleMessage('Preencha todos os campos.');
     } else if (sendLote.ListaGTO.length === 0) {
       this.onHandleMessage('Adicione pelo menos uma guia.');
