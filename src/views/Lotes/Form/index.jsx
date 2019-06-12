@@ -82,6 +82,7 @@ class LoteForm extends Component {
     AllGuias: [],
     AdicionarGuia: {},
     sendLote: {
+      Status: 1,
       ValorTotalLote: Number(),
       ValorTotalPagoLote: Number(),
       DataEnvioCorreio: convertDatePicker(new Date()),
@@ -349,7 +350,10 @@ class LoteForm extends Component {
       this.onHandleMessage('Adicione pelo menos uma guia.');
     } else {
       this.onHandleAdd();
-      // console.log(JSON.stringify(sendLote));
+      if (process.env.REACT_APP_STAGE === 'development') {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(sendLote));
+      }
     }
   }
 
