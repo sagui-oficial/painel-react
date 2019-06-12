@@ -205,9 +205,9 @@ class LotesList extends Component {
                 onHandleDelete={this.onHandleDelete}
                 setBox={{
                   to: 'lotes',
-                  label: 'Numero',
-                  pretitle: item.Numero || '',
-                  title: item.Paciente.Nome || '',
+                  label: 'Código',
+                  pretitle: item.PlanoOperadora.NomeFantasia || '',
+                  title: item.PlanoOperadora.NomeFantasia || '',
                 }}
               >
                 <p>
