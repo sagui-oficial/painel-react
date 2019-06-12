@@ -12,13 +12,12 @@ stages:
   - development
   - production
 
-before_deploy:
-  - yarn build
-
 staging:
   stage: development
   env:
-  - REACT_APP_STAGE=development
+    - REACT_APP_STAGE=development
+  before_deploy:
+    - yarn build
   deploy:
     skip_cleanup: true
     provider: firebase
@@ -31,8 +30,10 @@ staging:
 
 staging:
   stage: production
+  before_deploy:
+    - yarn build
   env:
-  - REACT_APP_STAGE=production
+    - REACT_APP_STAGE=production
   deploy:
     skip_cleanup: true
     provider: firebase
