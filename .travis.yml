@@ -22,21 +22,9 @@ jobs:
           secure: $FIREBASE_TOKEN
         project: "sagui-dev"
 
-    - stage: production
-      env:
-        - REACT_APP_STAGE=production
-      before_deploy:
-        - yarn build
-      deploy:
-        skip_cleanup: true
-        provider: firebase
-        token:
-          secure: $FIREBASE_TOKEN
-        project: "sagui-app"
-
 branches:
   only:
-    - master
+    - feature/development
 
 notifications:
   email:
