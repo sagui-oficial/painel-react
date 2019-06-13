@@ -21,9 +21,9 @@ jobs:
         token:
           secure: $FIREBASE_TOKEN
         project: "sagui-dev"
-      on:
-        branch:
-          - feature/development
+        on:
+          branch:
+            - feature/development
 
     - stage: production
       env:
@@ -36,9 +36,9 @@ jobs:
         token:
           secure: $FIREBASE_TOKEN
         project: "sagui-app"
-      on:
-        branch:
-          - master
+        on:
+          branch:
+            - master
 
 notifications:
   email:
