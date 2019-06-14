@@ -34,12 +34,12 @@ const styles = theme => ({
   smallItemText: {
     fontSize: '14px',
     color: '#616161',
-    paddingBottom: '7px',
   },
   boxList: {
     paddingLeft: theme.spacing.unit * 1.8,
     '& p': {
       margin: 0,
+      lineHeight: 1.4,
     },
   },
   avatar: {
