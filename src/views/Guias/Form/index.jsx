@@ -33,6 +33,7 @@ import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
 import { convertDatePicker, fixDateOnSave, formatCurrency } from '../../../helpers';
+import PaidButton from './PaidButton';
 
 const styles = theme => ({
   divider: {
@@ -394,7 +395,10 @@ class GuiaForm extends Component {
 
   render() {
     const {
-      classes, title, match, error,
+      classes,
+      title,
+      match,
+      error,
     } = this.props;
 
     const {
@@ -690,6 +694,7 @@ class GuiaForm extends Component {
                                         </p>
                                       </div>
                                       <ListItemSecondaryAction className={classes.iconDelete}>
+                                        <PaidButton ref={ref => ref} />
                                         <IconButton
                                           disabled={!!error}
                                           onClick={() => this.onHandleDeleteProcedimento(item)}
