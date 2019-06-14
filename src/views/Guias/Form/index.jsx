@@ -33,7 +33,6 @@ import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
 import { convertDatePicker, fixDateOnSave, formatCurrency } from '../../../helpers';
-// import PaidButton from './PaidButton';
 
 const styles = theme => ({
   divider: {
@@ -57,9 +56,9 @@ const styles = theme => ({
     },
   },
   listProcess: {
-    marginBottom: '10px',
-    borderRadius: '3px',
-    paddingRight: '50px',
+    marginBottom: 10,
+    borderRadius: 3,
+    paddingRight: 120,
     border: '1px solid rgba(0, 0, 0, 0.12)',
     boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
   },
@@ -325,6 +324,24 @@ class GuiaForm extends Component {
         Procedimentos: prevState.sendGuia.Procedimentos.filter((item, index) => (
           index !== indexProcedimento
         )),
+      },
+    }));
+  }
+
+  onHandleChangeProcedimento = (name, value, indexProcedimento) => {
+    this.setState(prevState => ({
+      sendGuia: {
+        ...prevState.sendGuia,
+        Procedimentos: prevState.sendGuia.Procedimentos.map((item, index) => {
+          if (index === indexProcedimento) {
+            return {
+              ...item,
+              [name]: value,
+            };
+          }
+
+          return item;
+        }),
       },
     }));
   }
@@ -682,7 +699,16 @@ class GuiaForm extends Component {
                                           </p>
                                         </div>
                                         <ListItemSecondaryAction className={classes.iconDelete}>
-                                          {/* <PaidButton ref={ref => ref} /> */}
+                                          <Button
+                                            onClick={() => this.onHandleChangeProcedimento('Pago', !item.Pago, index)}
+                                          >
+                                            {item.Pago ? (
+                                              <span style={{ color: '#3ea600' }}>Pago</span>
+                                            ) : (
+                                              <span style={{ color: '#7c00dd' }}>Pagar</span>
+                                            )}
+                                          </Button>
+
                                           <IconButton
                                             disabled={!!error}
                                             onClick={() => this.onHandleDeleteProcedimento(index)}
