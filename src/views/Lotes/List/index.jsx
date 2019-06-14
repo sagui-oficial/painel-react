@@ -212,13 +212,24 @@ class LotesList extends Component {
                   title: item.PlanoOperadora.NomeFantasia || '',
                 }}
               >
-                <p style={{ paddingTop: 7 }}>
+
+                {item.TotalGTOLote && (
+                  <p>
+                    <strong>Qntd. guias:</strong>
+                    {' '}
+                    {item.TotalGTOLote}
+                  </p>
+                )}
+
+                <p>
+                  <strong>Previsão: </strong>
                   {item.DataPrevistaRecebimento && formatDate(item.DataPrevistaRecebimento)}
+                  <br />
                   {
                     item.ValorTotalLote
                     && typeof item.ValorTotalLote !== 'undefined' && (
                       <strong>
-                        {' - '}
+                        {'Valor total: '}
                         {formatCurrency(item.ValorTotalLote)}
                       </strong>
                     )

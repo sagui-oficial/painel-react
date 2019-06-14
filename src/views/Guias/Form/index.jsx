@@ -33,6 +33,7 @@ import Master from '../../../components/Master';
 import Breadcrumb from '../../../components/Breadcrumb';
 import { Control, Option } from '../../../components/AutoComplete';
 import { convertDatePicker, fixDateOnSave, formatCurrency } from '../../../helpers';
+// import PaidButton from './PaidButton';
 
 const styles = theme => ({
   divider: {
@@ -192,15 +193,7 @@ class GuiaForm extends Component {
 
     const { procedimentos } = this.props;
 
-    this.setState(prevState => ({
-      AllProcedimentos: procedimentos.filter((item) => {
-        const result = prevState.sendGuia.Procedimentos.find(itemList => (
-          item.PublicID === itemList.PublicID
-        ));
-        if (result) return false;
-        return true;
-      }),
-    }));
+    this.setState({ AllProcedimentos: procedimentos });
   }
 
   onHandleLoadPacientes = () => {
@@ -313,9 +306,6 @@ class GuiaForm extends Component {
       this.setState(prevState => ({
         selectedProcedimento: String(),
         valorTotal: prevState.valorTotal + prevState.AdicionarProcedimento.ValorProcedimento,
-        AllProcedimentos: prevState.AllProcedimentos.filter(item => (
-          item.PublicID !== prevState.AdicionarProcedimento.PublicID
-        )),
         sendGuia: {
           ...sendGuia,
           Procedimentos: [
@@ -327,17 +317,13 @@ class GuiaForm extends Component {
     }
   }
 
-  onHandleDeleteProcedimento = (itemProcedimento) => {
-    const { sendGuia } = this.state;
-
+  onHandleDeleteProcedimento = (indexProcedimento) => {
     this.setState(prevState => ({
-      AllProcedimentos: prevState.AllProcedimentos.concat([itemProcedimento]),
-      valorTotal: prevState.valorTotal - itemProcedimento.ValorProcedimento,
+      valorTotal: prevState.valorTotal - prevState.sendGuia.Procedimentos[indexProcedimento].ValorProcedimento,
       sendGuia: {
-        ...sendGuia,
-        Procedimentos: sendGuia.Procedimentos.filter(item => (
-          item.PublicID !== itemProcedimento.PublicID
-          && item.PublicID !== null
+        ...prevState.sendGuia,
+        Procedimentos: prevState.sendGuia.Procedimentos.filter((item, index) => (
+          index !== indexProcedimento
         )),
       },
     }));
@@ -394,7 +380,10 @@ class GuiaForm extends Component {
 
   render() {
     const {
-      classes, title, match, error,
+      classes,
+      title,
+      match,
+      error,
     } = this.props;
 
     const {
@@ -675,31 +664,36 @@ class GuiaForm extends Component {
                               {
                                 sendGuia.Procedimentos
                                   .filter(item => item.PublicID !== null)
-                                  .map(item => (
-                                    <ListItem
-                                      key={item.PublicID}
-                                      className={classes.listProcess}
-                                    >
-                                      <div className={classes.boxList}>
-                                        <p className={classes.smallItemText}>
-                                          {item.Codigo}
-                                          {' - '}
-                                          {item.NomeProcedimento}
-                                          {' - '}
-                                          {formatCurrency(item.ValorProcedimento)}
-                                        </p>
-                                      </div>
-                                      <ListItemSecondaryAction className={classes.iconDelete}>
-                                        <IconButton
-                                          disabled={!!error}
-                                          onClick={() => this.onHandleDeleteProcedimento(item)}
-                                          aria-label="Deletar"
-                                        >
-                                          <DeleteIcon />
-                                        </IconButton>
-                                      </ListItemSecondaryAction>
-                                    </ListItem>
-                                  ))
+                                  .map((item, index) => {
+                                    const indexFind = index + item.PublicID;
+
+                                    return (
+                                      <ListItem
+                                        key={indexFind}
+                                        className={classes.listProcess}
+                                      >
+                                        <div className={classes.boxList}>
+                                          <p className={classes.smallItemText}>
+                                            {item.Codigo}
+                                            {' - '}
+                                            {item.NomeProcedimento}
+                                            {' - '}
+                                            {formatCurrency(item.ValorProcedimento)}
+                                          </p>
+                                        </div>
+                                        <ListItemSecondaryAction className={classes.iconDelete}>
+                                          {/* <PaidButton ref={ref => ref} /> */}
+                                          <IconButton
+                                            disabled={!!error}
+                                            onClick={() => this.onHandleDeleteProcedimento(index)}
+                                            aria-label="Deletar"
+                                          >
+                                            <DeleteIcon />
+                                          </IconButton>
+                                        </ListItemSecondaryAction>
+                                      </ListItem>
+                                    );
+                                  })
                               }
                             </List>
                           </Grid>
