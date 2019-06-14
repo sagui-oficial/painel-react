@@ -231,7 +231,7 @@ class GuiasList extends Component {
                 {
                   item.PlanoOperadora
                   && item.PlanoOperadora.NomeFantasia && (
-                    <p style={{ paddingTop: 7 }}>
+                    <p>
                       {item.PlanoOperadora.NomeFantasia}
                     </p>
                   )
@@ -254,13 +254,24 @@ class GuiasList extends Component {
                   </Select>
                 </FormControl>
 
+                {item.TotalProcedimentos && (
+                  <p>
+                    <strong>Procedimentos:</strong>
+                    {' '}
+                    {item.TotalProcedimentos}
+                  </p>
+                )}
+
                 <p>
+                  <strong>Venc.:</strong>
+                  {' '}
                   {item.Vencimento && formatDate(item.Vencimento)}
+                  <br />
                   {
                     item.ValorTotalProcedimentos
                     && typeof item.ValorTotalProcedimentos !== 'undefined' && (
                       <strong>
-                        {' - '}
+                        {'Valor total: '}
                         {formatCurrency(item.ValorTotalProcedimentos)}
                       </strong>
                     )
