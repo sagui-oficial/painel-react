@@ -21,9 +21,9 @@ class PaidButton extends Component {
     return (
       <Button onClick={this.onHandleSetPaid}>
         {pago ? (
-          <span style={{ color: '#7c00dd' }}>Pagar</span>
-        ) : (
           <span style={{ color: '#3ea600' }}>Pago</span>
+        ) : (
+          <span style={{ color: '#7c00dd' }}>Pagar</span>
         )}
       </Button>
     );
