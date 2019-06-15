@@ -59,9 +59,9 @@ const styles = theme => ({
     },
   },
   listProcess: {
-    marginBottom: '10px',
-    borderRadius: '3px',
-    paddingRight: '50px',
+    marginBottom: 10,
+    borderRadius: 3,
+    paddingRight: 120,
     border: '1px solid rgba(0, 0, 0, 0.12)',
     boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
   },
@@ -368,10 +368,6 @@ class LoteForm extends Component {
       this.onHandleMessage('Adicione pelo menos uma guia.');
     } else {
       this.onHandleAdd();
-      if (process.env.REACT_APP_STAGE === 'development') {
-        // eslint-disable-next-line no-console
-        console.log(JSON.stringify(sendLote));
-      }
     }
   }
 
