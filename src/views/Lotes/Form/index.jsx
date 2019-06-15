@@ -320,6 +320,24 @@ class LoteForm extends Component {
     }));
   }
 
+  onHandleChangeProcedimento = (name, status, indexProcedimento) => {
+    this.setState(prevState => ({
+      sendLote: {
+        ...prevState.sendLote,
+        ListaGTO: prevState.sendLote.ListaGTO.map((item, index) => {
+          if (index === indexProcedimento) {
+            return {
+              ...item,
+              [name]: status === 3 ? 2 : 3,
+            };
+          }
+
+          return item;
+        }),
+      },
+    }));
+  }
+
   onHandleBlur = ({ value, name }) => {
     const { isValidField, sendLote } = this.state;
 
@@ -563,7 +581,7 @@ class LoteForm extends Component {
                 && sendLote.ListaGTO.length > 0 && (
                   <Fragment>
                     <Grid container alignItems="center" style={{ marginTop: '40px' }}>
-                      <Grid item xs={12} sm={3}>
+                      <Grid item xs={12} sm={6}>
                         <Typography variant="h6" color="inherit" noWrap>
                           Guias adicionadas
                         </Typography>
@@ -590,22 +608,26 @@ class LoteForm extends Component {
                           {
                             sendLote.ListaGTO
                               .filter(item => item.PublicID !== null)
-                              .map(item => (
+                              .map((item, index) => (
                                 <ListItem
                                   key={item.PublicID}
                                   className={classes.listProcess}
                                 >
                                   <div className={classes.boxList}>
                                     <p className={classes.smallItemText}>
+                                      <strong>Número:</strong>
+                                      {' '}
                                       {item.Numero}
                                       <br />
+                                      <strong>Paciente:</strong>
+                                      {' '}
                                       {item.Paciente.Nome}
-                                      <br />
-                                      {item.PlanoOperadora.NomeFantasia}
                                       {
                                         item.ValorTotalProcedimentos && (
                                           <Fragment>
                                             <br />
+                                            <strong>Valor total:</strong>
+                                            {' '}
                                             {formatCurrency(item.ValorTotalProcedimentos)}
                                           </Fragment>
                                         )
@@ -613,6 +635,15 @@ class LoteForm extends Component {
                                     </p>
                                   </div>
                                   <ListItemSecondaryAction className={classes.iconDelete}>
+                                    <Button
+                                      onClick={() => this.onHandleChangeProcedimento('Status', item.Status, index)}
+                                    >
+                                      {item.Status === 3 ? (
+                                        <span className="green-text">Pago</span>
+                                      ) : (
+                                        <span className="purple-text">Pagar</span>
+                                      )}
+                                    </Button>
                                     <IconButton
                                       disabled={!!error}
                                       onClick={() => this.onHandleDeleteGuia(item)}

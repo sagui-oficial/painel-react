@@ -703,9 +703,9 @@ class GuiaForm extends Component {
                                             onClick={() => this.onHandleChangeProcedimento('Pago', !item.Pago, index)}
                                           >
                                             {item.Pago ? (
-                                              <span style={{ color: '#3ea600' }}>Pago</span>
+                                              <span className="green-text">Pago</span>
                                             ) : (
-                                              <span style={{ color: '#7c00dd' }}>Pagar</span>
+                                              <span className="purple-text">Pagar</span>
                                             )}
                                           </Button>
 
