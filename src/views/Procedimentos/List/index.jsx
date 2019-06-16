@@ -132,10 +132,17 @@ class ProcedimentosList extends Component {
         <Grid
           container
           direction="row"
-          justify="flex-end"
+          justify="space-between"
           alignItems="center"
           className={classes.topBottomSpace}
         >
+          <p style={{ fontSize: 14 }}>
+            <strong>
+              Exibindo:
+            </strong>
+            {' '}
+            {allProcedimentos ? allProcedimentos.length : 0}
+          </p>
           <Select
             className={classes.selectBox}
             value={order}
