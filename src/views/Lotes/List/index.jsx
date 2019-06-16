@@ -116,20 +116,6 @@ class LotesList extends Component {
     });
   }
 
-  /* onHandleStatusLote = async (event, item) => {
-    const { updateLote: propUpdateLoteStatus } = this.props;
-    const { Status } = item;
-    const { target } = event;
-
-    if (Status !== target.value) {
-      await this.onHandleMessage('Status atualizado.');
-      await propUpdateLoteStatus({
-        ...item,
-        Status: target.value,
-      });
-    }
-  } */
-
   onHandleDelete = async ({ PublicID }) => {
     const { deleteLote: propdeleteLote } = this.props;
     await propdeleteLote(PublicID);
@@ -176,10 +162,17 @@ class LotesList extends Component {
         <Grid
           container
           direction="row"
-          justify="flex-end"
+          justify="space-between"
           alignItems="center"
           className={classes.topBottomSpace}
         >
+          <p style={{ fontSize: 14 }}>
+            <strong>
+              Exibindo:
+            </strong>
+            {' '}
+            {allLotes ? allLotes.length : 0}
+          </p>
           <Select
             className={classes.selectBox}
             value={order}
