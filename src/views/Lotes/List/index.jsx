@@ -21,6 +21,7 @@ import {
   formatCurrency,
   orderByDate,
   matchItem,
+  sumArray,
 } from '../../../helpers';
 
 const styles = theme => ({
@@ -172,6 +173,12 @@ class LotesList extends Component {
             </strong>
             {' '}
             {allLotes ? allLotes.length : 0}
+            {allLotes && (
+              <strong>
+                {' - '}
+                {formatCurrency(sumArray(allLotes, 'ValorTotalLote'))}
+              </strong>
+            )}
           </p>
           <Select
             className={classes.selectBox}
