@@ -20,6 +20,8 @@ import {
   matchItem,
 } from './filters';
 
+import sumArray from './sumArray';
+
 export {
   formatCurrency,
   formatCPF,
@@ -28,16 +30,11 @@ export {
   formatPhone,
   convertDatePicker,
   fixDateOnSave,
-};
-
-export {
   validateCPF,
   validateEmail,
-};
-
-export {
   orderByDate,
   orderBy,
   normalizeString,
   matchItem,
+  sumArray,
 };
