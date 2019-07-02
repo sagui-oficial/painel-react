@@ -16,9 +16,6 @@ export const APIResquest = (config) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'PUT,PATCH,GET,POST',
-        'Access-Control-Allow-Headers': 'Referer,Accept,Origin,User-Agent,Content-Type',
       },
     };
 
