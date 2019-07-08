@@ -4,6 +4,12 @@ import { connect } from 'react-redux';
 import { Chart } from 'react-google-charts';
 import { Grid } from '@material-ui/core';
 
+import 'react-dates/initialize';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import moment from 'moment';
+import 'moment/locale/pt-br';
+
 import {
   Dashboard as DashboardIcon,
   LibraryBooks as LibraryBooksIcon,
@@ -13,20 +19,67 @@ import { loadData } from '../../actions/dashboard';
 import Master from '../../components/Master';
 import Loading from '../../components/Loading';
 import BoxChart from '../../components/BoxChart';
+import { convertDatePicker } from '../../helpers';
 
 const colors = ['#0098b8', '#f1c100'];
 
 class Dashboard extends Component {
+  state = {
+    start: moment().subtract(1, 'month'),
+    end: moment(),
+    focused: null,
+  }
+
   componentDidMount() {
     const { loadData: propsLoadData } = this.props;
-    propsLoadData();
+    const { start, end } = this.state;
+
+    const currentDateSelect = {
+      startDate: convertDatePicker(start),
+      endDate: convertDatePicker(end),
+    };
+    propsLoadData(currentDateSelect);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { start, end, focused } = this.state;
+    const { loadData: propsLoadData } = this.props;
+
+    if (prevState.focused !== focused && prevState.focused === 'endDate') {
+      const currentDateSelect = {
+        startDate: convertDatePicker(start),
+        endDate: convertDatePicker(end),
+      };
+      propsLoadData(currentDateSelect);
+    }
   }
 
   render() {
     const { planos } = this.props;
+    const { start, end, focused } = this.state;
 
     return (
       <Master>
+        <Grid container justify="space-between" style={{ paddingLeft: 10, marginBottom: 20 }} spacing={16}>
+          <DateRangePicker
+            startDate={start}
+            startDateId="startDateID"
+            startDatePlaceholderText="Inicio"
+            endDatePlaceholderText="Fim"
+            endDate={end}
+            endDateId="endDateID"
+            onDatesChange={({ startDate, endDate }) => (
+              this.setState({ start: startDate, end: endDate })
+            )}
+            focusedInput={focused}
+            onFocusChange={focusChange => this.setState({ focused: focusChange })}
+            numberOfMonths={1}
+            // showClearDates
+            hideKeyboardShortcutsPanel
+            isOutsideRange={() => false}
+          />
+        </Grid>
+
         <Grid container justify="space-between" spacing={16}>
           <BoxChart
             title="Faturamento mês"
