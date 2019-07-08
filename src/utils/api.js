@@ -19,6 +19,13 @@ export const APIResquest = (config) => {
       },
     };
 
+    const { token } = config;
+
+    if (token) {
+      settings.withCredentials = true;
+      settings.headers.Authorization = `Basic ${token}`;
+    }
+
     if (/(POST|PUT|PATCH)/gi.test(config.method)) {
       settings.data = JSON.stringify({ ...config.data });
     }
@@ -28,7 +35,8 @@ export const APIResquest = (config) => {
 
   const promiseResquestAPI = async () => {
     try {
-      const { data } = await axios(`${API}/${config.uri}`, requestConfig());
+      const API_URL_FROM = config.api ? config.api : API;
+      const { data } = await axios(`${API_URL_FROM}/${config.uri}`, requestConfig());
       return data;
     } catch (err) {
       const messsage = 'Error: Tente novamente.';
