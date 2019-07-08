@@ -3,10 +3,10 @@ import { APIResquest } from '../utils/api';
 export const GET_DATA = 'GET_DATA';
 export const FETCH_ERROR = 'FETCH_ERROR';
 
-export function loadData() {
+export function loadData({ startDate, endDate }) {
   return async (dispatch) => {
     await APIResquest({
-      uri: 'dashboard/2018-01-01/2019-12-12',
+      uri: `dashboard/${startDate}/${endDate}`,
       method: 'GET',
     })
       .then(res => dispatch({
