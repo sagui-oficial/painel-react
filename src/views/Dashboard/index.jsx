@@ -124,16 +124,16 @@ class Dashboard extends Component {
                 icon={DashboardIcon}
                 bgColor="#00b898"
               >
-                {faturamento.previsto && (
+                {faturamento.Previsto && (
                   <p>
                     <strong>Previstas: </strong>
-                    {formatCurrency(faturamento.previsto)}
+                    {formatCurrency(faturamento.Previsto)}
                   </p>
                 )}
-                {faturamento.realizado && (
+                {faturamento.Realizado && (
                   <p>
                     <strong>Pagas: </strong>
-                    {formatCurrency(faturamento.realizado)}
+                    {formatCurrency(faturamento.Realizado)}
                   </p>
                 )}
               </BoxChart>
@@ -143,10 +143,10 @@ class Dashboard extends Component {
                 }}
                 icon={LibraryBooksIcon}
               >
-                {guiasGlosadas.valor !== 'undefined' && (
+                {guiasGlosadas.Valor !== 'undefined' && (
                   <p>
                     <strong>Valor: </strong>
-                    {formatCurrency(guiasGlosadas.valor)}
+                    {formatCurrency(guiasGlosadas.Valor)}
                   </p>
                 )}
                 {guiasGlosadas.quantidade && (

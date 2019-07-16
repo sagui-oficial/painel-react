@@ -11,7 +11,7 @@ export function loadData({ startDate, endDate }) {
     })
       .then(res => dispatch({
         type: GET_DATA,
-        payload: res || {},
+        payload: res.Result.Dashboard || {},
       }))
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err }));
   };

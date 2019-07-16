@@ -13,16 +13,16 @@ export default function (state = INITIAL_STATE, { type, payload }) {
     case GET_DATA:
       return {
         ...state,
-        grafico: payload.grafico && payload.grafico.map(item => (
+        grafico: payload.Grafico && payload.Grafico.map(item => (
           [
-            item.operadora,
-            { v: item.total, f: formatCurrency(item.total) },
-            { v: item.glosadas, f: formatCurrency(item.glosadas) },
+            item.Operadora,
+            { v: item.Total, f: formatCurrency(item.Total) },
+            { v: item.Glosadas, f: formatCurrency(item.Glosadas) },
           ]
         )),
-        guiasGlosadas: payload.guiasGlosadas && payload.guiasGlosadas,
-        faturamento: payload.faturamento && payload.faturamento,
-        pacienteAtendidos: payload.pacienteAtendidos && payload.pacienteAtendidos,
+        guiasGlosadas: payload.GuiasGlosadas || {},
+        faturamento: payload.Faturamento || {},
+        pacienteAtendidos: payload.PacienteAtendidos || 0,
       };
     default:
       return state;
