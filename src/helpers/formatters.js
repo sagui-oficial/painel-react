@@ -3,7 +3,7 @@ export const formatCurrency = (_number, _locale = 'pt-BR', _format = 'BRL') => (
     style: 'currency',
     currency: _format,
     minimumFractionDigits: 2,
-  })).format(_number);
+  })).format(parseFloat(_number) || 0);
 
 export const formatCPF = _value => (
   _value
