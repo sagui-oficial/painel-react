@@ -16,11 +16,15 @@ export const APIResquest = (config) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'PUT,PATCH,GET,POST',
-        'Access-Control-Allow-Headers': 'Referer,Accept,Origin,User-Agent,Content-Type',
       },
     };
+
+    const { token } = config;
+
+    if (token) {
+      settings.withCredentials = true;
+      settings.headers.Authorization = `Basic ${token}`;
+    }
 
     if (/(POST|PUT|PATCH)/gi.test(config.method)) {
       settings.data = JSON.stringify({ ...config.data });
@@ -31,7 +35,8 @@ export const APIResquest = (config) => {
 
   const promiseResquestAPI = async () => {
     try {
-      const { data } = await axios(`${API}/${config.uri}`, requestConfig());
+      const API_URL_FROM = config.api ? config.api : API;
+      const { data } = await axios(`${API_URL_FROM}/${config.uri}`, requestConfig());
       return data;
     } catch (err) {
       const messsage = 'Error: Tente novamente.';

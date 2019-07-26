@@ -27,7 +27,7 @@ const dashboardRoutes = [
     path: '/dashboard',
     menuText: 'Dashboard',
     icon: DashboardIcon,
-    active: false,
+    active: true,
     component: DashboardPage,
   },
   {

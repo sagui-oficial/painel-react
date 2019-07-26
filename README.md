@@ -6,7 +6,8 @@
 
 # SAGUI ([DASHBOARD](https://sagui.app))
 
-[![Build Status](https://travis-ci.org/sagui-oficial/painel-react.svg?branch=master)](https://travis-ci.org/sagui-oficial/painel-react)
+[![Development](https://img.shields.io/travis/sagui-oficial/painel-react/feature/development.svg?label=development&style=flat-square)](https://travis-ci.org/sagui-oficial/painel-react) [![Production](https://img.shields.io/travis/sagui-oficial/painel-react/master.svg?label=production&style=flat-square)](https://travis-ci.org/sagui-oficial/painel-react)
+
 
 Projeto desenvolvido com [Create React App](https://github.com/facebook/create-react-app) usando o style guide [Material-UI](https://material-ui.com/)
 
