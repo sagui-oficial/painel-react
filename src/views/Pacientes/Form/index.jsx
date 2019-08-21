@@ -5,8 +5,11 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Button, Typography, Grid,
-  Divider, TextField,
+  Button,
+  Typography,
+  Grid,
+  Divider,
+  TextField,
 } from '@material-ui/core';
 import Select from 'react-select';
 
@@ -296,7 +299,7 @@ class PacienteForm extends Component {
   }
 
   onHandleSelectPlano = (target) => {
-    const { sendPaciente } = this.state;
+    const { sendPaciente, isValidField } = this.state;
 
     this.setState({
       selectedPlano: target,
@@ -305,6 +308,15 @@ class PacienteForm extends Component {
         PlanoOperadoraId: target.Id,
       },
     });
+
+    if (typeof isValidField[target.name] !== 'undefined') {
+      this.setState({
+        isValidField: {
+          ...isValidField,
+          [target.name]: target.value !== 0,
+        },
+      });
+    }
   }
 
   onHandleBlur = ({ value, name }) => {
@@ -350,6 +362,8 @@ class PacienteForm extends Component {
         setValidFields.Email = !validateEmail(sendPaciente.Email);
       }
 
+      setValidFields.PlanoOperadoraId = sendPaciente.PlanoOperadoraId === 0;
+
       return setValidFields;
     });
 
@@ -369,14 +383,22 @@ class PacienteForm extends Component {
 
     if (countAll === countTrues.length) {
       this.onHandleAdd();
-      this.onHandleMessage('Adicionado com sucesso.');
-    } else if (isValidField.CPF) {
-      this.onHandleMessage(CPFMessage);
-    } else if (isValidField.Email) {
-      this.onHandleMessage('E-mail inválido.');
-    } else {
-      this.onHandleMessage('Preencha todos os campos.');
+      return this.onHandleMessage('Adicionado com sucesso.');
     }
+
+    if (isValidField.CPF) {
+      return this.onHandleMessage(CPFMessage);
+    }
+
+    if (isValidField.Email) {
+      return this.onHandleMessage('E-mail inválido.');
+    }
+
+    if (isValidField.PlanoOperadoraId) {
+      return this.onHandleMessage('Selecione a operadora.');
+    }
+
+    return this.onHandleMessage('Preencha todos os campos.');
   }
 
   render() {
@@ -386,9 +408,16 @@ class PacienteForm extends Component {
     } = this.props;
 
     const {
-      sendPaciente, breadcrumb, isValidField,
-      editing, boxMessage, isBlocking, CPFMessage,
-      AllPlanos, selectedPlano, loading,
+      sendPaciente,
+      breadcrumb,
+      isValidField,
+      editing,
+      boxMessage,
+      isBlocking,
+      CPFMessage,
+      AllPlanos,
+      selectedPlano,
+      loading,
     } = this.state;
 
     return (
@@ -519,7 +548,7 @@ class PacienteForm extends Component {
                   }}
                 >
                   <Select
-                    label="Selecionar plano/convênio"
+                    required
                     options={
                       AllPlanos.map(suggestion => (
                         {
@@ -530,8 +559,12 @@ class PacienteForm extends Component {
                       ))
                     }
                     components={{ Control, Option }}
+                    name="PlanoOperadoraId"
                     value={selectedPlano}
+                    error={isValidField.PlanoOperadoraId}
+                    label="Selecionar plano/convênio"
                     placeholder="Selecionar plano..."
+                    helperText="Plano do paciente."
                     onChange={this.onHandleSelectPlano}
                   />
                 </Grid>
