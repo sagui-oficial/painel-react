@@ -20,6 +20,7 @@ import GuiaForm from '../views/Guias/Form';
 import PacienteForm from '../views/Pacientes/Form';
 import PlanoForm from '../views/Planos/Form';
 import ProcedimentoForm from '../views/Procedimentos/Form';
+import Uploads from '../views/Uploads';
 
 const dashboardRoutes = [
   {
@@ -74,6 +75,15 @@ const dashboardRoutes = [
     active: true,
     component: Procedimentos,
     editMode: ProcedimentoForm,
+  },
+  {
+    id: 7,
+    path: '/uploads',
+    menuText: 'Uploads',
+    icon: ListAltIcon,
+    active: true,
+    component: Uploads,
+    editMode: null,
   },
 ];
 
