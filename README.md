@@ -1,10 +1,10 @@
 <p align="center">
-  <a href="https://sagui.app" target="_blank">
+  <a href="https://sagui-dev.firebaseapp.com" target="_blank">
     <img width="400" src="src/assets/images/logo.png" alt="Sagui">
   </a>
 </p>
 
-# SAGUI ([DASHBOARD](https://sagui.app))
+# SAGUI ([DASHBOARD](https://sagui-dev.firebaseapp.com))
 
 [![Development](https://img.shields.io/travis/sagui-oficial/painel-react/feature/development.svg?label=development&style=flat-square)](https://travis-ci.org/sagui-oficial/painel-react) [![Production](https://img.shields.io/travis/sagui-oficial/painel-react/master.svg?label=production&style=flat-square)](https://travis-ci.org/sagui-oficial/painel-react)
 

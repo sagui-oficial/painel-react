@@ -76,7 +76,7 @@ const dashboardRoutes = [
     component: Procedimentos,
     editMode: ProcedimentoForm,
   },
-  {
+  /* {
     id: 7,
     path: '/uploads',
     menuText: 'Uploads',
@@ -84,7 +84,7 @@ const dashboardRoutes = [
     active: true,
     component: Uploads,
     editMode: null,
-  },
+  }, */
 ];
 
 export default dashboardRoutes;
