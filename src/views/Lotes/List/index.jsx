@@ -234,6 +234,16 @@ class LotesList extends Component {
                       </strong>
                     )
                   }
+                  <br />
+                  {
+                    item.ValorTotalPagoLote
+                    && typeof item.ValorTotalPagoLote !== 'undefined' && (
+                      <strong>
+                        {'Valor pago: '}
+                        {formatCurrency(item.ValorTotalPagoLote)}
+                      </strong>
+                    )
+                  }
                 </p>
               </RefList>
             ))
