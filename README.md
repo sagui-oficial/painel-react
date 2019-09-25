@@ -15,7 +15,7 @@ Para entender melhor sobre a arquitetura do front-end [clique aqui](docs/ARCHITE
 
 ## Clonar o repositório
 
-```prompt
+```bash
 git clone https://github.com/sagui-oficial/painel-react.git
 ```
 
@@ -27,7 +27,7 @@ git clone https://github.com/sagui-oficial/painel-react.git
 - Instalar pacotes globais para desenvolvimento (talvez precise rodar o terminal como admin)
 - Use preferencialmente o terminal **bash do git**
 
-```prompt
+```bash
 npm i -g create-react-app yarn
 ```
 
@@ -50,13 +50,13 @@ Ao abrir o terminal a partir da raiz do projeto, você poderá rodar os comandos
 
 ### Instalar as dependências do projeto
 
-```prompt
+```bash
 yarn
 ```
 
 ### Iniciar o projeto
 
-```prompt
+```bash
 yarn start
 ```
 
@@ -68,7 +68,7 @@ Também é possível ver logs de erros no console.
 
 ## Testes unitários
 
-```prompt
+```bash
 yarn test
 ```
 
@@ -76,6 +76,6 @@ yarn test
 
 Uma pasta **build** com todos arquivos referente ao projeto será gerada na raiz.
 
-```prompt
+```bash
 yarn build
 ```

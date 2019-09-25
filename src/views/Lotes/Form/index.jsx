@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Prompt } from 'react-router-dom';
+import { Prompt /* , Link */ } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -45,6 +45,10 @@ const styles = theme => ({
   form: {
     marginTop: theme.spacing.unit * 2,
   },
+  smallItemText: {
+    margin: 0,
+    lineHeight: 1.3,
+  },
   addBtn: {
     ...theme.roundedBtn,
     marginLeft: '1.5rem',
@@ -62,6 +66,8 @@ const styles = theme => ({
     marginBottom: 10,
     borderRadius: 3,
     paddingRight: 120,
+    paddingTop: 20,
+    paddingBottom: 20,
     border: '1px solid rgba(0, 0, 0, 0.12)',
     boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
   },
@@ -628,6 +634,20 @@ class LoteForm extends Component {
                                           </Fragment>
                                         )
                                       }
+                                      {/* <br />
+                                      <Button
+                                        variant="outlined"
+                                        size="small"
+                                        disabled={!!error}
+                                        component={Link}
+                                        style={{ marginTop: 10 }}
+                                        to={{
+                                          pathname: `/guias/${item.PublicID}`,
+                                          state: { ...item },
+                                        }}
+                                      >
+                                        Ver
+                                      </Button> */}
                                     </p>
                                   </div>
                                   <ListItemSecondaryAction className={classes.iconDelete}>
