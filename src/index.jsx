@@ -16,14 +16,14 @@ import firebaseConfig from './config/firebase';
 import MainRouters from './routes';
 
 import './assets/styles/default.sass';
-// import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './serviceWorker';
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
 const middlewares = [];
-if (env.REACT_APP_STAGE === 'development') {
+if (env.REACT_APP_STAGE === 'DEVELOPMENT' || env.REACT_APP_STAGE === 'LOCAL') {
   middlewares.push(logger);
 }
 
@@ -55,4 +55,4 @@ store.firebaseAuthIsReady.then(() => {
   );
 });
 
-// serviceWorker.register();
+serviceWorker.register();

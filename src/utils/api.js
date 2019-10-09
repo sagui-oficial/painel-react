@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { REACT_APP_STAGE } from '../config/variables';
 
 /**
  * API BACKEND
  */
-export const API = process.env.REACT_APP_STAGE === 'development' ? process.env.REACT_APP_API_DEVELOPMENT : process.env.REACT_APP_API_PRODUCTION;
+export const API = process.env[`REACT_APP_API_${REACT_APP_STAGE}`];
 
 /**
  * Call to API from url
@@ -16,6 +17,7 @@ export const APIResquest = (config) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': process.env[`REACT_APP_ORIGIN_${REACT_APP_STAGE}`],
       },
     };
 
